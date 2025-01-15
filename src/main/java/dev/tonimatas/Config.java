@@ -17,6 +17,7 @@ public class Config {
                 Files.createFile(propertiesFile.toPath());
 
                 properties.setProperty("token", "");
+                properties.setProperty("openai_api_key", "");
 
                 save(propertiesFile);
             }
@@ -24,6 +25,7 @@ public class Config {
             properties.load(Files.newInputStream(propertiesFile.toPath()));
 
             checkVariable("token", "");
+            checkVariable("openai_api_key", "");
             save(propertiesFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -33,6 +35,11 @@ public class Config {
     public static String getToken() {
         if (properties == null) runProperties();
         return properties.getProperty("token");
+    }
+    
+    public static String getOpenAIApiKey() {
+        if (properties == null) runProperties();
+        return properties.getProperty("openai_api_key");
     }
 
     @SuppressWarnings("SameParameterValue")
