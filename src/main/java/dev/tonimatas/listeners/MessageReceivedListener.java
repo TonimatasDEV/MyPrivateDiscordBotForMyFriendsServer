@@ -8,6 +8,7 @@ public class MessageReceivedListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        
        // TODO: XP Message system
     }
 }

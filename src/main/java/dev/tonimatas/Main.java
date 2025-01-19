@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import java.util.Arrays;
 
 public class Main {
+    public static JDA JDA;
+    
     public static void main(String[] args) {
         String token = Config.getToken();
         
@@ -16,7 +18,7 @@ public class Main {
             jdaBuilder.enableIntents(Arrays.stream(GatewayIntent.values()).toList());
             jdaBuilder.addEventListeners(new MessageReceivedListener());
             jdaBuilder.setAutoReconnect(true);
-            JDA jda = jdaBuilder.build();
+            JDA = jdaBuilder.build();
         }
     }
 }
