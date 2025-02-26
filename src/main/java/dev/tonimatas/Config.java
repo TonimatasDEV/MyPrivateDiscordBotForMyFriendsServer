@@ -17,14 +17,15 @@ public class Config {
                 Files.createFile(propertiesFile.toPath());
 
                 properties.setProperty("token", "");
+                properties.setProperty("count", "0");
 
-                save(propertiesFile);
+                save();
             }
 
             properties.load(Files.newInputStream(propertiesFile.toPath()));
 
             checkVariable("token", "");
-            save(propertiesFile);
+            save();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -35,6 +36,17 @@ public class Config {
         return properties.getProperty("token");
     }
 
+    public static long getCount() {
+        if (properties == null) runProperties();
+        return Long.parseLong(properties.getProperty("count"));
+    }
+    
+    public static void setCount(long count) {
+        if (properties == null) runProperties();
+        properties.setProperty("count", String.valueOf(count));
+        save();
+    }
+
     @SuppressWarnings("SameParameterValue")
     private static void checkVariable(String variable, String defaultValue) {
         if (properties.getProperty(variable) == null) {
@@ -42,8 +54,12 @@ public class Config {
         }
     }
 
-    private static void save(File propertiesFile) throws IOException {
-        properties.store(Files.newOutputStream(propertiesFile.toPath()),
-                "El Resistente config file.");
+    private static void save() {
+        try {
+            properties.store(Files.newOutputStream(new File("bot.properties").toPath()),
+                    "El Resistente config file.");
+        } catch (IOException e) {
+            System.out.println("Error saving config.");
+        }
     }
 }
