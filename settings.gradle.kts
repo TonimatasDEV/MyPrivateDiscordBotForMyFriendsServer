@@ -1,2 +1,2 @@
-rootProject.name = "EchadorDeEnsordecer"
+rootProject.name = "LaResistenzia"
 

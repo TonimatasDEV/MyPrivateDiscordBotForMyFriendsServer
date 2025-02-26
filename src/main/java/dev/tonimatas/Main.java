@@ -1,6 +1,6 @@
 package dev.tonimatas;
 
-import dev.tonimatas.listeners.MessageReceivedListener;
+import dev.tonimatas.listeners.CountListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -16,9 +16,11 @@ public class Main {
         if (!token.isEmpty()) {
             JDABuilder jdaBuilder = JDABuilder.createDefault(token);
             jdaBuilder.enableIntents(Arrays.stream(GatewayIntent.values()).toList());
-            jdaBuilder.addEventListeners(new MessageReceivedListener());
+            jdaBuilder.addEventListeners(new CountListener());
             jdaBuilder.setAutoReconnect(true);
             JDA = jdaBuilder.build();
+            
+            CountListener.init();
         }
     }
 }
