@@ -5,10 +5,14 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
+    public static Logger LOGGER = LoggerFactory.getLogger(Main.class);
     public static JDA JDA;
     
     public static void main(String[] args) {
@@ -25,6 +29,12 @@ public class Main {
             
         CountListener.init();
 
-        System.out.println("Done!");
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        LOGGER.info("Done!");
     }
 }
