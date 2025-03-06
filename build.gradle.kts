@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:5.2.2")
+    implementation("net.dv8tion:JDA:5.3.0")
     implementation("com.openai:openai-java:0.11.3")
 }
 

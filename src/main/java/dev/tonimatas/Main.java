@@ -24,5 +24,7 @@ public class Main {
                 .build();
             
         CountListener.init();
+
+        System.out.println("Done!");
     }
 }
