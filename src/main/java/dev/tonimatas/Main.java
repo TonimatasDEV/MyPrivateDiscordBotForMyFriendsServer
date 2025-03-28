@@ -3,11 +3,11 @@ package dev.tonimatas;
 import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.MemberListener;
 import dev.tonimatas.listeners.SlashCommandListener;
+import dev.tonimatas.schedules.TemporalChannels;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    public static boolean STOP = false;
     public static Logger LOGGER = LoggerFactory.getLogger(Main.class);
     public static JDA JDA;
     
@@ -24,7 +25,6 @@ public class Main {
         if (token.isEmpty()) return;
         
         JDA = JDABuilder.createDefault(token)
-                .disableCache(Arrays.stream(CacheFlag.values()).toList())
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .addEventListeners(new CountListener(), new SlashCommandListener(), new MemberListener())
                 .setAutoReconnect(true)
@@ -35,7 +35,8 @@ public class Main {
         ).queue();
             
         CountListener.init();
-
+        initThreads();
+        
         try {
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
@@ -43,5 +44,9 @@ public class Main {
         }
 
         LOGGER.info("Done!");
+    }
+    
+    public static void initThreads() {
+        new TemporalChannels().start();
     }
 }

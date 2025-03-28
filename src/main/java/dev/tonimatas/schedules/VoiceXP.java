@@ -7,11 +7,9 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import java.util.concurrent.TimeUnit;
 
 public class VoiceXP extends Thread {
-    public static boolean STOP = false;
-    
     @Override
     public void run() {
-        while (!STOP) {
+        while (!Main.STOP) {
             try {
                 TimeUnit.SECONDS.sleep(30);
             } catch (InterruptedException e) {
