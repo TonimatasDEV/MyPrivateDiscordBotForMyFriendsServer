@@ -1,18 +1,22 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta4"
+    id("com.gradleup.shadow") version "9.0.0-beta11"
 }
 
+val jdaVersion: String by extra
+val logbackVersion: String by extra
+val projectVersion: String by extra
+
 group = "dev.tonimatas"
-version = "1.0.0"
+version = projectVersion
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:5.3.1")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation("net.dv8tion:JDA:$jdaVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 }
 
 tasks.jar {
