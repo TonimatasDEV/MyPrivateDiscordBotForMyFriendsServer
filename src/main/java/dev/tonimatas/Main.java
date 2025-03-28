@@ -1,6 +1,7 @@
 package dev.tonimatas;
 
 import dev.tonimatas.listeners.CountListener;
+import dev.tonimatas.listeners.MemberMessages;
 import dev.tonimatas.listeners.SlashCommandListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -25,7 +26,7 @@ public class Main {
         JDA = JDABuilder.createDefault(token)
                 .disableCache(Arrays.stream(CacheFlag.values()).toList())
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
-                .addEventListeners(new CountListener(), new SlashCommandListener())
+                .addEventListeners(new CountListener(), new SlashCommandListener(), new MemberMessages())
                 .setAutoReconnect(true)
                 .build();
         
