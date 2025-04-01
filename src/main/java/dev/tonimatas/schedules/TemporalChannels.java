@@ -6,13 +6,13 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class TemporalChannels extends Thread {
-    private final List<String> channels = new ArrayList<>();
-    
+    private final Queue<String> channels = new ConcurrentLinkedQueue<>();
+
     @Override
     public void run() {
         while (!Main.STOP) {
@@ -23,22 +23,30 @@ public class TemporalChannels extends Thread {
             }
 
             deleteVoidChannels();
-            
+
             Category category = Main.JDA.getCategoryById("1292533360857583697");
-            
+
             if (category == null) continue;
-            
+
             for (Member member : Voice.getMembers("1300577748158386196")) {
                 if (member == null) continue;
 
-                category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel -> {
-                    voiceChannel.getGuild().moveVoiceMember(member, voiceChannel).queue();
-                    channels.add(voiceChannel.getId());
-                });
+                category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel -> 
+                        addChannel(voiceChannel, member));
             }
         }
     }
     
+    private void addChannel(VoiceChannel voiceChannel, Member member) {
+        try {
+            voiceChannel.getGuild().moveVoiceMember(member, voiceChannel).queue(
+                    nothing -> channels.add(voiceChannel.getId()),
+                    throwable -> channels.add(voiceChannel.getId()));
+        } catch (Exception e) {
+            channels.add(voiceChannel.getId());
+        }
+    }
+
     private void deleteVoidChannels() {
         for (String channelId : channels) {
             VoiceChannel voiceChannel = Main.JDA.getVoiceChannelById(channelId);
