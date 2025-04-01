@@ -15,7 +15,10 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:$jdaVersion")
+    implementation("net.dv8tion:JDA:$jdaVersion") {
+        exclude(module = "opus-java")
+    }
+
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 }
 
@@ -26,6 +29,11 @@ tasks.jar {
 
 tasks.shadowJar {
     archiveClassifier.set("")
+
+    minimize {
+        exclude(dependency("ch.qos.logback:logback-classic:.*"))
+    }
+
     manifest {
         attributes("Main-Class" to "dev.tonimatas.Main")
     }
