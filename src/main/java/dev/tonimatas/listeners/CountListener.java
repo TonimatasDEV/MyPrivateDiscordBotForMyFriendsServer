@@ -19,6 +19,8 @@ public class CountListener extends ListenerAdapter {
         Channel channel = event.getChannel();
 
         if (event.getAuthor().isBot()) return;
+        
+        giveTextXP(event);
 
         if (channel.getId().equals("1344403479501996032")) {
             try {
@@ -37,5 +39,9 @@ public class CountListener extends ListenerAdapter {
             event.getMessage().reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa.").queue();
             currentNumber = 0;
         }
+    }
+    
+    private static void giveTextXP(MessageReceivedEvent event) {
+        // TODO
     }
 }
