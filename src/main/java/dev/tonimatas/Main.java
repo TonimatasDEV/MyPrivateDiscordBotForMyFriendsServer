@@ -1,5 +1,6 @@
 package dev.tonimatas;
 
+import dev.tonimatas.config.Configs;
 import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.MemberListener;
 import dev.tonimatas.listeners.SlashCommandListener;
@@ -20,7 +21,9 @@ public class Main {
     public static JDA JDA;
     
     public static void main(String[] args) {
-        String token = Config.getToken();
+        Configs.init();
+
+        String token = Configs.BOT.getValue("token").get();
         
         if (token.isEmpty()) return;
         
