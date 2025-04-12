@@ -1,6 +1,6 @@
 package dev.tonimatas.listeners;
 
-import dev.tonimatas.Config;
+import dev.tonimatas.config.Configs;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -11,7 +11,7 @@ public class CountListener extends ListenerAdapter {
     private static long currentNumber = 0;
     
     public static void init() {
-        currentNumber = Config.getCount();
+        currentNumber = Configs.BOT.getValue("count").toLong();
     }
     
     @Override
@@ -29,7 +29,7 @@ public class CountListener extends ListenerAdapter {
                 if (messageNumber == currentNumber + 1) {
                     event.getMessage().addReaction(Emoji.fromUnicode("✅")).queue();
                     currentNumber++;
-                    Config.setCount(currentNumber);
+                    Configs.BOT.setValue("count", currentNumber);
                     return;
                 }
             } catch (NumberFormatException ignored) {
