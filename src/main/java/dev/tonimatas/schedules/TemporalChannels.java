@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit;
 public class TemporalChannels extends Thread {
     private final Queue<String> channels = new ConcurrentLinkedQueue<>();
 
+    public static void init() {
+        new TemporalChannels().start();
+    }
+
     @Override
     public void run() {
         while (!Main.STOP) {
@@ -31,7 +35,7 @@ public class TemporalChannels extends Thread {
             for (Member member : Voice.getMembers("1300577748158386196")) {
                 if (member == null) continue;
 
-                category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel -> 
+                category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel ->
                         addChannel(voiceChannel, member));
             }
         }
