@@ -4,6 +4,8 @@ import dev.tonimatas.config.Configs;
 import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.MemberListener;
 import dev.tonimatas.listeners.SlashCommandListener;
+import dev.tonimatas.roulette.RouletteSlashCommandsListener;
+import dev.tonimatas.schedules.RouletteManager;
 import dev.tonimatas.schedules.TemporalChannels;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -29,16 +31,17 @@ public class Main {
         
         JDA = JDABuilder.createDefault(token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
-                .addEventListeners(new CountListener(), new SlashCommandListener(), new MemberListener())
+                .addEventListeners(new CountListener(), new SlashCommandListener(), new MemberListener(), new RouletteSlashCommandsListener())
                 .setAutoReconnect(true)
                 .build();
         
         JDA.updateCommands().addCommands(
                 Commands.slash("ping", "Discord Ping! Pong!")
         ).queue();
-            
+
         CountListener.init();
-        initThreads();
+        RouletteManager.init();
+        TemporalChannels.init();
         
         try {
             TimeUnit.SECONDS.sleep(3);
@@ -47,9 +50,5 @@ public class Main {
         }
 
         LOGGER.info("Done!");
-    }
-    
-    public static void initThreads() {
-        new TemporalChannels().start();
     }
 }
