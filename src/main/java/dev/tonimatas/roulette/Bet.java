@@ -24,7 +24,6 @@ public record Bet(String id, long money, BetType type, int value) {
                 text = member.getEffectiveName() + " tu apuesta al " + value + " (" + type + ") no ha ganado esta vez.";
             }
             Getters.getRouletteChannel().sendMessage(text).queue();
-            RouletteManager.bankAccounts.put(id, money * multiplier);
         }
     }
 }
