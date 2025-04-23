@@ -6,6 +6,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 public class RouletteSlashCommandsListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -16,16 +21,16 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
                 OptionMapping type = event.getOption("type");
                 OptionMapping money = event.getOption("money");
                 OptionMapping value = event.getOption("value");
-                
+
                 if (member != null && type != null && money != null && value != null) {
                     BetType betType = BetType.valueOf(type.getAsString());
-                    
+
                     Bet bet = new Bet(member.getId(), money.getAsLong(), betType, value.getAsInt());
 
                     if (RouletteManager.roulette.addBet(bet)) {
-                        // TODO: Send bet accepted message
+                        event.reply("Apuesta aceptada.\nHas apostado **" + money.getAsLong() + "€** al valor **" + value.getAsInt() + "** de tipo **" + betType.name() + "**.").queue();
                     } else {
-                        // TODO: Send incorrect command format message
+                        event.reply("Apuesta rechazada.").setEphemeral(true).queue();
                     }
                 }
             }
@@ -40,15 +45,31 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
             }
 
             case "moneytop" -> {
-                // TODO: Implement me!
+                List<Map.Entry<String, Long>> sortedList = RouletteManager.bankAccounts.entrySet()
+                        .stream()
+                        .sorted((a, b) ->
+                                b.getValue().compareTo(a.getValue()))
+                        .toList();
+                StringBuilder text = new StringBuilder("**Top 5 más ricos:**\n\n");
+                int counter = 0;
+                for (Map.Entry<String, Long> entry : sortedList) {
+                    if (counter >= 5) break;
+                    Member m = event.getGuild().getMemberById(entry.getKey());
+                    String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
+                    text.append((counter + 1))
+                            .append(". ")
+                            .append(name)
+                            .append(" ")
+                            .append(entry.getValue())
+                            .append("€\n");
+                    counter++;
+                }
 
-
-
-                // Ixgal 7658924376856234853245€
-                // DaniPraivet 10000000000€
-                // Dona 1000€
-                // Érika -120€
-                // Nerea -17298364€
+                if (counter == 0) {
+                    event.reply("No hay datos suficientes para mostrar el ranking.").queue();
+                } else {
+                    event.reply(text.toString()).queue();
+                }
             }
         }
     }
