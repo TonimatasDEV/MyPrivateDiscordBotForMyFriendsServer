@@ -51,7 +51,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
                 int counter = 0;
                 for (Map.Entry<String, Long> entry : sortedList) {
                     if (counter >= 5) break;
-                    Member m = Objects.requireNonNull(event.getGuild()).getMemberById(entry.getKey());
+                    Member m = event.getGuild().getMemberById(entry.getKey());
                     String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
                     text.append((counter+1))
                             .append(". ")
