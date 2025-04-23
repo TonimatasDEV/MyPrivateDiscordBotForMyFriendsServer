@@ -23,9 +23,9 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
                     Bet bet = new Bet(member.getId(), money.getAsLong(), betType, value.getAsInt());
 
                     if (RouletteManager.roulette.addBet(bet)) {
-                        // TODO: Send bet accepted message
+                        event.reply("Apuesta aceptada.\nHas apostado **" + money.getAsLong() + "€** al valor **" + value.getAsInt() + "** de tipo **" + betType.name() + "**.").queue();
                     } else {
-                        // TODO: Send incorrect command format message
+                        event.reply("Apuesta rechazada.").setEphemeral(true).queue();
                     }
                 }
             }
