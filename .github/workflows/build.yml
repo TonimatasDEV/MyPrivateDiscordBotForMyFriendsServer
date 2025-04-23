@@ -17,7 +17,7 @@ jobs:
           java-version: 21
           distribution: "temurin"
 
-      - name: Give permissions to Gradle
+      - name: Set Gradle permissions
         run: chmod +x ./gradlew
 
       - name: Build
@@ -25,7 +25,7 @@ jobs:
         with:
           arguments: jar
 
-      - name: Upload a Forge Artifacts
+      - name: Upload Jars
         uses: actions/upload-artifact@v4
         with:
           name: LaResistenzia
