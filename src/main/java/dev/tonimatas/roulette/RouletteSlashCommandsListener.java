@@ -6,6 +6,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 public class RouletteSlashCommandsListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -40,15 +45,33 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
             }
 
             case "moneytop" -> {
-                // TODO: Implement me!
+                List<Map.Entry<String, Long>> sortedList = new ArrayList<>(RouletteManager.bankAccounts.entrySet());
+                sortedList.sort((a,b) -> Long.compare(b.getValue(),a.getValue()));
+                StringBuilder text = new StringBuilder("**Top 5 más ricos:**\n\n");
+                int counter = 0;
+                for (Map.Entry<String, Long> entry : sortedList) {
+                    if (counter >= 5) break;
+                    Member m = Objects.requireNonNull(event.getGuild()).getMemberById(entry.getKey());
+                    String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
+                    text.append((counter+1))
+                            .append(". ")
+                            .append(name)
+                            .append(" ")
+                            .append(entry.getValue())
+                            .append("€\n");
+                    counter++;
+                }
 
-
-
-                // Ixgal 7658924376856234853245€
-                // DaniPraivet 10000000000€
-                // Dona 1000€
-                // Érika -120€
-                // Nerea -17298364€
+                if (counter == 0) {
+                    event.reply("No hay datos suficientes para mostrar el ranking.").queue();
+                } else {
+                    event.reply(text.toString()).queue();
+                }
+                // 1. Ixgal 7658924376856234853245€
+                // 2. DaniPraivet 10000000000€
+                // 3. Dona 1000€
+                // 4. Érika -120€
+                // 5. Nerea -17298364€
             }
         }
     }
