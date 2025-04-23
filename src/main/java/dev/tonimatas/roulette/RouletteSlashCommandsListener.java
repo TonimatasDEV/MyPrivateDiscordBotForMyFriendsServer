@@ -67,11 +67,6 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
                 } else {
                     event.reply(text.toString()).queue();
                 }
-                // 1. Ixgal 7658924376856234853245€
-                // 2. DaniPraivet 10000000000€
-                // 3. Dona 1000€
-                // 4. Érika -120€
-                // 5. Nerea -17298364€
             }
         }
     }
