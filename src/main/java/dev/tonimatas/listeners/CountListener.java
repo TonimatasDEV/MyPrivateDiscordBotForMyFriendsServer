@@ -1,6 +1,7 @@
 package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.Configs;
+import dev.tonimatas.utils.Getters;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,7 +23,7 @@ public class CountListener extends ListenerAdapter {
         
         giveTextXP(event);
 
-        if (channel.getId().equals("1344403479501996032")) {
+        if (channel.equals(Getters.getCountChannel())) {
             try {
                 long messageNumber = Long.parseLong(event.getMessage().getContentRaw());
                 
