@@ -21,10 +21,10 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
                 OptionMapping type = event.getOption("type");
                 OptionMapping money = event.getOption("money");
                 OptionMapping value = event.getOption("value");
-                
+
                 if (member != null && type != null && money != null && value != null) {
                     BetType betType = BetType.valueOf(type.getAsString());
-                    
+
                     Bet bet = new Bet(member.getId(), money.getAsLong(), betType, value.getAsInt());
 
                     if (RouletteManager.roulette.addBet(bet)) {
@@ -45,15 +45,18 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
             }
 
             case "moneytop" -> {
-                List<Map.Entry<String, Long>> sortedList = new ArrayList<>(RouletteManager.bankAccounts.entrySet());
-                sortedList.sort((a,b) -> Long.compare(b.getValue(),a.getValue()));
+                List<Map.Entry<String, Long>> sortedList = RouletteManager.bankAccounts.entrySet()
+                        .stream()
+                        .sorted((a, b) ->
+                                b.getValue().compareTo(a.getValue()))
+                        .toList();
                 StringBuilder text = new StringBuilder("**Top 5 más ricos:**\n\n");
                 int counter = 0;
                 for (Map.Entry<String, Long> entry : sortedList) {
                     if (counter >= 5) break;
                     Member m = event.getGuild().getMemberById(entry.getKey());
                     String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
-                    text.append((counter+1))
+                    text.append((counter + 1))
                             .append(". ")
                             .append(name)
                             .append(" ")
