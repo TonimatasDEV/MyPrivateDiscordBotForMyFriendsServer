@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class Voice {
+    @Deprecated
     public static List<Member> getMembers(String channelId) {
         VoiceChannel channel = Main.JDA.getVoiceChannelById(channelId);
 

@@ -1,10 +1,13 @@
 package dev.tonimatas;
 
 import dev.tonimatas.config.Configs;
-import dev.tonimatas.listeners.TasksListener;
+import dev.tonimatas.listeners.AutoRoleListener;
+import dev.tonimatas.listeners.CountListener;
+import dev.tonimatas.listeners.JoinLeaveMessageListener;
 import dev.tonimatas.listeners.SlashCommandListener;
 import dev.tonimatas.roulette.RouletteSlashCommandsListener;
 import dev.tonimatas.schedules.RouletteManager;
+import dev.tonimatas.tasks.TemporalChannelTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -13,12 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static boolean STOP = false;
-    public static Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    @Deprecated
     public static JDA JDA;
+    @Deprecated
+    public static boolean STOP = false;
     
     public static void main(String[] args) {
         Configs.init();
@@ -27,24 +31,20 @@ public class Main {
         
         if (token.isEmpty()) return;
         
-        JDA = JDABuilder.createDefault(token)
+        JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
-                .addEventListeners(new TasksListener(), new SlashCommandListener(), new RouletteSlashCommandsListener())
+                .addEventListeners(new SlashCommandListener(), new AutoRoleListener(), new CountListener(), 
+                        new RouletteSlashCommandsListener(), new JoinLeaveMessageListener())
                 .setAutoReconnect(true)
                 .build();
-        
-        JDA.updateCommands().addCommands(
-                Commands.slash("ping", "Discord Ping! Pong!")
-        ).queue();
 
-        TaskManager.init();
-        RouletteManager.init(); // TODO: Make it a task
+        jda.updateCommands().addCommands(Commands.slash("ping", "Discord Ping! Pong!")).queue();
+
+        JDA = jda; // TODO: Remove
+
+        new TemporalChannelTask(jda).run();
         
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        RouletteManager.init(); // TODO: Improve it
 
         LOGGER.info("Done!");
     }

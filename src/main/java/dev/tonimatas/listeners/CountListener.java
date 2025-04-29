@@ -1,24 +1,29 @@
-package dev.tonimatas.tasks;
+package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.Configs;
-import dev.tonimatas.utils.Getters;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
-public class CountTask {
+public class CountListener extends ListenerAdapter {
+    private static final String COUNT_CHANNEL_ID = "1344403479501996032";
     private long currentNumber;
 
-    public CountTask() {
+    public CountListener() {
         currentNumber = Configs.BOT.getValue("count").toLong();
     }
     
-    public void checkNewNumber(String channelId, Message message) {
+    @Override
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        Message message = event.getMessage();
+        String channelId = event.getChannel().getId();
+        
         if (message.getAuthor().isBot()) return;
-        
-        TextChannel channel = Getters.getCountChannel();
-        
-        if (!channelId.equals(channel.getId())) {
+
+
+        if (!channelId.equals(COUNT_CHANNEL_ID)) {
             return;
         }
 
