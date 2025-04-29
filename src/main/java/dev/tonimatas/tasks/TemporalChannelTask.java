@@ -16,6 +16,7 @@ public class TemporalChannelTask implements Runnable {
     private final Queue<String> channels = new ConcurrentLinkedQueue<>();
     private final JDA jda;
     
+    // TODO: Save information of created channels to recovery channels Queue
     public TemporalChannelTask(JDA jda) {
         this.jda = jda;
     }
@@ -53,6 +54,7 @@ public class TemporalChannelTask implements Runnable {
         }
     }
 
+    // TODO: Wait to delete recently created channel
     private void deleteVoidChannels(JDA jda) {
         for (String channelId : channels) {
             VoiceChannel voiceChannel = jda.getVoiceChannelById(channelId);

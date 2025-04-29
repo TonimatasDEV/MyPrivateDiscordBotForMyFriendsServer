@@ -43,8 +43,7 @@ public class Main {
         JDA = jda; // TODO: Remove
 
         new TemporalChannelTask(jda).run();
-        
-        RouletteManager.init(); // TODO: Improve it
+        RouletteManager.init(); // TODO: Make it runnable
 
         LOGGER.info("Done!");
     }

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.concurrent.TimeUnit;
 
+// TODO: Finish it?
 public class VoiceXP extends Thread {
     @Override
     public void run() {
