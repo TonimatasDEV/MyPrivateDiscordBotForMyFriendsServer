@@ -1,29 +1,33 @@
 package dev.tonimatas.tasks;
 
-import dev.tonimatas.Main;
+import dev.tonimatas.config.Configs;
 import dev.tonimatas.utils.Voice;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
+import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class TemporalChannelTask implements Runnable {
     private static final String CATEGORY_ID = "1292533360857583697";
-    private final Queue<String> channels = new ConcurrentLinkedQueue<>();
+    private static final String DATA_KEY = "temporalChannels";
+    private final Queue<String> channels;
     private final JDA jda;
     
-    // TODO: Save information of created channels to recovery channels Queue
     public TemporalChannelTask(JDA jda) {
         this.jda = jda;
+        this.channels = new ConcurrentLinkedQueue<>();
+        load();
     }
 
     @Override
     public void run() {
-        while (!Main.STOP) {
+        for (;;) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
@@ -40,6 +44,8 @@ public class TemporalChannelTask implements Runnable {
                 if (category == null) continue;
 
                 category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel -> addChannel(voiceChannel, member));
+                
+                save();
             }
         }
     }
@@ -54,7 +60,6 @@ public class TemporalChannelTask implements Runnable {
         }
     }
 
-    // TODO: Wait to delete recently created channel
     private void deleteVoidChannels(JDA jda) {
         for (String channelId : channels) {
             VoiceChannel voiceChannel = jda.getVoiceChannelById(channelId);
@@ -62,10 +67,21 @@ public class TemporalChannelTask implements Runnable {
                 channels.remove(channelId);
                 continue;
             }
+            
+            OffsetDateTime createdAnd5Seconds = voiceChannel.getTimeCreated().plusSeconds(5);
 
-            if (Voice.getMembers(channelId).isEmpty()) {
+            if (Voice.getMembers(channelId).isEmpty() && createdAnd5Seconds.isBefore(OffsetDateTime.now())) {
                 voiceChannel.delete().queue(consumer -> channels.remove(channelId));
             }
         }
+    }
+    
+    private void load() {
+        String[] storedChannels = Configs.DATA.getValue(DATA_KEY).get().split(",");
+        this.channels.addAll(Arrays.asList(storedChannels));
+    }
+    
+    private void save() {
+        Configs.DATA.setValue(DATA_KEY, String.join(",", channels));
     }
 }
