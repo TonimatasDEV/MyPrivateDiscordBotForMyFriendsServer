@@ -5,9 +5,11 @@ import java.util.Map;
 public class Configs {
     public static ConfigFile BOT;
     public static ConfigFile XP;
+    public static ConfigFile DATA;
 
-    public static void init() {
+    static {
         BOT = new ConfigFile("bot", Map.of("token", "", "count", "0"));
         XP = new ConfigFile("xp");
+        DATA = new ConfigFile("data");
     }
 }

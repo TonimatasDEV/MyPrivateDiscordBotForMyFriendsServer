@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+// TODO: Add stop method.
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     @Deprecated
@@ -25,8 +26,6 @@ public class Main {
     public static boolean STOP = false;
     
     public static void main(String[] args) {
-        Configs.init();
-
         String token = Configs.BOT.getValue("token").get();
         
         if (token.isEmpty()) return;
