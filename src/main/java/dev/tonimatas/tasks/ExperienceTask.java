@@ -1,23 +1,30 @@
-package dev.tonimatas.schedules;
+package dev.tonimatas.tasks;
 
 import dev.tonimatas.Main;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 
 import java.util.concurrent.TimeUnit;
 
 // TODO: Finish it?
-public class VoiceXP extends Thread {
+public class ExperienceTask implements Runnable {
+    private final JDA jda;
+    
+    public ExperienceTask(JDA jda) {
+        this.jda = jda;
+    }
+    
     @Override
     public void run() {
-        while (!Main.STOP) {
+        for (;;) {
             try {
                 TimeUnit.SECONDS.sleep(30);
             } catch (InterruptedException e) {
-                System.out.println();
+                continue;
             }
 
-            Guild guild = Main.JDA.getGuildById("1166787850235289693");
+            Guild guild = jda.getGuildById("1166787850235289693");
             
             if (guild == null) continue;
             
