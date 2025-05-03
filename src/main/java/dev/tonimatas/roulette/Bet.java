@@ -1,6 +1,6 @@
 package dev.tonimatas.roulette;
 
-import dev.tonimatas.schedules.RouletteManager;
+import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.utils.Getters;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -11,9 +11,9 @@ public record Bet(String id, long money, BetType type, int value) {
 
     public void giveReward(int winNumber) {
         int multiplier = type.getMultiplier(value, winNumber);
-        long currentMoney = RouletteManager.bankAccounts.getOrDefault(id, 0L);
+        long currentMoney = RouletteTask.bankAccounts.getOrDefault(id, 0L);
         long profit = money * multiplier;
-        RouletteManager.bankAccounts.put(id, currentMoney + profit);
+        RouletteTask.bankAccounts.put(id, currentMoney + profit);
 
         Member member = Getters.getGuild().getMemberById(id);
         if (member != null) {

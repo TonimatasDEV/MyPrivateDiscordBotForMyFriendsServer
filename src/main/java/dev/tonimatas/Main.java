@@ -6,7 +6,7 @@ import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.JoinLeaveMessageListener;
 import dev.tonimatas.listeners.SlashCommandListener;
 import dev.tonimatas.roulette.RouletteSlashCommandsListener;
-import dev.tonimatas.schedules.RouletteManager;
+import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.tasks.TemporalChannelTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -15,15 +15,14 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.util.*;
 
 // TODO: Add stop method.
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final List<Thread> threads = new ArrayList<>();
     @Deprecated
     public static JDA JDA;
-    @Deprecated
-    public static boolean STOP = false;
     
     public static void main(String[] args) {
         String token = Configs.BOT.getValue("token").get();
@@ -41,9 +40,16 @@ public class Main {
 
         JDA = jda; // TODO: Remove
 
-        new TemporalChannelTask(jda).run();
-        RouletteManager.init(); // TODO: Make it runnable
+        registerTask(new TemporalChannelTask(jda));
+        registerTask(new RouletteTask());
+        //registerTask(new ExperienceTask());
 
         LOGGER.info("Done!");
+    }
+    
+    private static void registerTask(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        threads.add(thread);
+        thread.start();
     }
 }

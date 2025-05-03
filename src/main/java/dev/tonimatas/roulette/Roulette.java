@@ -1,6 +1,6 @@
 package dev.tonimatas.roulette;
 
-import dev.tonimatas.schedules.RouletteManager;
+import dev.tonimatas.tasks.RouletteTask;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class Roulette {
                 bet.giveReward(winner);
             }
 
-            RouletteManager.saveMoney();
+            RouletteTask.saveMoney();
             next = TimeUnit.MINUTES.toSeconds(5);
         } else {
             if (!bets.isEmpty()) {

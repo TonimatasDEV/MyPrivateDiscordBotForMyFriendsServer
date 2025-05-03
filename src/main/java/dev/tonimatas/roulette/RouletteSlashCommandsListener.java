@@ -1,15 +1,13 @@
 package dev.tonimatas.roulette;
 
-import dev.tonimatas.schedules.RouletteManager;
+import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class RouletteSlashCommandsListener extends ListenerAdapter {
     @Override
@@ -27,7 +25,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
 
                     Bet bet = new Bet(member.getId(), money.getAsLong(), betType, value.getAsInt());
 
-                    if (RouletteManager.roulette.addBet(bet)) {
+                    if (RouletteTask.roulette.addBet(bet)) {
                         event.reply("Apuesta aceptada.\nHas apostado **" + money.getAsLong() + "€** al valor **" + value.getAsInt() + "** de tipo **" + betType.name() + "**.").queue();
                     } else {
                         event.reply("Apuesta rechazada.").setEphemeral(true).queue();
@@ -37,7 +35,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
 
             case "money" -> {
                 if (member != null) {
-                    long money = RouletteManager.bankAccounts.get(member.getId());
+                    long money = RouletteTask.bankAccounts.get(member.getId());
                     event.reply("Tienes " + money + "€.").queue();
                 } else {
                     event.reply("Error obteniendo tú dinero.").setEphemeral(true).queue();
@@ -45,7 +43,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
             }
 
             case "moneytop" -> {
-                List<Map.Entry<String, Long>> sortedList = RouletteManager.bankAccounts.entrySet()
+                List<Map.Entry<String, Long>> sortedList = RouletteTask.bankAccounts.entrySet()
                         .stream()
                         .sorted((a, b) ->
                                 b.getValue().compareTo(a.getValue()))
