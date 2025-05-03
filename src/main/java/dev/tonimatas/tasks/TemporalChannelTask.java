@@ -1,7 +1,6 @@
 package dev.tonimatas.tasks;
 
 import dev.tonimatas.config.Configs;
-import dev.tonimatas.utils.Voice;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
@@ -9,6 +8,8 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class TemporalChannelTask implements Runnable {
 
             deleteVoidChannels(jda);
 
-            for (Member member : Voice.getMembers("1300577748158386196")) {
+            for (Member member : getMembers("1300577748158386196")) {
                 if (member == null) continue;
 
                 Category category = jda.getCategoryById(CATEGORY_ID);
@@ -70,10 +71,18 @@ public class TemporalChannelTask implements Runnable {
             
             OffsetDateTime createdAnd5Seconds = voiceChannel.getTimeCreated().plusSeconds(5);
 
-            if (Voice.getMembers(channelId).isEmpty() && createdAnd5Seconds.isBefore(OffsetDateTime.now())) {
+            if (getMembers(channelId).isEmpty() && createdAnd5Seconds.isBefore(OffsetDateTime.now())) {
                 voiceChannel.delete().queue(consumer -> channels.remove(channelId));
             }
         }
+    }
+
+    private List<Member> getMembers(String channelId) {
+        VoiceChannel channel = jda.getVoiceChannelById(channelId);
+
+        if (channel == null) return Collections.emptyList();
+
+        return channel.getMembers();
     }
     
     private void load() {
