@@ -1,5 +1,7 @@
-package dev.tonimatas.roulette;
+package dev.tonimatas.listeners;
 
+import dev.tonimatas.roulette.Bet;
+import dev.tonimatas.roulette.BetType;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -10,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RouletteSlashCommandsListener extends ListenerAdapter {
+    private final RouletteTask rouletteTask;
+    
+    public RouletteSlashCommandsListener(RouletteTask rouletteTask) {
+        this.rouletteTask = rouletteTask;
+    }
+    
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
@@ -25,7 +33,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
 
                     Bet bet = new Bet(member.getId(), money.getAsLong(), betType, value.getAsInt());
 
-                    if (RouletteTask.roulette.addBet(bet)) {
+                    if (rouletteTask.get().addBet(bet)) {
                         event.reply("Apuesta aceptada.\nHas apostado **" + money.getAsLong() + "€** al valor **" + value.getAsInt() + "** de tipo **" + betType.name() + "**.").queue();
                     } else {
                         event.reply("Apuesta rechazada.").setEphemeral(true).queue();
@@ -35,7 +43,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
 
             case "money" -> {
                 if (member != null) {
-                    long money = RouletteTask.bankAccounts.get(member.getId());
+                    long money = rouletteTask.getMoney(member.getId());
                     event.reply("Tienes " + money + "€.").queue();
                 } else {
                     event.reply("Error obteniendo tú dinero.").setEphemeral(true).queue();
@@ -43,7 +51,7 @@ public class RouletteSlashCommandsListener extends ListenerAdapter {
             }
 
             case "moneytop" -> {
-                List<Map.Entry<String, Long>> sortedList = RouletteTask.bankAccounts.entrySet()
+                List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
                         .stream()
                         .sorted((a, b) ->
                                 b.getValue().compareTo(a.getValue()))

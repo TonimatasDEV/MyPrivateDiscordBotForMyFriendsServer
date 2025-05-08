@@ -5,7 +5,7 @@ import dev.tonimatas.listeners.AutoRoleListener;
 import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.JoinLeaveMessageListener;
 import dev.tonimatas.listeners.SlashCommandListener;
-import dev.tonimatas.roulette.RouletteSlashCommandsListener;
+import dev.tonimatas.listeners.RouletteSlashCommandsListener;
 import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.tasks.TemporalChannelTask;
 import net.dv8tion.jda.api.JDA;
@@ -31,17 +31,20 @@ public class Main {
         
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
-                .addEventListeners(new SlashCommandListener(), new AutoRoleListener(), new CountListener(), 
-                        new RouletteSlashCommandsListener(), new JoinLeaveMessageListener())
                 .setAutoReconnect(true)
                 .build();
+        
+        RouletteTask rouletteTask = new RouletteTask(jda);
+        
+        jda.addEventListener(new RouletteSlashCommandsListener(rouletteTask), new SlashCommandListener(), 
+                new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener());
 
         jda.updateCommands().addCommands(Commands.slash("ping", "Discord Ping! Pong!")).queue();
 
         JDA = jda; // TODO: Remove
 
         registerTask(new TemporalChannelTask(jda));
-        registerTask(new RouletteTask());
+        registerTask(rouletteTask);
         //registerTask(new ExperienceTask());
 
         LOGGER.info("Done!");

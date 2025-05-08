@@ -1,6 +1,7 @@
 package dev.tonimatas.roulette;
 
 import dev.tonimatas.tasks.RouletteTask;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -12,10 +13,12 @@ public class Roulette {
     private static final Random RAND = new SecureRandom();
     private long next;
     private final List<Bet> bets;
+    private final RouletteTask rouletteTask;
 
-    public Roulette() {
-        next = TimeUnit.MINUTES.toSeconds(5);
-        bets = new ArrayList<>();
+    public Roulette(RouletteTask rouletteTask) {
+        this.next = TimeUnit.MINUTES.toSeconds(5);
+        this.bets = new ArrayList<>();
+        this.rouletteTask = rouletteTask;
     }
 
     public boolean addBet(Bet bet) {
@@ -27,7 +30,7 @@ public class Roulette {
         return false;
     }
     
-    public void tick() {
+    public void update() {
         if (next <= 0) {
 
             //  TODO: Discord description update
@@ -35,15 +38,42 @@ public class Roulette {
             int winner = RAND.nextInt(0, 37);
 
             for (Bet bet : bets) {
-                bet.giveReward(winner);
+                giveReward(bet, winner);
             }
 
-            RouletteTask.saveMoney();
-            next = TimeUnit.MINUTES.toSeconds(5);
+            rouletteTask.saveMoney();
+            resetTimer();
         } else {
             if (!bets.isEmpty()) {
                 next--;
+            } else {
+                resetTimer();
             }
         }
+    }
+    
+    private void giveReward(Bet bet, int winner) {
+        Member member = rouletteTask.getGuild().getMemberById(bet.id());
+
+        if (member == null) return;
+
+        long currentMoney = rouletteTask.getMoney(bet.id());
+        long profit = bet.getProfit(winner);
+
+        rouletteTask.setMoney(bet.id(), currentMoney + profit);
+
+        String text;
+
+        if (profit > 0) {
+            text = member.getEffectiveName() + " has ganado " + profit + "€ con tu apuesta al " + bet.value() + " (" + bet.type() + ").";
+        } else {
+            text = member.getEffectiveName() + " tu apuesta al " + bet.value() + " (" + bet.type() + ") no ha ganado esta vez.\nHas perdido " + bet.money() + ".";
+        }
+
+        rouletteTask.getRouletteChannel().sendMessage(text).queue();
+    }
+    
+    private void resetTimer() {
+        next = TimeUnit.MINUTES.toSeconds(5);
     }
 }
