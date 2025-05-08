@@ -1,6 +1,5 @@
 package dev.tonimatas.tasks;
 
-import dev.tonimatas.Main;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
