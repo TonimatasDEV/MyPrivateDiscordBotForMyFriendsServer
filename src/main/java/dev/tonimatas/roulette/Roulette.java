@@ -32,8 +32,7 @@ public class Roulette {
     
     public void update() {
         if (next <= 0) {
-
-            //  TODO: Discord description update
+            updateDiscordChannel();
 
             int winner = RAND.nextInt(0, 37);
 
@@ -50,6 +49,10 @@ public class Roulette {
                 resetTimer();
             }
         }
+    }
+    
+    private void updateDiscordChannel() {
+        // TODO: Implement me
     }
     
     private void giveReward(Bet bet, int winner) {
