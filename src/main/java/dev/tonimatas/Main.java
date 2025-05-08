@@ -21,8 +21,6 @@ import java.util.*;
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
     private static final List<Thread> threads = new ArrayList<>();
-    @Deprecated
-    public static JDA JDA;
     
     public static void main(String[] args) {
         String token = Configs.BOT.getValue("token").get();
@@ -40,8 +38,6 @@ public class Main {
                 new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener());
 
         jda.updateCommands().addCommands(Commands.slash("ping", "Discord Ping! Pong!")).queue();
-
-        JDA = jda; // TODO: Remove
 
         registerTask(new TemporalChannelTask(jda));
         registerTask(rouletteTask);
