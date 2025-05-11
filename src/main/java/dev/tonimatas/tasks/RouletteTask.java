@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class RouletteTask implements Runnable {
-    private static final String ROULETTE_CHANNEL = "1344403446316531853";
-    private static final String GUILD_ID = "1166787850235289693";
+    private static final String ROULETTE_CHANNEL = "1371077395141885972";
+    private static final String GUILD_ID = "1371074572786597960";
     private final Map<String, Long> bank = new HashMap<>();
     private final Roulette roulette;
     private final JDA jda;

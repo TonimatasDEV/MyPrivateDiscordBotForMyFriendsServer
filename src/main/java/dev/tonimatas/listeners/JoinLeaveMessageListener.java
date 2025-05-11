@@ -15,7 +15,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
         TextChannel channel = event.getGuild().getTextChannelById(CHANNEL_ID);
 
         if (channel != null) {
-            channel.sendMessageFormat("Hola %s, bienvenido al servidor de La Resistenzia. ¡Ya somos %s!", event.getUser().getAsMention(), memberCount).queue();
+            channel.sendMessageFormat("Hola %s, bienvenido a nuestro servidor. ¡Ya somos %s!", event.getUser().getAsMention(), memberCount).queue();
         }
     }
 
@@ -24,7 +24,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
         TextChannel channel = event.getGuild().getTextChannelById(CHANNEL_ID);
 
         if (channel != null) {
-            channel.sendMessageFormat("La Resistenzia disminuye. Nuestro soldado %s a caido.", event.getUser().getName()).queue();
+            channel.sendMessageFormat("%s Se ha salido del servidor.", event.getUser().getName()).queue();
         }
     }
 }

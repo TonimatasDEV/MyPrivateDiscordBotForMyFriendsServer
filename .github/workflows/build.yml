@@ -28,5 +28,5 @@ jobs:
       - name: Upload Jars
         uses: actions/upload-artifact@v4
         with:
-          name: LaResistenzia
+          name: MyPrivateDiscordBotForMyFriendsServer
           path: build/libs/**.jar

@@ -23,7 +23,7 @@ public class ExperienceTask implements Runnable {
                 continue;
             }
 
-            Guild guild = jda.getGuildById("1166787850235289693");
+            Guild guild = jda.getGuildById("1371074572786597960");
             
             if (guild == null) continue;
             

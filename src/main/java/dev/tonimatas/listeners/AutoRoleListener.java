@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class AutoRoleListener extends ListenerAdapter {
-    private static final String USER_ROLE_ID = "1276355544873173116";
-    private static final String BOT_ROLE_ID = "1276514624631476244";
+    private static final String USER_ROLE_ID = "1371074867423875112";
+    private static final String BOT_ROLE_ID = "1371077723685912697";
     
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {

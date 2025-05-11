@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 public class CountListener extends ListenerAdapter {
-    private static final String COUNT_CHANNEL_ID = "1344403479501996032";
+    private static final String COUNT_CHANNEL_ID = "1371077663812222976";
     private long currentNumber;
 
     public CountListener() {

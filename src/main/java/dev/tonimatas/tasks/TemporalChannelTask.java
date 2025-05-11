@@ -15,7 +15,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class TemporalChannelTask implements Runnable {
-    private static final String CATEGORY_ID = "1292533360857583697";
+    private static final String CATEGORY_ID = "1371077395141885972";
+    private static final String CREATE_ID = "1371077321817198704";
     private static final String DATA_KEY = "temporalChannels";
     private final Queue<String> channels;
     private final JDA jda;
@@ -37,7 +38,7 @@ public class TemporalChannelTask implements Runnable {
 
             deleteVoidChannels(jda);
 
-            for (Member member : getMembers("1300577748158386196")) {
+            for (Member member : getMembers(CREATE_ID)) {
                 if (member == null) continue;
 
                 Category category = jda.getCategoryById(CATEGORY_ID);

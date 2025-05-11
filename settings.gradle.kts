@@ -1,2 +1,2 @@
-rootProject.name = "LaResistenzia"
+rootProject.name = "MyPrivateDiscordBotForMyFriendsServer"
 
