@@ -88,7 +88,7 @@ public class TemporalChannelTask implements Runnable {
     
     private void load() {
         String configValue = Configs.DATA.getValue(DATA_KEY).get();
-        if (configValue == null) return;
+        if (configValue == null || configValue.isEmpty()) return;
         String[] storedChannels = configValue.split(",");
         this.channels.addAll(Arrays.asList(storedChannels));
     }
