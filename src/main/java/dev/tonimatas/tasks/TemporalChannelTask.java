@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class TemporalChannelTask implements Runnable {
-    private static final String CATEGORY_ID = "1371077395141885972";
+    private static final String CATEGORY_ID = "1371074573449302209";
     private static final String CREATE_ID = "1371077321817198704";
     private static final String DATA_KEY = "temporalChannels";
     private final Queue<String> channels;
@@ -87,7 +87,9 @@ public class TemporalChannelTask implements Runnable {
     }
     
     private void load() {
-        String[] storedChannels = Configs.DATA.getValue(DATA_KEY).get().split(",");
+        String configValue = Configs.DATA.getValue(DATA_KEY).get();
+        if (configValue == null) return;
+        String[] storedChannels = configValue.split(",");
         this.channels.addAll(Arrays.asList(storedChannels));
     }
     

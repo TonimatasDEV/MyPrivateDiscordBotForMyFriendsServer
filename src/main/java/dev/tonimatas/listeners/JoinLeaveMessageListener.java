@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class JoinLeaveMessageListener extends ListenerAdapter {
-    private static final String CHANNEL_ID = "1276330253052018800";
+    private static final String CHANNEL_ID = "1371077003528241253";
     
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
