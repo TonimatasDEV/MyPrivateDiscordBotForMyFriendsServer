@@ -39,6 +39,12 @@ public class Main {
 
         jda.updateCommands().addCommands(Commands.slash("ping", "Discord Ping! Pong!")).queue();
 
+        try {
+            jda.awaitReady();
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Error initializing JDA!", e);
+        }
+
         registerTask(new TemporalChannelTask(jda));
         registerTask(rouletteTask);
         //registerTask(new ExperienceTask());
