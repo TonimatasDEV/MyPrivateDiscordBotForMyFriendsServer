@@ -67,13 +67,17 @@ public class TemporalChannelTask implements Runnable {
             VoiceChannel voiceChannel = jda.getVoiceChannelById(channelId);
             if (voiceChannel == null) {
                 channels.remove(channelId);
+                save();
                 continue;
             }
             
             OffsetDateTime createdAnd5Seconds = voiceChannel.getTimeCreated().plusSeconds(5);
 
             if (getMembers(channelId).isEmpty() && createdAnd5Seconds.isBefore(OffsetDateTime.now())) {
-                voiceChannel.delete().queue(consumer -> channels.remove(channelId));
+                voiceChannel.delete().queue(consumer -> {
+                    channels.remove(channelId);
+                    save();
+                });
             }
         }
     }
