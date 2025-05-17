@@ -5,7 +5,7 @@ import dev.tonimatas.listeners.AutoRoleListener;
 import dev.tonimatas.listeners.CountListener;
 import dev.tonimatas.listeners.JoinLeaveMessageListener;
 import dev.tonimatas.listeners.SlashCommandListener;
-import dev.tonimatas.listeners.RouletteSlashCommandsListener;
+import dev.tonimatas.listeners.RouletteListener;
 import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.tasks.TemporalChannelTask;
 import net.dv8tion.jda.api.JDA;
@@ -34,10 +34,14 @@ public class Main {
         
         RouletteTask rouletteTask = new RouletteTask(jda);
         
-        jda.addEventListener(new RouletteSlashCommandsListener(rouletteTask), new SlashCommandListener(), 
+        jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(), 
                 new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener());
 
-        jda.updateCommands().addCommands(Commands.slash("ping", "Discord Ping! Pong!")).queue();
+        jda.updateCommands()
+                .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
+                .addCommands(Commands.slash("bet", "Make a bet on the roulette!"))
+                .queue();
+        
 
         try {
             jda.awaitReady();
