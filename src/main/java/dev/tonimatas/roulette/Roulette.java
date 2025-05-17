@@ -1,5 +1,6 @@
 package dev.tonimatas.roulette;
 
+import dev.tonimatas.roulette.bets.Bet;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -21,19 +22,12 @@ public class Roulette {
         this.rouletteTask = rouletteTask;
     }
 
-    public boolean addBet(Bet bet) {
-        if (bet.isValid()) {
-            bets.add(bet);
-            return true;
-        }
-
-        return false;
+    public void addBet(Bet bet) {
+        bets.add(bet);
     }
     
     public void update() {
         if (next <= 0) {
-            updateDiscordChannel();
-
             int winner = RAND.nextInt(0, 37);
 
             for (Bet bet : bets) {
@@ -56,21 +50,21 @@ public class Roulette {
     }
     
     private void giveReward(Bet bet, int winner) {
-        Member member = rouletteTask.getGuild().getMemberById(bet.id());
+        Member member = rouletteTask.getGuild().getMemberById(bet.getId());
 
         if (member == null) return;
 
-        long currentMoney = rouletteTask.getMoney(bet.id());
-        long profit = bet.getProfit(winner);
+        long currentMoney = rouletteTask.getMoney(bet.getId());
+        long reward = bet.getReward(winner);
 
-        rouletteTask.setMoney(bet.id(), currentMoney + profit);
+        rouletteTask.setMoney(bet.getId(), currentMoney + reward);
 
         String text;
 
-        if (profit > 0) {
-            text = member.getEffectiveName() + " has ganado " + profit + "€ con tu apuesta al " + bet.value() + " (" + bet.type() + ").";
+        if (reward > 0) {
+            text = member.getEffectiveName() + " has ganado " + reward + "€ con tu apuesta"; // al " + bet.value() + " (" + bet.type() + ").";
         } else {
-            text = member.getEffectiveName() + " tu apuesta al " + bet.value() + " (" + bet.type() + ") no ha ganado esta vez.\nHas perdido " + bet.money() + ".";
+            text = member.getEffectiveName() + " tu apuesta al " + /*bet.value() + " (" + bet.type() + ")*/ "no ha ganado esta vez.\nHas perdido " + bet.getMoney() + ".";
         }
 
         rouletteTask.getRouletteChannel().sendMessage(text).queue();
