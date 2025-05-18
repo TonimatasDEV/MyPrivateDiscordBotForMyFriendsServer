@@ -5,6 +5,7 @@ import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -42,6 +43,7 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .queue();
         
+        jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
 
         try {
             jda.awaitReady();
