@@ -1,13 +1,8 @@
 package dev.tonimatas;
 
 import dev.tonimatas.config.Configs;
-import dev.tonimatas.listeners.AutoRoleListener;
-import dev.tonimatas.listeners.CountListener;
-import dev.tonimatas.listeners.JoinLeaveMessageListener;
-import dev.tonimatas.listeners.SlashCommandListener;
-import dev.tonimatas.listeners.RouletteListener;
+import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
-import dev.tonimatas.tasks.TemporalChannelTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -15,7 +10,9 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 // TODO: Add stop method.
 public class Main {
@@ -34,8 +31,9 @@ public class Main {
         
         RouletteTask rouletteTask = new RouletteTask(jda);
         
-        jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(), 
-                new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener());
+        jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
+                new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener(),
+                new TemporalChannelListener());
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
@@ -49,7 +47,6 @@ public class Main {
             throw new RuntimeException("Error initializing JDA!", e);
         }
 
-        registerTask(new TemporalChannelTask(jda));
         registerTask(rouletteTask);
         //registerTask(new ExperienceTask());
 
