@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.slf4j.LoggerFactory;
 
 public class TemporalChannelListener extends ListenerAdapter {
     private static final String CATEGORY_ID = "1371074573449302209";
@@ -30,8 +29,6 @@ public class TemporalChannelListener extends ListenerAdapter {
             VoiceChannel voice = left.asVoiceChannel();
 
             if (voice.getId().equals(CREATE_ID)) return;
-
-            LoggerFactory.getLogger(TemporalChannelListener.class).info("{} | {}", voice.getId(), voice.getMembers().isEmpty());
             
             if (voice.getMembers().isEmpty()) {
                 left.delete().queue();
