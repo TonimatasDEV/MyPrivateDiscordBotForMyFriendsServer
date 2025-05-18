@@ -5,6 +5,7 @@ import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
@@ -37,7 +38,8 @@ public class Main {
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
-                .addCommands(Commands.slash("bet", "Make a bet on the roulette!"))
+                .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
+                        .setContexts(InteractionContextType.GUILD))
                 .queue();
         
 
