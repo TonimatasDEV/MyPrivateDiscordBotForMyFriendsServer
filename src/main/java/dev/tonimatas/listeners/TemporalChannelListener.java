@@ -25,7 +25,9 @@ public class TemporalChannelListener extends ListenerAdapter {
             if (voice.getId().equals(CREATE_ID)) {
                 createChannel(category, event.getMember());
             }
-        } else if (left != null) {
+        }
+        
+        if (left != null) {
             VoiceChannel voice = left.asVoiceChannel();
 
             if (voice.getId().equals(CREATE_ID)) return;
