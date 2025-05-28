@@ -47,27 +47,22 @@ public class RouletteListener extends ListenerAdapter {
                     return;
                 }
                 
+                String type = betType.getAsString();
                 String option = betOption.getAsString();
                 long money = betType.getAsLong();
 
-                Bet bet = switch (betType.getAsString()) {
-                    case "color" -> new ColorBet(id, option, money);
-                    case "column" -> new ColumnBet(id, option, money);
-                    case "dozen" -> new DozenBet(id, option, money);
-                    case "number" -> new NumberBet(id, option, money);
-                    default -> null;
-                };
+                Bet bet = getBet(type, id, option, money);
 
                 if (bet == null) {
-                    event.reply("This bet type \"" + betType.getAsString() + "\" doesn't exist.").setEphemeral(true).queue(deleteBefore());
+                    event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(deleteBefore());
                     return;
                 }
                 
                 if (bet.isValid()) {
                     rouletteTask.get().addBet(bet);
-                    event.reply("Your " + betType.getAsString() + " bet has been added to the Roulette.").setEphemeral(true).queue(deleteBefore());
+                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(deleteBefore());
                 } else {
-                    event.reply("Invalid bet option \"" + option + "\" for \"" + betType.getAsString() + "\".").setEphemeral(true).queue(deleteBefore());
+                    event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(deleteBefore());
                 }
             }
 
@@ -132,7 +127,15 @@ public class RouletteListener extends ListenerAdapter {
         }
     }
     
-    
+    private Bet getBet(String type, String id, String option, long money) {
+        return switch (type) {
+            case "color" -> new ColorBet(id, option, money);
+            case "column" -> new ColumnBet(id, option, money);
+            case "dozen" -> new DozenBet(id, option, money);
+            case "number" -> new NumberBet(id, option, money);
+            default -> null;
+        };
+    }
     
     private List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
         return Stream.of(values)
