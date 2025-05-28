@@ -2,6 +2,7 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.roulette.bets.*;
 import dev.tonimatas.tasks.RouletteTask;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -26,11 +27,17 @@ public class RouletteListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
+        Guild guild = event.getGuild();
+
+        if (member == null || guild == null) {
+            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(deleteBefore());
+            return;
+        }
+
+        String id = member.getId();
 
         switch (event.getFullCommandName()) {
             case "bet" -> {
-                if (member == null) return;
-                
                 OptionMapping betType = event.getOption("bet-type");
                 OptionMapping betOption = event.getOption("bet-option");
                 OptionMapping betMoney = event.getOption("bet-money");
@@ -40,7 +47,6 @@ public class RouletteListener extends ListenerAdapter {
                     return;
                 }
                 
-                String id = member.getId();
                 String option = betOption.getAsString();
                 long money = betType.getAsLong();
 
@@ -53,25 +59,21 @@ public class RouletteListener extends ListenerAdapter {
                 };
 
                 if (bet == null) {
-                    // TODO: Send invalid bet type message
+                    event.reply("This bet type \"" + betType.getAsString() + "\" doesn't exist.").setEphemeral(true).queue(deleteBefore());
                     return;
                 }
                 
                 if (bet.isValid()) {
                     rouletteTask.get().addBet(bet);
-                    // TODO: Send bet add message
+                    event.reply("Your " + betType.getAsString() + " bet has been added to the Roulette.").setEphemeral(true).queue(deleteBefore());
                 } else {
-                    // TODO: Send invalid bet option message
+                    event.reply("Invalid bet option \"" + option + "\" for \"" + betType.getAsString() + "\".").setEphemeral(true).queue(deleteBefore());
                 }
             }
 
             case "money" -> {
-                if (member != null) {
-                    long money = rouletteTask.getMoney(member.getId());
-                    event.reply("Tienes " + money + "€.").queue();
-                } else {
-                    event.reply("Error obteniendo tú dinero.").setEphemeral(true).queue();
-                }
+                long money = rouletteTask.getMoney(member.getId());
+                event.reply("Tienes " + money + "€.").queue();
             }
 
             case "moneytop" -> {
@@ -84,7 +86,7 @@ public class RouletteListener extends ListenerAdapter {
                 int counter = 0;
                 for (Map.Entry<String, Long> entry : sortedList) {
                     if (counter >= 5) break;
-                    Member m = event.getGuild().getMemberById(entry.getKey());
+                    Member m = guild.getMemberById(entry.getKey());
                     String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
                     text.append((counter + 1))
                             .append(". ")
@@ -130,14 +132,16 @@ public class RouletteListener extends ListenerAdapter {
         }
     }
     
-    private static List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
+    
+    
+    private List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
         return Stream.of(values)
                 .filter(value -> value.startsWith(focusedValue))
                 .map(value -> new Command.Choice(value, value))
                 .toList();
     }
     
-    private static Consumer<InteractionHook> deleteBefore() {
+    private Consumer<InteractionHook> deleteBefore() {
         return hook -> {
             try {
                 TimeUnit.SECONDS.sleep(5);
