@@ -47,6 +47,8 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("money", "See your amount of money.")
                         .setContexts(InteractionContextType.GUILD))
+                        .addCommands(Commands.slash("money-top", "See your amount of money.")
+                                .setContexts(InteractionContextType.GUILD))
                 .queue();
         
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));

@@ -2,8 +2,10 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.roulette.bets.*;
 import dev.tonimatas.tasks.RouletteTask;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -71,32 +73,13 @@ public class RouletteListener extends ListenerAdapter {
                 event.reply("You have " + money + "€.").queue(deleteBefore());
             }
 
-            case "moneytop" -> {
-                List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
-                        .stream()
-                        .sorted((a, b) ->
-                                b.getValue().compareTo(a.getValue()))
-                        .toList();
-                StringBuilder text = new StringBuilder("**Top 5 más ricos:**\n\n");
-                int counter = 0;
-                for (Map.Entry<String, Long> entry : sortedList) {
-                    if (counter >= 5) break;
-                    Member m = guild.getMemberById(entry.getKey());
-                    String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
-                    text.append((counter + 1))
-                            .append(". ")
-                            .append(name)
-                            .append(" ")
-                            .append(entry.getValue())
-                            .append("€\n");
-                    counter++;
-                }
-
-                if (counter == 0) {
-                    event.reply("No hay datos suficientes para mostrar el ranking.").queue();
-                } else {
-                    event.reply(text.toString()).queue();
-                }
+            case "money-top" -> {
+                MessageEmbed embed = new EmbedBuilder()
+                        .setTitle("Money Top")
+                        .setDescription(getMoneyTopString(guild))
+                        .build();
+                
+                event.replyEmbeds(embed).queue(deleteBefore());
             }
         }
     }
@@ -125,6 +108,36 @@ public class RouletteListener extends ListenerAdapter {
                 event.replyChoices(getStartWithValues(options, focusedValue)).queue();
             }
         }
+    }
+    
+    private String getMoneyTopString(Guild guild) {
+        List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
+                .stream()
+                .sorted((a, b) ->
+                        b.getValue().compareTo(a.getValue()))
+                .toList();
+
+        int counter = 0;
+        StringBuilder text = new StringBuilder();
+
+        for (Map.Entry<String, Long> entry : sortedList) {
+            if (counter >= 5) break;
+
+            Member member = guild.getMemberById(entry.getKey());
+
+            String name = (member != null) ? member.getEffectiveName() : "Unknown";
+
+            text.append((counter + 1))
+                    .append(". ")
+                    .append(name)
+                    .append(" ")
+                    .append(entry.getValue())
+                    .append("€\n");
+
+            counter++;
+        }
+        
+        return text.toString();
     }
     
     private Bet getBet(String type, String id, String option, long money) {
