@@ -45,6 +45,10 @@ public class Main {
                         .addOption(OptionType.STRING, "bet-option", "Select the option.", true, true)
                         .addOption(OptionType.NUMBER, "bet-money", "Money for the bet.", true, true)
                         .setContexts(InteractionContextType.GUILD))
+                .addCommands(Commands.slash("money", "See your amount of money.")
+                        .setContexts(InteractionContextType.GUILD))
+                        .addCommands(Commands.slash("money-top", "See your amount of money.")
+                                .setContexts(InteractionContextType.GUILD))
                 .queue();
         
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));

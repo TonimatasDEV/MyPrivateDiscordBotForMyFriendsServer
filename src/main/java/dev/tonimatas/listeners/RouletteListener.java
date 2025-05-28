@@ -2,7 +2,10 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.roulette.bets.*;
 import dev.tonimatas.tasks.RouletteTask;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -26,11 +29,17 @@ public class RouletteListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
+        Guild guild = event.getGuild();
+
+        if (member == null || guild == null) {
+            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(deleteBefore());
+            return;
+        }
+
+        String id = member.getId();
 
         switch (event.getFullCommandName()) {
             case "bet" -> {
-                if (member == null) return;
-                
                 OptionMapping betType = event.getOption("bet-type");
                 OptionMapping betOption = event.getOption("bet-option");
                 OptionMapping betMoney = event.getOption("bet-money");
@@ -40,66 +49,37 @@ public class RouletteListener extends ListenerAdapter {
                     return;
                 }
                 
-                String id = member.getId();
+                String type = betType.getAsString();
                 String option = betOption.getAsString();
                 long money = betType.getAsLong();
 
-                Bet bet = switch (betType.getAsString()) {
-                    case "color" -> new ColorBet(id, option, money);
-                    case "column" -> new ColumnBet(id, option, money);
-                    case "dozen" -> new DozenBet(id, option, money);
-                    case "number" -> new NumberBet(id, option, money);
-                    default -> null;
-                };
+                Bet bet = getBet(type, id, option, money);
 
                 if (bet == null) {
-                    // TODO: Send invalid bet type message
+                    event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(deleteBefore());
                     return;
                 }
                 
                 if (bet.isValid()) {
                     rouletteTask.get().addBet(bet);
-                    // TODO: Send bet add message
+                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(deleteBefore());
                 } else {
-                    // TODO: Send invalid bet option message
+                    event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(deleteBefore());
                 }
             }
 
             case "money" -> {
-                if (member != null) {
-                    long money = rouletteTask.getMoney(member.getId());
-                    event.reply("Tienes " + money + "€.").queue();
-                } else {
-                    event.reply("Error obteniendo tú dinero.").setEphemeral(true).queue();
-                }
+                long money = rouletteTask.getMoney(member.getId());
+                event.reply("You have " + money + "€.").queue(deleteBefore());
             }
 
-            case "moneytop" -> {
-                List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
-                        .stream()
-                        .sorted((a, b) ->
-                                b.getValue().compareTo(a.getValue()))
-                        .toList();
-                StringBuilder text = new StringBuilder("**Top 5 más ricos:**\n\n");
-                int counter = 0;
-                for (Map.Entry<String, Long> entry : sortedList) {
-                    if (counter >= 5) break;
-                    Member m = event.getGuild().getMemberById(entry.getKey());
-                    String name = (m != null) ? m.getEffectiveName() : "Usuario Desconocido";
-                    text.append((counter + 1))
-                            .append(". ")
-                            .append(name)
-                            .append(" ")
-                            .append(entry.getValue())
-                            .append("€\n");
-                    counter++;
-                }
-
-                if (counter == 0) {
-                    event.reply("No hay datos suficientes para mostrar el ranking.").queue();
-                } else {
-                    event.reply(text.toString()).queue();
-                }
+            case "money-top" -> {
+                MessageEmbed embed = new EmbedBuilder()
+                        .setTitle("Money Top")
+                        .setDescription(getMoneyTopString(guild))
+                        .build();
+                
+                event.replyEmbeds(embed).queue(deleteBefore());
             }
         }
     }
@@ -130,14 +110,54 @@ public class RouletteListener extends ListenerAdapter {
         }
     }
     
-    private static List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
+    private String getMoneyTopString(Guild guild) {
+        List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
+                .stream()
+                .sorted((a, b) ->
+                        b.getValue().compareTo(a.getValue()))
+                .toList();
+
+        int counter = 0;
+        StringBuilder text = new StringBuilder();
+
+        for (Map.Entry<String, Long> entry : sortedList) {
+            if (counter >= 5) break;
+
+            Member member = guild.getMemberById(entry.getKey());
+
+            String name = (member != null) ? member.getEffectiveName() : "Unknown";
+
+            text.append((counter + 1))
+                    .append(". ")
+                    .append(name)
+                    .append(" ")
+                    .append(entry.getValue())
+                    .append("€\n");
+
+            counter++;
+        }
+        
+        return text.toString();
+    }
+    
+    private Bet getBet(String type, String id, String option, long money) {
+        return switch (type) {
+            case "color" -> new ColorBet(id, option, money);
+            case "column" -> new ColumnBet(id, option, money);
+            case "dozen" -> new DozenBet(id, option, money);
+            case "number" -> new NumberBet(id, option, money);
+            default -> null;
+        };
+    }
+    
+    private List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
         return Stream.of(values)
                 .filter(value -> value.startsWith(focusedValue))
                 .map(value -> new Command.Choice(value, value))
                 .toList();
     }
     
-    private static Consumer<InteractionHook> deleteBefore() {
+    private Consumer<InteractionHook> deleteBefore() {
         return hook -> {
             try {
                 TimeUnit.SECONDS.sleep(5);
