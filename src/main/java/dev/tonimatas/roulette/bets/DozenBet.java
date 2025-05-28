@@ -1,8 +1,11 @@
 package dev.tonimatas.roulette.bets;
 
 public class DozenBet extends Bet {
-    public DozenBet(String id, int input, int money) {
-        super(id, input, money);
+    private final String input;
+    
+    public DozenBet(String id, String dozen, long money) {
+        super(id, money);
+        this.input = dozen;
     }
 
     @Override
@@ -12,18 +15,23 @@ public class DozenBet extends Bet {
 
     @Override
     boolean isWinner(int winnerNumber) {
-        return getDozen(winnerNumber) == input;
+        return getDozen(winnerNumber).equalsIgnoreCase(input);
     }
 
-    private static int getDozen(int number) {
+    @Override
+    public boolean isValid() {
+        return input.equalsIgnoreCase("first") || input.equalsIgnoreCase("second") || input.equalsIgnoreCase("third");
+    }
+
+    private static String getDozen(int number) {
         if (number > 0 && number < 13) {
-            return 1;
+            return "first";
         } else if (number >= 13 && number <=24) {
-            return 2;
+            return "second";
         } else if (number >= 25 && number <= 36) {
-            return 3;
+            return "third";
         } else {
-            return -1;
+            return "invalid";
         }
     }
 }

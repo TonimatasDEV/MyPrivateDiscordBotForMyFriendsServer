@@ -1,8 +1,11 @@
 package dev.tonimatas.roulette.bets;
 
 public class ColumnBet extends Bet {
-    public ColumnBet(String id, int input, int money) {
-        super(id, input, money);
+    private final String input;
+    
+    public ColumnBet(String id, String column, long money) {
+        super(id, money);
+        this.input = column;
     }
 
     @Override
@@ -12,20 +15,25 @@ public class ColumnBet extends Bet {
 
     @Override
     boolean isWinner(int winnerNumber) {
-        return getColumn(winnerNumber) == input;
+        return getColumn(winnerNumber).equalsIgnoreCase(input);
     }
 
-    private static int getColumn(int number) {
+    @Override
+    public boolean isValid() {
+        return input.equalsIgnoreCase("first") || input.equalsIgnoreCase("second") || input.equalsIgnoreCase("third");
+    }
+
+    private static String getColumn(int number) {
         if (number == 0) {
-            return -1;
+            return "invalid";
         }
 
         if (number % 3 == 0) {
-            return 3;
+            return "third";
         } else if ( (number + 1) % 3 == 0) {
-            return 2;
+            return "second";
         } else {
-            return 1;
+            return "first";
         }
     }
 }
