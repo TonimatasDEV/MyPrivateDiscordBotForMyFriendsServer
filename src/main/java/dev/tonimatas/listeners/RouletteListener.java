@@ -68,7 +68,7 @@ public class RouletteListener extends ListenerAdapter {
 
             case "money" -> {
                 long money = rouletteTask.getMoney(member.getId());
-                event.reply("Tienes " + money + "€.").queue();
+                event.reply("You have " + money + "€.").queue(deleteBefore());
             }
 
             case "moneytop" -> {
