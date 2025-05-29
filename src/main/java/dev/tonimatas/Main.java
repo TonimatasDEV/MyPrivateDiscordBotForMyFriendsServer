@@ -1,6 +1,6 @@
 package dev.tonimatas;
 
-import dev.tonimatas.config.Configs;
+import dev.tonimatas.config.ConfigFile;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 // TODO: Add stop method.
 public class Main {
@@ -23,7 +24,8 @@ public class Main {
     private static final List<Thread> threads = new ArrayList<>();
     
     public static void main(String[] args) {
-        String token = Configs.BOT.getValue("token").get();
+        ConfigFile bot = new ConfigFile("bot", Map.of("token", "", "count", "0"));
+        String token = bot.getValue("token").get();
         
         if (token.isEmpty()) return;
         
@@ -35,7 +37,7 @@ public class Main {
         RouletteTask rouletteTask = new RouletteTask(jda);
         
         jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
-                new AutoRoleListener(), new CountListener(), new JoinLeaveMessageListener(),
+                new AutoRoleListener(), new CountListener(bot), new JoinLeaveMessageListener(),
                 new TemporalChannelListener());
 
         jda.updateCommands()

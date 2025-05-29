@@ -1,6 +1,6 @@
 package dev.tonimatas.listeners;
 
-import dev.tonimatas.config.Configs;
+import dev.tonimatas.config.ConfigFile;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class CountListener extends ListenerAdapter {
     private static final String COUNT_CHANNEL_ID = "1371077663812222976";
-    private long currentNumber;
+    private final ConfigFile config;
 
-    public CountListener() {
-        currentNumber = Configs.BOT.getValue("count").toLong();
+    public CountListener(ConfigFile config) {
+        this.config = config;
     }
     
     @Override
@@ -28,17 +28,18 @@ public class CountListener extends ListenerAdapter {
         }
 
         long numberFromMessage = getNumber(message);
-
+        long currentNumber = config.getValue("count").toLong();
+        
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
             currentNumber++;
-            Configs.BOT.setValue("count", currentNumber);
+            config.setValue("count", currentNumber);
             return;
         }
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa.").queue();
-        currentNumber = 0;
+        config.setValue("count", 0);
     }
     
     private long getNumber(Message message) {
