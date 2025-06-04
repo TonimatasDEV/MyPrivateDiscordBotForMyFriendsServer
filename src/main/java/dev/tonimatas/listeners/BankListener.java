@@ -24,7 +24,8 @@ public class BankListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         if (member == null || guild == null) {
-            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 

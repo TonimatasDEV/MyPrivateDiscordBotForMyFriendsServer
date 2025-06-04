@@ -8,6 +8,7 @@ import dev.tonimatas.util.Strings;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -30,7 +31,8 @@ public class RouletteListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         if (member == null || guild == null) {
-            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
@@ -42,7 +44,8 @@ public class RouletteListener extends ListenerAdapter {
             OptionMapping betMoney = event.getOption("bet-money");
 
             if (betType == null || betOption == null || betMoney == null) {
-                event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet type or option.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
@@ -53,19 +56,23 @@ public class RouletteListener extends ListenerAdapter {
             Bet bet = getBet(type, id, option, money);
 
             if (bet == null) {
-                event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This bet type \"" + type + "\" doesn't exist.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             if (bet.isValid()) {
                 if (bet.getMoney() <= bankData.getMoney(id)) {
                     roulette.addBet(bet);
-                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                    MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Bet", "Your " + type + " bet has been added to the Roulette.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 } else {
-                    event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                    MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You don't have enough money.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 }
             } else {
-                event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet option \"" + option + "\" for \"" + type + "\".");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
         }
     }

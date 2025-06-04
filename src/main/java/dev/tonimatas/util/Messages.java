@@ -36,4 +36,17 @@ public class Messages {
                 .setFooter("Anticonstitucionalmente")
                 .build();
     }
+
+    public static MessageEmbed getErrorEmbed(JDA jda, String description) {
+        SelfUser selfUser = jda.getSelfUser();
+
+        return new EmbedBuilder()
+                .setTitle("Error")
+                .setDescription(description)
+                .setAuthor(selfUser.getEffectiveName(), null, selfUser.getEffectiveAvatarUrl())
+                .setColor(Color.RED)
+                .setTimestamp(ZonedDateTime.now())
+                .setFooter("Anticonstitucionalmente")
+                .build();
+    }
 }
