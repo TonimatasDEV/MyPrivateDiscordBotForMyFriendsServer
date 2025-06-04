@@ -37,7 +37,7 @@ public class Main {
         
         jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
                 new AutoRoleListener(), new CountListener(bot), new JoinLeaveMessageListener(),
-                new TemporalChannelListener());
+                new TemporalChannelListener(), new BankListener(bankData));
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
