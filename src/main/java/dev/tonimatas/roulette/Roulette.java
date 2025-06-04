@@ -2,9 +2,11 @@ package dev.tonimatas.roulette;
 
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.roulette.bets.Bet;
+import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,10 +49,8 @@ public class Roulette {
             while (true) {
                 if (remainingTime == 0) {
                     int winner = RAND.nextInt(0, 37);
-
-                    for (Bet bet : bets) {
-                        giveReward(bet, winner);
-                    }
+                    
+                    giveRewards(winner);
 
                     stop();
                     break;
@@ -83,24 +83,24 @@ public class Roulette {
         // TODO: Implement me
     }
 
-    private void giveReward(Bet bet, int winner) {
-        Member member = getGuild().getMemberById(bet.getId());
+    private void giveRewards(int winner) {
+        StringBuilder rewards = new StringBuilder();
+        rewards.append("**The winner number is ").append(winner).append(".**\n\n");
+        
+        int count = 1;
+        for (Bet bet : bets) {
+            Member member = getGuild().getMemberById(bet.getId());
+            if (member == null) continue;
 
-        if (member == null) return;
-
-        long reward = bet.getReward(winner);
-
-        bankData.addMoney(bet.getId(), reward);
-
-        String text;
-
-        if (reward > 0) {
-            text = member.getEffectiveName() + " has ganado " + reward + "€ con tu apuesta.";
-        } else {
-            text = member.getEffectiveName() + " tú apuesta no ha ganado esta vez.\nHas perdido " + bet.getMoney() + ".";
+            long reward = bet.getReward(winner);
+            bankData.addMoney(bet.getId(), reward);
+            
+            rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getMessage(winner)).append("\n");
+            count++;
         }
-
-        getRouletteChannel().sendMessage(text).queue();
+        
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette Results", rewards.toString());
+        getRouletteChannel().sendMessageEmbeds(embed).queue();
     }
 
     @NotNull

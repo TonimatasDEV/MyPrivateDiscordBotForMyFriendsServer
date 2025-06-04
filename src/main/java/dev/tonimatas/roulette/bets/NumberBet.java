@@ -14,6 +14,11 @@ public class NumberBet extends Bet {
     }
 
     @Override
+    public String getTypePart() {
+        return "number " + input;
+    }
+
+    @Override
     int getMultiplier() {
         return 36;
     }

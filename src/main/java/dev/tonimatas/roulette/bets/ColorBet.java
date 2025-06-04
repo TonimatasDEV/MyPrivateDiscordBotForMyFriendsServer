@@ -9,8 +9,17 @@ public class ColorBet extends Bet {
     }
 
     @Override
+    public String getTypePart() {
+        return input;
+    }
+
+    @Override
     int getMultiplier() {
-        return 0;
+        return switch (input) {
+            case "green" -> 36;
+            case "red", "black" -> 2;
+            default -> 0;
+        };
     }
 
     @Override
