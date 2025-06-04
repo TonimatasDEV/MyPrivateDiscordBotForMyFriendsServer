@@ -21,13 +21,14 @@ public class BankData extends JsonFile {
 
     public void setMoney(String memberID, long money) {
         bank.put(memberID, money);
+        save();
     }
 
     public void addMoney(String memberID, long money) {
-        bank.put(memberID, getMoney(memberID) + money);
+        setMoney(memberID, getMoney(memberID) + money);
     }
     
     public void removeMoney(String memberID, long money) {
-        bank.put(memberID, getMoney(memberID) - money);
+        setMoney(memberID, getMoney(memberID) - money);
     }
 }
