@@ -36,13 +36,13 @@ public class Roulette {
         bets.add(bet);
 
         if (!rouletteThread.isAlive()) {
-            rouletteThread.start();
+            start();
         }
     }
 
     public Thread rouletteThread() {
         return new Thread(() -> {
-            long remainingTime = 300;
+            long remainingTime = 10;
 
             while (true) {
                 if (remainingTime == 0) {
@@ -66,6 +66,12 @@ public class Roulette {
                 remainingTime--;
             }
         });
+    }
+    
+    public void start() {
+        rouletteThread.start();
+        // TODO: Update discord channel
+        getRouletteChannel().sendMessage("Started").queue();
     }
 
     public void stop() {
@@ -91,7 +97,7 @@ public class Roulette {
         if (reward > 0) {
             text = member.getEffectiveName() + " has ganado " + reward + "€ con tu apuesta.";
         } else {
-            text = member.getEffectiveName() + " tu apuesta no ha ganado esta vez.\nHas perdido " + bet.getMoney() + ".";
+            text = member.getEffectiveName() + " tú apuesta no ha ganado esta vez.\nHas perdido " + bet.getMoney() + ".";
         }
 
         getRouletteChannel().sendMessage(text).queue();

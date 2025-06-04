@@ -4,18 +4,16 @@ import dev.tonimatas.config.BankData;
 import dev.tonimatas.roulette.Roulette;
 import dev.tonimatas.roulette.bets.*;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.Strings;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 
 public class RouletteListener extends ListenerAdapter {
     private final Roulette roulette;
@@ -50,7 +48,7 @@ public class RouletteListener extends ListenerAdapter {
 
             String type = betType.getAsString();
             String option = betOption.getAsString();
-            long money = betType.getAsLong();
+            long money = betMoney.getAsLong();
 
             Bet bet = getBet(type, id, option, money);
 
@@ -80,7 +78,7 @@ public class RouletteListener extends ListenerAdapter {
             
             if (option.equalsIgnoreCase("bet-type")) {
                 String[] options = new String[]{"color", "column", "dozen", "number"};
-                event.replyChoices(getStartWithValues(options, focusedValue)).queue();
+                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
             } else if (option.equalsIgnoreCase("bet-option")) {
                 OptionMapping betType = event.getOption("bet-type");
                 
@@ -93,7 +91,7 @@ public class RouletteListener extends ListenerAdapter {
                     default -> options = new String[]{};
                 }
 
-                event.replyChoices(getStartWithValues(options, focusedValue)).queue();
+                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
             } else {
                 event.replyChoices(Collections.emptyList()).queue();
             }
@@ -110,10 +108,5 @@ public class RouletteListener extends ListenerAdapter {
         };
     }
     
-    private List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
-        return Stream.of(values)
-                .filter(value -> value.startsWith(focusedValue))
-                .map(value -> new Command.Choice(value, value))
-                .toList();
-    }
+    
 }

@@ -47,7 +47,7 @@ public class Main {
                 .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
                         .addOption(OptionType.STRING, "bet-type", "Select what you want to bet.", true, true)
                         .addOption(OptionType.STRING, "bet-option", "Select the option.", true, true)
-                        .addOption(OptionType.NUMBER, "bet-money", "Money for the bet.", true, true)
+                        .addOption(OptionType.STRING, "bet-money", "Money for the bet.", true, true)
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("money", "See your amount of money.")
                         .setContexts(InteractionContextType.GUILD))
