@@ -3,6 +3,7 @@ package dev.tonimatas.roulette;
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,9 +24,10 @@ public class Roulette {
     private static final String GUILD_ID = "1371074572786597960";
     private static final Random RAND = new SecureRandom();
     private final List<Bet> bets;
-    private final Thread rouletteThread;
+    private Thread rouletteThread;
     private final BankData bankData;
     private final JDA jda;
+    private String messageId;
 
     public Roulette(JDA jda, BankData bankData) {
         this.bankData = bankData;
@@ -44,7 +47,7 @@ public class Roulette {
 
     public Thread rouletteThread() {
         return new Thread(() -> {
-            long remainingTime = 10;
+            long remainingTime = 30;
 
             while (true) {
                 if (remainingTime == 0) {
@@ -56,7 +59,9 @@ public class Roulette {
                     break;
                 }
 
-                // TODO: Every five seconds execute Roulette#updateDiscordChannel()
+                if (remainingTime % 5 == 0) {
+                    updatePrimaryMessage(remainingTime);
+                }
 
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -69,18 +74,38 @@ public class Roulette {
     }
     
     public void start() {
-        rouletteThread.start();
-        // TODO: Update discord channel
-        getRouletteChannel().sendMessage("Started").queue();
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", "**Has been started.**");
+        getRouletteChannel().sendMessageEmbeds(embed).queue(hook -> {
+            messageId = hook.getId();
+            rouletteThread.start();
+        });
     }
 
     public void stop() {
         rouletteThread.interrupt();
-        // TODO: Update discord channel
+        rouletteThread = rouletteThread();
     }
+    
+    private void updatePrimaryMessage(long remainingTime) {
+        Duration duration = Duration.ofSeconds(remainingTime);
+        String formatted = TimeUtils.formatDuration(duration);
+        
+        StringBuilder message = new StringBuilder();
+        message.append("**").append(formatted).append("**\n\n");
 
-    private void updateDiscordChannel() {
-        // TODO: Implement me
+        message.append("Actual bets:\n");
+        
+        int count = 1;
+        for (Bet bet : bets) {
+            Member member = getGuild().getMemberById(bet.getId());
+            if (member == null) continue;
+
+            message.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getBetMessage()).append("\n");
+            count++;
+        }
+        
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", message.toString());
+        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
     }
 
     private void giveRewards(int winner) {
@@ -95,12 +120,14 @@ public class Roulette {
             long reward = bet.getReward(winner);
             bankData.addMoney(bet.getId(), reward);
             
-            rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getMessage(winner)).append("\n");
+            rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
         }
         
-        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette Results", rewards.toString());
-        getRouletteChannel().sendMessageEmbeds(embed).queue();
+        bets.clear();
+        
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", rewards.toString());
+        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
     }
 
     @NotNull

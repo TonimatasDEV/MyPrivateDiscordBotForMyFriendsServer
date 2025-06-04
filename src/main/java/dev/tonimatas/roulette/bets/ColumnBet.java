@@ -10,7 +10,7 @@ public class ColumnBet extends Bet {
 
     @Override
     public String getTypePart() {
-        return "the" + input + " column";
+        return "the " + input + " column";
     }
 
     @Override

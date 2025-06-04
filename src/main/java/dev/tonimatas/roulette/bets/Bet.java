@@ -9,12 +9,16 @@ public abstract class Bet {
         this.money = money;
     }
     
-    public String getMessage(int winnerNumber) {
+    public String getRewardMessage(int winnerNumber) {
         if (isWinner(winnerNumber)) {
             return "bet on " + getTypePart() + " and won " + getReward(winnerNumber) + "€.";
         } else {
             return "bet on " + getTypePart() + " and lost " + getMoney() + "€.";
         }
+    }
+
+    public String getBetMessage() {
+        return "bet " + money + "€ on " + getTypePart() + ".";
     }
     
     public abstract String getTypePart();

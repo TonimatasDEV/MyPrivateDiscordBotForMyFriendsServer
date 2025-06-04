@@ -10,7 +10,7 @@ public class DozenBet extends Bet {
 
     @Override
     public String getTypePart() {
-        return "the" + input + " dozen";
+        return "the " + input + " dozen";
     }
 
     @Override
