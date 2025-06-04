@@ -9,6 +9,11 @@ public class DozenBet extends Bet {
     }
 
     @Override
+    public String getTypePart() {
+        return "the " + input + " dozen";
+    }
+
+    @Override
     int getMultiplier() {
         return 3;
     }

@@ -1,24 +1,28 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BankData;
+import dev.tonimatas.roulette.Roulette;
 import dev.tonimatas.roulette.bets.*;
-import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.Strings;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.Collections;
 
 public class RouletteListener extends ListenerAdapter {
-    private final RouletteTask rouletteTask;
+    private final Roulette roulette;
+    private final BankData bankData;
     
-    public RouletteListener(RouletteTask rouletteTask) {
-        this.rouletteTask = rouletteTask;
+    public RouletteListener(JDA jda, BankData bankData) {
+        this.roulette = new Roulette(jda, bankData);
+        this.bankData = bankData;
     }
     
     @Override
@@ -27,7 +31,8 @@ public class RouletteListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         if (member == null || guild == null) {
-            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX());
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
@@ -39,30 +44,35 @@ public class RouletteListener extends ListenerAdapter {
             OptionMapping betMoney = event.getOption("bet-money");
 
             if (betType == null || betOption == null || betMoney == null) {
-                event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet type or option.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             String type = betType.getAsString();
             String option = betOption.getAsString();
-            long money = betType.getAsLong();
+            long money = betMoney.getAsLong();
 
             Bet bet = getBet(type, id, option, money);
 
             if (bet == null) {
-                event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This bet type \"" + type + "\" doesn't exist.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             if (bet.isValid()) {
-                if (bet.getMoney() <= rouletteTask.getBank().getMoney(id)) {
-                    rouletteTask.get().addBet(bet);
-                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                if (bet.getMoney() <= bankData.getMoney(id)) {
+                    roulette.addBet(bet);
+                    MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Bet", "Your " + type + " bet has been added to the Roulette.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 } else {
-                    event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                    MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You don't have enough money.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 }
             } else {
-                event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX());
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet option \"" + option + "\" for \"" + type + "\".");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
         }
     }
@@ -75,7 +85,7 @@ public class RouletteListener extends ListenerAdapter {
             
             if (option.equalsIgnoreCase("bet-type")) {
                 String[] options = new String[]{"color", "column", "dozen", "number"};
-                event.replyChoices(getStartWithValues(options, focusedValue)).queue();
+                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
             } else if (option.equalsIgnoreCase("bet-option")) {
                 OptionMapping betType = event.getOption("bet-type");
                 
@@ -88,7 +98,9 @@ public class RouletteListener extends ListenerAdapter {
                     default -> options = new String[]{};
                 }
 
-                event.replyChoices(getStartWithValues(options, focusedValue)).queue();
+                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
+            } else {
+                event.replyChoices(Collections.emptyList()).queue();
             }
         }
     }
@@ -103,10 +115,5 @@ public class RouletteListener extends ListenerAdapter {
         };
     }
     
-    private List<Command.Choice> getStartWithValues(String[] values, String focusedValue) {
-        return Stream.of(values)
-                .filter(value -> value.startsWith(focusedValue))
-                .map(value -> new Command.Choice(value, value))
-                .toList();
-    }
+    
 }
