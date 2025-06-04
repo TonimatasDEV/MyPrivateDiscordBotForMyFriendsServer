@@ -23,6 +23,7 @@ public class Roulette {
     }
 
     public void addBet(Bet bet) {
+        rouletteTask.getBank().removeMoney(bet.getId(), bet.getMoney());
         bets.add(bet);
     }
     
