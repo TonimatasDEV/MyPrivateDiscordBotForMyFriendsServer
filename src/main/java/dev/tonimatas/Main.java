@@ -1,6 +1,8 @@
 package dev.tonimatas;
 
-import dev.tonimatas.config.ConfigFile;
+import dev.tonimatas.config.BankData;
+import dev.tonimatas.config.BotConfig;
+import dev.tonimatas.config.JsonFile;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
@@ -16,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 // TODO: Add stop method.
 public class Main {
@@ -24,17 +25,15 @@ public class Main {
     private static final List<Thread> threads = new ArrayList<>();
     
     public static void main(String[] args) {
-        ConfigFile bot = new ConfigFile("bot", Map.of("token", "", "count", "0"));
-        String token = bot.getValue("token").get();
-        
-        if (token.isEmpty()) return;
-        
-        JDA jda = JDABuilder.createDefault(token)
+        BotConfig bot = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
+        BankData bankData = JsonFile.loadOrCreate(BankData.class, "data/bank.json");
+
+        JDA jda = JDABuilder.createDefault(bot.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .setAutoReconnect(true)
                 .build();
         
-        RouletteTask rouletteTask = new RouletteTask(jda);
+        RouletteTask rouletteTask = new RouletteTask(jda, bankData);
         
         jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
                 new AutoRoleListener(), new CountListener(bot), new JoinLeaveMessageListener(),

@@ -5,6 +5,7 @@ plugins {
 
 val jdaVersion: String by extra
 val logbackVersion: String by extra
+val gsonVersion: String by extra
 val projectVersion: String by extra
 
 group = "dev.tonimatas"
@@ -20,6 +21,7 @@ dependencies {
     }
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("com.google.code.gson:gson:$gsonVersion")
 }
 
 tasks.jar {
