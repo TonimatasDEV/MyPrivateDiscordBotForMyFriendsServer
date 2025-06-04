@@ -2,6 +2,7 @@ package dev.tonimatas.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
@@ -23,14 +24,16 @@ public class Messages {
         };
     }
     
-    public static EmbedBuilder getDefaultEmbed(JDA jda) {
+    public static MessageEmbed getDefaultEmbed(JDA jda, String title, String description) {
         SelfUser selfUser = jda.getSelfUser();
         
         return new EmbedBuilder()
+                .setTitle(title)
+                .setDescription(description)
                 .setAuthor(selfUser.getEffectiveName(), null, selfUser.getEffectiveAvatarUrl())
                 .setColor(Color.YELLOW)
                 .setTimestamp(ZonedDateTime.now())
-                .setFooter("Anticonstitucionalmente");
-
+                .setFooter("Anticonstitucionalmente")
+                .build();
     }
 }
