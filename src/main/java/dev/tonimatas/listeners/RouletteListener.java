@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -93,6 +94,8 @@ public class RouletteListener extends ListenerAdapter {
                 }
 
                 event.replyChoices(getStartWithValues(options, focusedValue)).queue();
+            } else {
+                event.replyChoices(Collections.emptyList()).queue();
             }
         }
     }
