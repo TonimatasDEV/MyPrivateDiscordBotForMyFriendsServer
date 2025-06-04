@@ -1,5 +1,6 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BankData;
 import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public class BankListener extends ListenerAdapter {
-    private final RouletteTask rouletteTask;
+    private final BankData bankData;
 
-    public BankListener(RouletteTask rouletteTask) {
-        this.rouletteTask = rouletteTask;
+    public BankListener(BankData bankData) {
+        this.bankData = bankData;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class BankListener extends ListenerAdapter {
 
         switch (event.getFullCommandName()) {
             case "money" -> {
-                long money = rouletteTask.getMoney(member.getId());
+                long money = bankData.getMoney(member.getId());
                 event.reply("You have " + money + "€.").queue(Messages.deleteBeforeX());
             }
 
@@ -48,7 +49,7 @@ public class BankListener extends ListenerAdapter {
 
     // TODO: Don't print empty string. 1. Unknown \n 2. Unknown...
     private String getMoneyTopString(Guild guild) {
-        List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
+        List<Map.Entry<String, Long>> sortedList = bankData.bank.entrySet()
                 .stream()
                 .sorted((a, b) ->
                         b.getValue().compareTo(a.getValue()))
