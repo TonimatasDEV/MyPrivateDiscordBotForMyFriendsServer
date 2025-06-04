@@ -41,7 +41,7 @@ public class RouletteTask implements Runnable {
     }
     
     public long getMoney(String id) {
-        // TODO: If null use setMoney to 0
+        if (bankData.bank.get(id) == null) setMoney(id,0);
         return bankData.bank.get(id);
     }
     
