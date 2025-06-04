@@ -1,8 +1,7 @@
 package dev.tonimatas.listeners;
 
-import dev.tonimatas.tasks.RouletteTask;
+import dev.tonimatas.config.BankData;
 import dev.tonimatas.util.Messages;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -13,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class BankListener extends ListenerAdapter {
-    private final RouletteTask rouletteTask;
+    private final BankData bankData;
 
-    public BankListener(RouletteTask rouletteTask) {
-        this.rouletteTask = rouletteTask;
+    public BankListener(BankData bankData) {
+        this.bankData = bankData;
     }
 
     @Override
@@ -29,49 +28,37 @@ public class BankListener extends ListenerAdapter {
             return;
         }
 
-        switch (event.getFullCommandName()) {
-            case "money" -> {
-                long money = rouletteTask.getMoney(member.getId());
-                event.reply("You have " + money + "€.").queue(Messages.deleteBeforeX());
-            }
-
-            case "money-top" -> {
-                MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Money Top")
-                        .setDescription(getMoneyTopString(guild))
-                        .build();
-
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX());
-            }
+        String command = event.getFullCommandName();
+        
+        if (command.equalsIgnoreCase("money")) {
+            long money = bankData.getMoney(member.getId());
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
+            event.replyEmbeds(embed).queue(Messages.deleteBeforeX());
+        } else if (command.equalsIgnoreCase("money-top")) {
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", getMoneyTopString(guild));
+            event.replyEmbeds(embed).queue(Messages.deleteBeforeX());
         }
     }
 
-    // TODO: Don't print empty string. 1. Unknown \n 2. Unknown...
     private String getMoneyTopString(Guild guild) {
-        List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
+        List<Map.Entry<String, Long>> sortedList = bankData.bank.entrySet()
                 .stream()
-                .sorted((a, b) ->
-                        b.getValue().compareTo(a.getValue()))
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
                 .toList();
 
-        int counter = 0;
         StringBuilder text = new StringBuilder();
 
-        for (Map.Entry<String, Long> entry : sortedList) {
-            if (counter >= 5 || entry == null) break;
+        for (int i = 0; i < 5; i++) {
+            String name = "None";
+            long money = 0;
+            
+            if (sortedList.size() > i) {
+                Member member = guild.getMemberById(sortedList.get(i).getKey());
+                name = (member != null) ? member.getEffectiveName() : "Unknown";
+                money = sortedList.get(i).getValue();
+            }
 
-            Member member = guild.getMemberById(entry.getKey());
-
-            String name = (member != null) ? member.getEffectiveName() : "Unknown";
-
-            text.append((counter + 1))
-                    .append(". ")
-                    .append(name)
-                    .append(" ")
-                    .append(entry.getValue())
-                    .append("€\n");
-
-            counter++;
+            text.append(i).append(". ").append(name).append(" - ").append(money).append("€\n");
         }
 
         return text.toString();

@@ -23,6 +23,7 @@ public class Roulette {
     }
 
     public void addBet(Bet bet) {
+        rouletteTask.getBank().removeMoney(bet.getId(), bet.getMoney());
         bets.add(bet);
     }
     
@@ -53,10 +54,10 @@ public class Roulette {
 
         if (member == null) return;
 
-        long currentMoney = rouletteTask.getMoney(bet.getId());
+        long currentMoney = rouletteTask.getBank().getMoney(bet.getId());
         long reward = bet.getReward(winner);
 
-        rouletteTask.setMoney(bet.getId(), currentMoney + reward);
+        rouletteTask.getBank().setMoney(bet.getId(), currentMoney + reward);
 
         String text;
 

@@ -33,34 +33,36 @@ public class RouletteListener extends ListenerAdapter {
 
         String id = member.getId();
 
-        switch (event.getFullCommandName()) {
-            case "bet" -> {
-                OptionMapping betType = event.getOption("bet-type");
-                OptionMapping betOption = event.getOption("bet-option");
-                OptionMapping betMoney = event.getOption("bet-money");
-                
-                if (betType == null || betOption == null || betMoney == null) {
-                    event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX());
-                    return;
-                }
-                
-                String type = betType.getAsString();
-                String option = betOption.getAsString();
-                long money = betType.getAsLong();
+        if (event.getFullCommandName().equalsIgnoreCase("bet")) {
+            OptionMapping betType = event.getOption("bet-type");
+            OptionMapping betOption = event.getOption("bet-option");
+            OptionMapping betMoney = event.getOption("bet-money");
 
-                Bet bet = getBet(type, id, option, money);
+            if (betType == null || betOption == null || betMoney == null) {
+                event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                return;
+            }
 
-                if (bet == null) {
-                    event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX());
-                    return;
-                }
-                
-                if (bet.isValid()) {
+            String type = betType.getAsString();
+            String option = betOption.getAsString();
+            long money = betType.getAsLong();
+
+            Bet bet = getBet(type, id, option, money);
+
+            if (bet == null) {
+                event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                return;
+            }
+
+            if (bet.isValid()) {
+                if (bet.getMoney() <= rouletteTask.getBank().getMoney(id)) {
                     rouletteTask.get().addBet(bet);
                     event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX());
                 } else {
-                    event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX());
+                    event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX());
                 }
+            } else {
+                event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX());
             }
         }
     }
