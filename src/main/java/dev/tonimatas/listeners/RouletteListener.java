@@ -30,7 +30,7 @@ public class RouletteListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         if (member == null || guild == null) {
-            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX());
+            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
@@ -42,7 +42,7 @@ public class RouletteListener extends ListenerAdapter {
             OptionMapping betMoney = event.getOption("bet-money");
 
             if (betType == null || betOption == null || betMoney == null) {
-                event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                event.reply("Invalid bet type or option.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
@@ -53,19 +53,19 @@ public class RouletteListener extends ListenerAdapter {
             Bet bet = getBet(type, id, option, money);
 
             if (bet == null) {
-                event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                event.reply("This bet type \"" + type + "\" doesn't exist.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             if (bet.isValid()) {
                 if (bet.getMoney() <= bankData.getMoney(id)) {
                     roulette.addBet(bet);
-                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                    event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 } else {
-                    event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX());
+                    event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 }
             } else {
-                event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX());
+                event.reply("Invalid bet option \"" + option + "\" for \"" + type + "\".").setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
         }
     }

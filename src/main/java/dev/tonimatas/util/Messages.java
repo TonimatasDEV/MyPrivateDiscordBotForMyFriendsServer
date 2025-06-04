@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Messages {
-    public static Consumer<InteractionHook> deleteBeforeX() {
+    public static Consumer<InteractionHook> deleteBeforeX(long seconds) {
         return hook -> {
             try {
-                TimeUnit.SECONDS.sleep(10);
+                TimeUnit.SECONDS.sleep(seconds);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

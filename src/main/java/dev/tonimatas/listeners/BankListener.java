@@ -24,7 +24,7 @@ public class BankListener extends ListenerAdapter {
         Guild guild = event.getGuild();
 
         if (member == null || guild == null) {
-            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX());
+            event.reply("Internal error. Please try again later.").setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
@@ -33,10 +33,10 @@ public class BankListener extends ListenerAdapter {
         if (command.equalsIgnoreCase("money")) {
             long money = bankData.getMoney(member.getId());
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
-            event.replyEmbeds(embed).queue(Messages.deleteBeforeX());
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         } else if (command.equalsIgnoreCase("money-top")) {
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", getMoneyTopString(guild));
-            event.replyEmbeds(embed).queue(Messages.deleteBeforeX());
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
     }
 
