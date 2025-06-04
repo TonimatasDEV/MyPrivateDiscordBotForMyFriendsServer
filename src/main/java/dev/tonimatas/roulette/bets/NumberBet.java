@@ -1,8 +1,16 @@
 package dev.tonimatas.roulette.bets;
 
 public class NumberBet extends Bet {
-    public NumberBet(String id, int input, int money) {
-        super(id, input, money);
+    private int input;
+    
+    public NumberBet(String id, String number, long money) {
+        super(id, money);
+        
+        try {
+            this.input = Integer.parseInt(number);
+        } catch (Exception i) {
+            this.input = -1;
+        }
     }
 
     @Override
@@ -13,5 +21,10 @@ public class NumberBet extends Bet {
     @Override
     boolean isWinner(int winnerNumber) {
         return winnerNumber == input;
+    }
+
+    @Override
+    public boolean isValid() {
+        return input <= 36  && input >= 0;
     }
 }
