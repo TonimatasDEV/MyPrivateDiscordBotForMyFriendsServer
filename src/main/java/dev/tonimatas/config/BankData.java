@@ -10,4 +10,16 @@ public class BankData extends JsonFile {
     protected String getFilePath() {
         return "data/bank.json";
     }
+
+    public long getMoney(String memberID) {
+        if (!bank.containsKey(memberID)) {
+            setMoney(memberID, 0);
+        }
+
+        return bank.get(memberID);
+    }
+
+    public void setMoney(String memberID, long money) {
+        bank.put(memberID, money);
+    }
 }

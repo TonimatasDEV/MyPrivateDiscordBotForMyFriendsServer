@@ -40,18 +40,8 @@ public class RouletteTask implements Runnable {
         return roulette;
     }
     
-    public long getMoney(String id) {
-        if (bankData.bank.get(id) == null) setMoney(id,0);
-        return bankData.bank.get(id);
-    }
-    
-    public void setMoney(String id, long money) {
-        bankData.bank.put(id, money);
-        bankData.save();
-    }
-    
-    public Map<String, Long> getBank() {
-        return bankData.bank;
+    public BankData getBank() {
+        return bankData;
     }
     
     @NotNull
