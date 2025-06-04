@@ -1,8 +1,10 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BankData;
+import dev.tonimatas.roulette.Roulette;
 import dev.tonimatas.roulette.bets.*;
-import dev.tonimatas.tasks.RouletteTask;
 import dev.tonimatas.util.Messages;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
@@ -15,10 +17,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class RouletteListener extends ListenerAdapter {
-    private final RouletteTask rouletteTask;
+    private final Roulette roulette;
+    private final BankData bankData;
     
-    public RouletteListener(RouletteTask rouletteTask) {
-        this.rouletteTask = rouletteTask;
+    public RouletteListener(JDA jda, BankData bankData) {
+        this.roulette = new Roulette(jda, bankData);
+        this.bankData = bankData;
     }
     
     @Override
@@ -55,8 +59,8 @@ public class RouletteListener extends ListenerAdapter {
             }
 
             if (bet.isValid()) {
-                if (bet.getMoney() <= rouletteTask.getBank().getMoney(id)) {
-                    rouletteTask.get().addBet(bet);
+                if (bet.getMoney() <= bankData.getMoney(id)) {
+                    roulette.addBet(bet);
                     event.reply("Your " + type + " bet has been added to the Roulette.").setEphemeral(true).queue(Messages.deleteBeforeX());
                 } else {
                     event.reply("You don't have enough money.").setEphemeral(true).queue(Messages.deleteBeforeX());

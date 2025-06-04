@@ -4,7 +4,6 @@ import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotConfig;
 import dev.tonimatas.config.JsonFile;
 import dev.tonimatas.listeners.*;
-import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -33,11 +32,15 @@ public class Main {
                 .setAutoReconnect(true)
                 .build();
         
-        RouletteTask rouletteTask = new RouletteTask(jda, bankData);
-        
-        jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
-                new AutoRoleListener(), new CountListener(bot), new JoinLeaveMessageListener(),
-                new TemporalChannelListener(), new BankListener(bankData));
+        jda.addEventListener(
+                new RouletteListener(jda, bankData), 
+                new SlashCommandListener(),
+                new AutoRoleListener(), 
+                new CountListener(bot), 
+                new JoinLeaveMessageListener(),
+                new TemporalChannelListener(), 
+                new BankListener(bankData)
+        );
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
@@ -60,7 +63,6 @@ public class Main {
             throw new RuntimeException("Error initializing JDA!", e);
         }
 
-        registerTask(rouletteTask);
         //registerTask(new ExperienceTask());
 
         LOGGER.info("Done!");
