@@ -68,11 +68,13 @@ public class RouletteListener extends ListenerAdapter {
                 }
             }
 
+            // TODO: Move to new BankListener
             case "money" -> {
                 long money = rouletteTask.getMoney(member.getId());
                 event.reply("You have " + money + "€.").queue(deleteBefore());
             }
 
+            // TODO: The same as above
             case "money-top" -> {
                 MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Money Top")
@@ -110,6 +112,7 @@ public class RouletteListener extends ListenerAdapter {
         }
     }
     
+    // TODO: Don't print empty string. 1. Unknown \n 2. Unknown...
     private String getMoneyTopString(Guild guild) {
         List<Map.Entry<String, Long>> sortedList = rouletteTask.getBank().entrySet()
                 .stream()
