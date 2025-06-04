@@ -34,7 +34,6 @@ public class Roulette {
                 giveReward(bet, winner);
             }
 
-            rouletteTask.saveMoney();
             resetTimer();
         } else {
             if (!bets.isEmpty()) {

@@ -1,7 +1,8 @@
 package dev.tonimatas;
 
+import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotConfig;
-import dev.tonimatas.config.JsonConfig;
+import dev.tonimatas.config.JsonFile;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.tasks.RouletteTask;
 import net.dv8tion.jda.api.JDA;
@@ -24,14 +25,15 @@ public class Main {
     private static final List<Thread> threads = new ArrayList<>();
     
     public static void main(String[] args) {
-        BotConfig bot = JsonConfig.loadOrCreate(BotConfig.class, "bot.json");
+        BotConfig bot = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
+        BankData bankData = JsonFile.loadOrCreate(BankData.class, "data/bank.json");
 
         JDA jda = JDABuilder.createDefault(bot.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .setAutoReconnect(true)
                 .build();
         
-        RouletteTask rouletteTask = new RouletteTask(jda);
+        RouletteTask rouletteTask = new RouletteTask(jda, bankData);
         
         jda.addEventListener(new RouletteListener(rouletteTask), new SlashCommandListener(),
                 new AutoRoleListener(), new CountListener(bot), new JoinLeaveMessageListener(),

@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
-public abstract class JsonConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonConfig.class);
+public abstract class JsonFile {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    
+
     protected abstract String getFilePath();
 
     public void save() {
@@ -22,7 +22,7 @@ public abstract class JsonConfig {
         }
     }
 
-    private static <T extends JsonConfig> T load(Class<T> clazz, String path) {
+    private static <T extends JsonFile> T load(Class<T> clazz, String path) {
         try (FileReader reader = new FileReader(path)) {
             return gson.fromJson(reader, clazz);
         } catch (IOException e) {
@@ -31,10 +31,14 @@ public abstract class JsonConfig {
         }
     }
 
-    public static <T extends JsonConfig> T loadOrCreate(Class<T> clazz, String path) {
+    public static <T extends JsonFile> T loadOrCreate(Class<T> clazz, String path) {
         File file = new File(path);
 
         if (!file.exists()) {
+            boolean folderCreated = file.getParentFile().mkdirs();
+            if (!folderCreated) {
+                LOGGER.error("Error creating {} folder.", path);
+            }
             try {
                 T instance = clazz.getDeclaredConstructor().newInstance();
                 instance.save();

@@ -1,6 +1,6 @@
 package dev.tonimatas.config;
 
-public class BotConfig extends JsonConfig {
+public class BotConfig extends JsonFile {
     public String token = "default-token";
     public long count = 0;
 
