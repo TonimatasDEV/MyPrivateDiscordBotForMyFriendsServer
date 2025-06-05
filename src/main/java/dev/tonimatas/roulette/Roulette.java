@@ -24,9 +24,9 @@ public class Roulette {
     private static final String GUILD_ID = "1371074572786597960";
     private static final Random RAND = new SecureRandom();
     private final List<Bet> bets;
-    private Thread rouletteThread;
     private final BankData bankData;
     private final JDA jda;
+    private Thread rouletteThread;
     private String messageId;
 
     public Roulette(JDA jda, BankData bankData) {
@@ -52,7 +52,7 @@ public class Roulette {
             while (true) {
                 if (remainingTime == 0) {
                     int winner = RAND.nextInt(0, 37);
-                    
+
                     giveRewards(winner);
 
                     stop();
@@ -72,7 +72,7 @@ public class Roulette {
             }
         });
     }
-    
+
     public void start() {
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", "**Has been started.**");
         getRouletteChannel().sendMessageEmbeds(embed).queue(hook -> {
@@ -85,16 +85,16 @@ public class Roulette {
         rouletteThread.interrupt();
         rouletteThread = rouletteThread();
     }
-    
+
     private void updatePrimaryMessage(long remainingTime) {
         Duration duration = Duration.ofSeconds(remainingTime);
         String formatted = TimeUtils.formatDuration(duration);
-        
+
         StringBuilder message = new StringBuilder();
         message.append("**").append(formatted).append("**\n\n");
 
         message.append("Actual bets:\n");
-        
+
         int count = 1;
         for (Bet bet : bets) {
             Member member = getGuild().getMemberById(bet.getId());
@@ -103,7 +103,7 @@ public class Roulette {
             message.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getBetMessage()).append("\n");
             count++;
         }
-        
+
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", message.toString());
         getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
     }
@@ -111,7 +111,7 @@ public class Roulette {
     private void giveRewards(int winner) {
         StringBuilder rewards = new StringBuilder();
         rewards.append("**The winner number is ").append(winner).append(".**\n\n");
-        
+
         int count = 1;
         for (Bet bet : bets) {
             Member member = getGuild().getMemberById(bet.getId());
@@ -119,13 +119,13 @@ public class Roulette {
 
             long reward = bet.getReward(winner);
             bankData.addMoney(bet.getId(), reward);
-            
+
             rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
         }
-        
+
         bets.clear();
-        
+
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", rewards.toString());
         getRouletteChannel().editMessageEmbedsById(messageId, embed).queue(Messages.deleteBeforeX(30));
     }

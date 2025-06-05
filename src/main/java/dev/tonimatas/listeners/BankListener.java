@@ -30,7 +30,7 @@ public class BankListener extends ListenerAdapter {
         }
 
         String command = event.getFullCommandName();
-        
+
         if (command.equalsIgnoreCase("money")) {
             long money = bankData.getMoney(member.getId());
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
@@ -52,7 +52,7 @@ public class BankListener extends ListenerAdapter {
         for (int i = 0; i < 5; i++) {
             String name = "None";
             long money = 0;
-            
+
             if (sortedList.size() > i) {
                 Member member = guild.getMemberById(sortedList.get(i).getKey());
                 name = (member != null) ? member.getEffectiveName() : "Unknown";

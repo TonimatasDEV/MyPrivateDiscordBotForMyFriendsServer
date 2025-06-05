@@ -1,6 +1,5 @@
 package dev.tonimatas.listeners;
 
-import dev.tonimatas.config.BotConfig;
 import dev.tonimatas.config.ExtraData;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -15,12 +14,12 @@ public class CountListener extends ListenerAdapter {
     public CountListener(ExtraData extraData) {
         this.extraData = extraData;
     }
-    
+
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Message message = event.getMessage();
         String channelId = event.getChannel().getId();
-        
+
         if (message.getAuthor().isBot()) return;
 
 
@@ -30,7 +29,7 @@ public class CountListener extends ListenerAdapter {
 
         long numberFromMessage = getNumber(message);
         long currentNumber = extraData.getCount();
-        
+
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
             currentNumber++;
@@ -42,7 +41,7 @@ public class CountListener extends ListenerAdapter {
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa.").queue();
         extraData.setCount(0);
     }
-    
+
     private long getNumber(Message message) {
         try {
             return Long.parseLong(message.getContentRaw());

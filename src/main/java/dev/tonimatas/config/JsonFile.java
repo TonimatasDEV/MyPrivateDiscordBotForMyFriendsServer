@@ -5,22 +5,14 @@ import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public abstract class JsonFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    protected abstract String getFilePath();
-
-    public void save() {
-        try (FileWriter writer = new FileWriter(getFilePath())) {
-            gson.toJson(this, writer);
-        } catch (IOException e) {
-            LOGGER.error("Error saving {} config file.", getFilePath());
-            throw new RuntimeException(e);
-        }
-    }
 
     private static <T extends JsonFile> T load(Class<T> clazz, String path) {
         try (FileReader reader = new FileReader(path)) {
@@ -52,5 +44,16 @@ public abstract class JsonFile {
         }
 
         return load(clazz, path);
+    }
+
+    protected abstract String getFilePath();
+
+    public void save() {
+        try (FileWriter writer = new FileWriter(getFilePath())) {
+            gson.toJson(this, writer);
+        } catch (IOException e) {
+            LOGGER.error("Error saving {} config file.", getFilePath());
+            throw new RuntimeException(e);
+        }
     }
 }

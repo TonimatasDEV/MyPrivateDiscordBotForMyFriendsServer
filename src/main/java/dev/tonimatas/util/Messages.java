@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class Messages {
     private static final Logger LOGGER = LoggerFactory.getLogger(Messages.class);
-    
+
     public static <T> Consumer<T> deleteBeforeX(long seconds) {
         return thing -> {
             try {
@@ -34,7 +34,7 @@ public class Messages {
             }
         };
     }
-    
+
     private static EmbedBuilder getBasicEmbedBuilder(JDA jda) {
         SelfUser selfUser = jda.getSelfUser();
         return new EmbedBuilder()
@@ -42,7 +42,7 @@ public class Messages {
                 .setTimestamp(ZonedDateTime.now())
                 .setFooter("Anticonstitucionalmente");
     }
-    
+
     public static MessageEmbed getDefaultEmbed(JDA jda, String title, String description) {
         return getBasicEmbedBuilder(jda)
                 .setTitle(title)
