@@ -2,6 +2,7 @@ package dev.tonimatas;
 
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotConfig;
+import dev.tonimatas.config.ExtraData;
 import dev.tonimatas.config.JsonFile;
 import dev.tonimatas.listeners.*;
 import net.dv8tion.jda.api.JDA;
@@ -23,6 +24,7 @@ public class Main {
     public static void main(String[] args) {
         BotConfig bot = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
         BankData bankData = JsonFile.loadOrCreate(BankData.class, "data/bank.json");
+        ExtraData extraData = JsonFile.loadOrCreate(ExtraData.class, "data/extra.json");
 
         JDA jda = JDABuilder.createDefault(bot.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
@@ -32,7 +34,7 @@ public class Main {
         jda.addEventListener(new RouletteListener(jda, bankData),
                 new SlashCommandListener(),
                 new AutoRoleListener(),
-                new CountListener(bot),
+                new CountListener(extraData),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
                 new BankListener(bankData)
