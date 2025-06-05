@@ -127,7 +127,7 @@ public class Roulette {
         bets.clear();
         
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", rewards.toString());
-        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
+        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue(Messages.deleteBeforeX(30));
     }
 
     @NotNull

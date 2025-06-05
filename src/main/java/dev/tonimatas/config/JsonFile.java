@@ -36,9 +36,11 @@ public abstract class JsonFile {
 
         if (!file.exists()) {
             boolean folderCreated = file.getParentFile().mkdirs();
+
             if (!folderCreated) {
-                LOGGER.error("Error creating {} folder.", path);
+                LOGGER.debug("Error creating {} folder.", path);
             }
+
             try {
                 T instance = clazz.getDeclaredConstructor().newInstance();
                 instance.save();
