@@ -22,7 +22,6 @@ import java.util.List;
 // TODO: Add stop method.
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-    private static final List<Thread> threads = new ArrayList<>();
     
     public static void main(String[] args) {
         BotConfig bot = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
@@ -60,15 +59,6 @@ public class Main {
             throw new RuntimeException("Error initializing JDA!", e);
         }
 
-        registerTask(rouletteTask);
-        //registerTask(new ExperienceTask());
-
         LOGGER.info("Done!");
-    }
-    
-    private static void registerTask(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        threads.add(thread);
-        thread.start();
     }
 }
