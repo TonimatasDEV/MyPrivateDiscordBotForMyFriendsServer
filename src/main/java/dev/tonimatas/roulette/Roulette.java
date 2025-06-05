@@ -47,7 +47,7 @@ public class Roulette {
 
     public Thread rouletteThread() {
         return new Thread(() -> {
-            long remainingTime = 30;
+            long remainingTime = 300;
 
             while (true) {
                 if (remainingTime == 0) {

@@ -27,7 +27,6 @@ public class RouletteListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (!event.getChannel().getId().equals(roulette.getRouletteChannel().getId())) return;
 
         Member member = event.getMember();
         Guild guild = event.getGuild();
@@ -41,6 +40,11 @@ public class RouletteListener extends ListenerAdapter {
         String id = member.getId();
 
         if (event.getFullCommandName().equalsIgnoreCase("bet")) {
+            if (!event.getChannel().getId().equals(roulette.getRouletteChannel().getId())) {
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Roulette channel.");
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+            }
+            
             OptionMapping betType = event.getOption("bet-type");
             OptionMapping betOption = event.getOption("bet-option");
             OptionMapping betMoney = event.getOption("bet-money");

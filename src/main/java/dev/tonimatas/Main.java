@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ public class Main {
 
         JDA jda = JDABuilder.createDefault(bot.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setAutoReconnect(true)
                 .build();
 
