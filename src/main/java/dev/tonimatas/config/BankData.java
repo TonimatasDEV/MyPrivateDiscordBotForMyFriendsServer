@@ -27,7 +27,7 @@ public class BankData extends JsonFile {
     public void addMoney(String memberID, long money) {
         setMoney(memberID, getMoney(memberID) + money);
     }
-    
+
     public void removeMoney(String memberID, long money) {
         setMoney(memberID, getMoney(memberID) - money);
     }

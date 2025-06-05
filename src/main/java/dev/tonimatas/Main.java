@@ -20,7 +20,7 @@ import java.util.Arrays;
 // TODO: Add stop method.
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-    
+
     public static void main(String[] args) {
         BotConfig bot = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
         BankData bankData = JsonFile.loadOrCreate(BankData.class, "data/bank.json");
@@ -30,7 +30,7 @@ public class Main {
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .setAutoReconnect(true)
                 .build();
-        
+
         jda.addEventListener(new RouletteListener(jda, bankData),
                 new SlashCommandListener(),
                 new AutoRoleListener(),
@@ -49,10 +49,10 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("money", "See your amount of money.")
                         .setContexts(InteractionContextType.GUILD))
-                        .addCommands(Commands.slash("money-top", "See your amount of money.")
-                                .setContexts(InteractionContextType.GUILD))
+                .addCommands(Commands.slash("money-top", "See your amount of money.")
+                        .setContexts(InteractionContextType.GUILD))
                 .queue();
-        
+
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
 
         try {

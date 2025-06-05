@@ -19,12 +19,12 @@ import java.util.Collections;
 public class RouletteListener extends ListenerAdapter {
     private final Roulette roulette;
     private final BankData bankData;
-    
+
     public RouletteListener(JDA jda, BankData bankData) {
         this.roulette = new Roulette(jda, bankData);
         this.bankData = bankData;
     }
-    
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
@@ -82,16 +82,16 @@ public class RouletteListener extends ListenerAdapter {
         if (event.getName().equalsIgnoreCase("bet")) {
             String option = event.getFocusedOption().getName();
             String focusedValue = event.getFocusedOption().getValue();
-            
+
             if (option.equalsIgnoreCase("bet-type")) {
                 String[] options = new String[]{"color", "column", "dozen", "number"};
                 event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
             } else if (option.equalsIgnoreCase("bet-option")) {
                 OptionMapping betType = event.getOption("bet-type");
-                
+
                 if (betType == null) return;
                 String[] options;
-                
+
                 switch (betType.getAsString()) {
                     case "color" -> options = new String[]{"green", "red", "black"};
                     case "column", "dozen" -> options = new String[]{"first", "second", "third"};
@@ -114,6 +114,4 @@ public class RouletteListener extends ListenerAdapter {
             default -> null;
         };
     }
-    
-    
 }
