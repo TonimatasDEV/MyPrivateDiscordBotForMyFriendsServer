@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,20 @@ public class BankListener extends ListenerAdapter {
         } else if (command.equalsIgnoreCase("money-top")) {
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", getMoneyTopString(guild));
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+        } else if (command.equalsIgnoreCase("daily")) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime claimedTime = bankData.getDaily(member.getId());
+
+            if (now.isAfter(claimedTime.plusHours(24))) {
+                bankData.addMoney(member.getId(), 100);
+                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Daily", "Yeah! You claimed 100€.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                bankData.setDaily(member.getId(), now);
+            } else {
+                String formattedDate = bankData.getNextFormattedDaily(member.getId());
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You need to wait more. Your next daily will be available at " + formattedDate);
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            }
         }
     }
 

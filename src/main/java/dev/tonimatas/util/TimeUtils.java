@@ -8,8 +8,7 @@ public class TimeUtils {
         long seconds = duration.minusMinutes(minutes).getSeconds();
 
         if (minutes > 0 && seconds > 0) {
-            return "Remaining " + minutes + " minute" + (minutes != 1 ? "s" : "") +
-                    " and " + seconds + " second" + (seconds != 1 ? "s" : "");
+            return "Remaining " + minutes + " minute" + (minutes != 1 ? "s" : "") + " and " + seconds + " second" + (seconds != 1 ? "s" : "");
         } else if (minutes > 0) {
             return "Remaining " + minutes + " minute" + (minutes != 1 ? "s" : "");
         } else if (seconds > 0) {
