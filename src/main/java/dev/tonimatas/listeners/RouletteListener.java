@@ -27,6 +27,8 @@ public class RouletteListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (!event.getChannel().getId().equals(roulette.getRouletteChannel().getId())) return;
+
         Member member = event.getMember();
         Guild guild = event.getGuild();
 
