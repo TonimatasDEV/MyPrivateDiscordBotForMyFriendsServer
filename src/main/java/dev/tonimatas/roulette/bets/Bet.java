@@ -9,6 +9,20 @@ public abstract class Bet {
         this.money = money;
     }
     
+    public String getRewardMessage(int winnerNumber) {
+        if (isWinner(winnerNumber)) {
+            return "bet on " + getTypePart() + " and won " + getReward(winnerNumber) + "€.";
+        } else {
+            return "bet on " + getTypePart() + " and lost " + getMoney() + "€.";
+        }
+    }
+
+    public String getBetMessage() {
+        return "bet " + money + "€ on " + getTypePart() + ".";
+    }
+    
+    public abstract String getTypePart();
+    
     abstract int getMultiplier();
     
     abstract boolean isWinner(int winnerNumber);

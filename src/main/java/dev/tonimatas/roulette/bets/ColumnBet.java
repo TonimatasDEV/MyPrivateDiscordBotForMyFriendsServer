@@ -9,6 +9,11 @@ public class ColumnBet extends Bet {
     }
 
     @Override
+    public String getTypePart() {
+        return "the " + input + " column";
+    }
+
+    @Override
     int getMultiplier() {
         return 3;
     }
