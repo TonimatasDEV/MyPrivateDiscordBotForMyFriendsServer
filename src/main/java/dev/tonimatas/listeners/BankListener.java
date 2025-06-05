@@ -36,7 +36,7 @@ public class BankListener extends ListenerAdapter {
         if (command.equalsIgnoreCase("money")) {
             if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-                event.replyEmbeds(embed).queue();
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
 
             long money = bankData.getMoney(member.getId());
@@ -45,7 +45,7 @@ public class BankListener extends ListenerAdapter {
         } else if (command.equalsIgnoreCase("money-top")) {
             if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-                event.replyEmbeds(embed).queue();
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
 
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", getMoneyTopString(guild));
@@ -53,7 +53,7 @@ public class BankListener extends ListenerAdapter {
         } else if (command.equalsIgnoreCase("daily")) {
             if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-                event.replyEmbeds(embed).queue();
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
 
             LocalDateTime now = LocalDateTime.now();
