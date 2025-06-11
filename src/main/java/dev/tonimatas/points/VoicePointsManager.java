@@ -1,4 +1,4 @@
-package dev.tonimatas.voicexp;
+package dev.tonimatas.points;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VoiceXPManager {
+public class VoicePointsManager {
     // Map for storaging all users with their respective points
     private final Map<String, Long> userPoints = new HashMap<>();
 
