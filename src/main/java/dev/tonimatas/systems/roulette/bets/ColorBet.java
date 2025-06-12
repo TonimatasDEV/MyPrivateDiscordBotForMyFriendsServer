@@ -1,4 +1,4 @@
-package dev.tonimatas.roulette.bets;
+package dev.tonimatas.systems.roulette.bets;
 
 public class ColorBet extends Bet {
     private final String input;

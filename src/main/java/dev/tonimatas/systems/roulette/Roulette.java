@@ -1,7 +1,7 @@
-package dev.tonimatas.roulette;
+package dev.tonimatas.systems.roulette;
 
-import dev.tonimatas.config.BankData;
-import dev.tonimatas.roulette.bets.Bet;
+import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.roulette.bets.*;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.JDA;
@@ -23,21 +23,28 @@ public class Roulette {
     private static final String ROULETTE_CHANNEL = "1371077395141885972";
     private static final String GUILD_ID = "1371074572786597960";
     private static final Random RAND = new SecureRandom();
+    private static Roulette INSTANCE;
     private final List<Bet> bets;
-    private final BankData bankData;
     private final JDA jda;
     private Thread rouletteThread;
     private String messageId;
 
-    public Roulette(JDA jda, BankData bankData) {
-        this.bankData = bankData;
+    public Roulette(JDA jda) {
         this.jda = jda;
         this.bets = new ArrayList<>();
         this.rouletteThread = rouletteThread();
     }
+    
+    public static Roulette getRoulette(JDA jda) {
+        if (INSTANCE == null) {
+            INSTANCE = new Roulette(jda);
+        }
+        
+        return INSTANCE;
+    }
 
     public void addBet(Bet bet) {
-        bankData.removeMoney(bet.getId(), bet.getMoney());
+        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney());
         bets.add(bet);
 
         if (!rouletteThread.isAlive()) {
@@ -118,7 +125,7 @@ public class Roulette {
             if (member == null) continue;
 
             long reward = bet.getReward(winner);
-            bankData.addMoney(bet.getId(), reward);
+            BotFiles.BANK.addMoney(bet.getId(), reward);
 
             rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
@@ -138,5 +145,15 @@ public class Roulette {
     @NotNull
     public TextChannel getRouletteChannel() {
         return Objects.requireNonNull(getGuild().getTextChannelById(ROULETTE_CHANNEL));
+    }
+
+    public static Bet getBet(String type, String id, String option, long money) {
+        return switch (type) {
+            case "color" -> new ColorBet(id, option, money);
+            case "column" -> new ColumnBet(id, option, money);
+            case "dozen" -> new DozenBet(id, option, money);
+            case "number" -> new NumberBet(id, option, money);
+            default -> null;
+        };
     }
 }

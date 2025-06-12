@@ -1,4 +1,4 @@
-package dev.tonimatas.roulette.bets;
+package dev.tonimatas.systems.roulette.bets;
 
 public abstract class Bet {
     private final String id;
