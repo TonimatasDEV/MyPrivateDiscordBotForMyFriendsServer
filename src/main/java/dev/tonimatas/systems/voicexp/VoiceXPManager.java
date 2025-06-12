@@ -1,4 +1,4 @@
-package dev.tonimatas.voicexp;
+package dev.tonimatas.systems.voicexp;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
