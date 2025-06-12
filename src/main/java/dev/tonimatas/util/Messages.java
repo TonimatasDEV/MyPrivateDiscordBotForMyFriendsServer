@@ -22,13 +22,19 @@ public class Messages {
             try {
                 TimeUnit.SECONDS.sleep(seconds);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                return;
             }
 
             if (thing instanceof InteractionHook hook) {
-                hook.deleteOriginal().queue();
+                hook.deleteOriginal().queue(
+                        null,
+                        throwable -> {}
+                );
             } else if (thing instanceof Message msg) {
-                msg.delete().queue();
+                msg.delete().queue(
+                        null,
+                        throwable -> {}
+                );
             } else {
                 LOGGER.warn("Messages#deleteBeforeX is not compatible with: {}", thing.getClass().getName());
             }
