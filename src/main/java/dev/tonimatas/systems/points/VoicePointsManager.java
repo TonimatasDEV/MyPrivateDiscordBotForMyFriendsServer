@@ -1,4 +1,4 @@
-package dev.tonimatas.points;
+package dev.tonimatas.systems.points;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
