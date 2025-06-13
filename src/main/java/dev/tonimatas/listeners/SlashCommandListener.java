@@ -2,6 +2,7 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.bank.Bank;
+import dev.tonimatas.systems.bank.Payment;
 import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
@@ -10,8 +11,10 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -36,6 +39,7 @@ public class SlashCommandListener extends ListenerAdapter {
             case "money" -> executeMoney(event);
             case "money-top" -> executeMoneyTop(event);
             case "daily" -> executeDaily(event);
+            case "pay" -> executePay(event);
         }
     }
 
@@ -188,6 +192,114 @@ public class SlashCommandListener extends ListenerAdapter {
             String formattedDate = BotFiles.BANK.getNextFormattedDaily(member.getId());
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You need to wait more. Your next daily will be available at " + formattedDate);
             event.replyEmbeds(embed).queue();
+        }
+    }
+
+    private void executePay(SlashCommandInteractionEvent event) {
+        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        Member sender = event.getMember();
+        if (sender == null) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        Member receiver = event.getOption("user").getAsMember();
+        long amount = event.getOption("amount").getAsLong();
+        String reason = event.getOption("reason") != null ? event.getOption("reason").getAsString() : null;
+
+        Payment payment = new Payment(sender, receiver, amount, reason);
+
+        if (!payment.isValid()) {
+            event.replyEmbeds(Messages.getErrorEmbed(event.getJDA(), "Invalid data.")).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        if (!payment.canAfford()) {
+            event.replyEmbeds(Messages.getErrorEmbed(event.getJDA(), "Insufficient funds.")).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        MessageEmbed confirmation = Messages.getDefaultEmbed(event.getJDA(), "Confirm Payment",
+                String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
+                    payment.getAmount(),
+                    receiver.getEffectiveName(),
+                    payment.getFee(),
+                    payment.getTotalCost(),
+                    payment.getReason()));
+
+        String confirmId = "pay:confirm" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + payment.getReason().replaceAll(":", "||");
+        String cancelId = "pay:cancel" + sender.getId();
+
+        event.replyEmbeds(confirmation)
+                .addActionRow(
+                        Button.success(confirmId, "✅"),
+                        Button.danger(cancelId, "❌")
+                )
+                .setEphemeral(true)
+                .queue();
+    }
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        String[] parts = event.getComponentId().split(":");
+
+        if (!parts[0].equals("pay")) return;
+
+        String action = parts[1];
+        String userId = parts[2];
+
+        if (!event.getUser().getId().equals(userId)) {
+            event.reply("You can't interact with this payment.").setEphemeral(true).queue();
+            return;
+        }
+
+        if (action.equals("cancel")) {
+            event.editMessageEmbeds(Messages.getErrorEmbed(event.getJDA(), "Payment cancelled."))
+                    .setComponents()
+                    .queue();
+            return;
+        }
+
+        if (action.equals("confirm")) {
+            String receiverId = parts[3];
+            long amount = Long.parseLong(parts[4]);
+            String reason = parts.length >= 6 ? parts[5].replaceAll("‖", ":") : null;
+
+            Member sender = event.getGuild().getMemberById(userId);
+            Member receiver = event.getGuild().getMemberById(receiverId);
+
+            if (sender == null || receiver == null) {
+                event.reply("One of the users is no longer available.").setEphemeral(true).queue();
+                return;
+            }
+
+            Payment payment = new Payment(sender, receiver, amount, reason);
+
+            if (!payment.canAfford()) {
+                event.editMessageEmbeds(Messages.getErrorEmbed(event.getJDA(), "You no longer have enough money."))
+                        .setComponents()
+                        .queue();
+                return;
+            }
+
+            payment.execute();
+            BotFiles.PAYMENTS.addPayment(payment);
+
+            MessageEmbed success = Messages.getDefaultEmbed(event.getJDA(), "Payment Successful",
+                    String.format("%s sent **%d€** to %s (Fee: %d€)\nReason: %s",
+                            sender.getEffectiveName(),
+                            payment.getAmount(),
+                            receiver.getEffectiveName(),
+                            payment.getFee(),
+                            payment.getReason()));
+
+            event.editMessageEmbeds(success).setComponents().queue();
         }
     }
 }
