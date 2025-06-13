@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextPointsManager {
+    private static final int DEFAULT_POINTS = 5;
+    private static final long MESSAGE_COOLDOWN = 1000;
     private final Map<String, Long> userPoints = new HashMap<>();
     private final Map<String, Long> lastMessageTime = new HashMap<>();
 
-    private final int DEFAULT_POINTS = 5;
-    private final long MESSAGE_COOLDOWN_MS = 1000;
+
+
 
     public void processTextMessage(User user, String content) {
         if (user == null || content == null || content.isBlank()) return;
