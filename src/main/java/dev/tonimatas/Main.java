@@ -30,7 +30,8 @@ public class Main {
                 new AutoRoleListener(),
                 new CountListener(),
                 new JoinLeaveMessageListener(),
-                new TemporalChannelListener()
+                new TemporalChannelListener(),
+                new PaymentListener()
         );
 
         jda.updateCommands()
@@ -46,6 +47,10 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("daily", "Daily money!")
                         .setContexts(InteractionContextType.GUILD))
+                .addCommands(Commands.slash("pay", "Send an amount of money to a member.")
+                        .addOption(OptionType.USER, "user", "The member who is gonna receive your money.", true)
+                        .addOption(OptionType.STRING, "amount", "The quantity of money you are gonna loose.", true)
+                        .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.", false))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
