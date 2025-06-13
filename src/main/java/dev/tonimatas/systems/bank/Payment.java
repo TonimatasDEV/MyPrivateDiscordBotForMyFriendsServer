@@ -1,19 +1,18 @@
 package dev.tonimatas.systems.bank;
 
-import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class Payment implements Comparable<Payment> {
+    private static final double FEE_RATE = 0.05;
     private final Member sender;
     private final Member receiver;
     private final long amount;
     private final String reason;
-    private final double feeRate = 0.05;
+
     private final LocalDateTime date;
 
     public Payment(Member sender, Member receiver, long amount, String reason) {
@@ -45,7 +44,7 @@ public class Payment implements Comparable<Payment> {
     }
 
     public long getFee() {
-        return Math.round(amount * feeRate);
+        return Math.round(amount * FEE_RATE);
     }
 
     public long getTotalCost() {
@@ -60,14 +59,14 @@ public class Payment implements Comparable<Payment> {
         String senderId = sender.getId();
         String receiverId = receiver.getId();
 
-        BotFiles.BANK.removeMoney(senderId,getTotalCost());
-        BotFiles.BANK.addMoney(receiverId,amount);
+        BotFiles.BANK.removeMoney(senderId, getTotalCost());
+        BotFiles.BANK.addMoney(receiverId, amount);
     }
 
     @Override
     public int compareTo(@NotNull Payment o) {
         if (this.date.isAfter(o.date)) return -1;
         if (this.date.isBefore(o.date)) return 1;
-        else return 0;
+        return 0;
     }
 }
