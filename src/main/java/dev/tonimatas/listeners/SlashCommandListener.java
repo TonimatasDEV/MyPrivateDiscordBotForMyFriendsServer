@@ -11,12 +11,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 
 public class SlashCommandListener extends ListenerAdapter {
@@ -72,10 +72,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executePing(SlashCommandInteractionEvent event) {
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(embed).setEphemeral(true).queue();
-        }
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         long startTime = System.currentTimeMillis();
 
@@ -144,11 +141,8 @@ public class SlashCommandListener extends ListenerAdapter {
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-        }
+
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         long money = BotFiles.BANK.getMoney(member.getId());
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
@@ -156,10 +150,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
     
     private void executeMoneyTop(SlashCommandInteractionEvent event) {
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-        }
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", Bank.getMoneyTopString(event.getGuild()));
         event.replyEmbeds(embed).queue();
@@ -173,12 +164,8 @@ public class SlashCommandListener extends ListenerAdapter {
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
+
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime claimedTime = BotFiles.BANK.getDaily(member.getId());
@@ -196,11 +183,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executePay(SlashCommandInteractionEvent event) {
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         Member sender = event.getMember();
         if (sender == null) {
@@ -243,6 +226,17 @@ public class SlashCommandListener extends ListenerAdapter {
                 )
                 .setEphemeral(true)
                 .queue();
+    }
+
+
+    private boolean checkTheUseOfCommandsInTheCommandChannel(SlashCommandInteractionEvent event) {
+        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return true;
+        }
+
+        return false;
     }
 
 
