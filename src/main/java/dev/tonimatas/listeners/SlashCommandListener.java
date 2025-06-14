@@ -40,6 +40,7 @@ public class SlashCommandListener extends ListenerAdapter {
             case "money-top" -> executeMoneyTop(event);
             case "daily" -> executeDaily(event);
             case "pay" -> executePay(event);
+            case "hi" -> executeHi(event);
         }
     }
 
@@ -226,6 +227,38 @@ public class SlashCommandListener extends ListenerAdapter {
                 )
                 .setEphemeral(true)
                 .queue();
+    }
+
+    private void executeHi(SlashCommandInteractionEvent event) {
+        checkTheUseOfCommandsInTheCommandChannel(event);
+
+        LocalTime now = LocalTime.now();
+
+        String greeting;
+        String userName = event.getMember().getEffectiveName();
+
+        if (isBetween(now, 6, 0, 12, 30)) {
+            greeting = "☀️ ¡Buenos días, " + userName + "! 😊";
+        } else if (isBetween(now, 12, 31, 18, 0)) {
+            greeting = "🌤️ ¡Buenas tardes, " + userName + "! 😄";
+        } else if (isBetween(now, 18, 1, 23, 59) || isBetween(now, 0, 0, 2, 0)) {
+            greeting = "🌙 ¡Buenas noches, " + userName + "! 😴";
+        } else {
+            greeting = "😠 ¡Duérmete, bot! Deja de saludar a estas horas...";
+        }
+
+        event.reply(greeting).queue();
+    }
+
+    private boolean isBetween(LocalTime time, int startHour, int startMinute, int endHour, int endMinute) {
+        LocalTime start = LocalTime.of(startHour, startMinute);
+        LocalTime end = LocalTime.of(endHour, endMinute);
+
+        if (start.isBefore(end)) {
+            return !time.isBefore(start) && !time.isAfter(end);
+        } else {
+            return !time.isBefore(start) || time.isBefore(end);
+        }
     }
 
 
