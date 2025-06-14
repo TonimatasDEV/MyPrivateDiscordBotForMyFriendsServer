@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -18,6 +20,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
     private static final String CHANNEL_ID = "1371077003528241253";
 
     private final Map<String, List<Invite>> cachedInvites = new HashMap<>();
+    private GuildInviteDeleteEvent event;
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
@@ -79,5 +82,19 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
         for (Guild guild : event.getJDA().getGuilds()) {
             guild.retrieveInvites().queue(invites -> cachedInvites.put(guild.getId(), invites));
         }
+    }
+
+    @Override
+    public void onGuildInviteCreate(@NotNull GuildInviteCreateEvent event) {
+        updateCachedInvites(event.getGuild());
+    }
+
+    @Override
+    public void onGuildInviteDelete(@NotNull GuildInviteDeleteEvent event) {
+        updateCachedInvites(event.getGuild());
+    }
+
+    private void updateCachedInvites(Guild guild) {
+        guild.retrieveInvites().queue(invites -> cachedInvites.put(guild.getId(), invites));
     }
 }
