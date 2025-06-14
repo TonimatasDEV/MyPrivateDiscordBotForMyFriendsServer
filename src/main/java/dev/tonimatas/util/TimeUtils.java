@@ -1,6 +1,7 @@
 package dev.tonimatas.util;
 
 import java.time.Duration;
+import java.time.LocalTime;
 
 public class TimeUtils {
     public static String formatDuration(Duration duration) {
@@ -15,6 +16,17 @@ public class TimeUtils {
             return "Remaining " + seconds + " second" + (seconds != 1 ? "s" : "");
         } else {
             return "Time's up!";
+        }
+    }
+
+    public static boolean isBetween(LocalTime time, int startHour, int startMinute, int endHour, int endMinute) {
+        LocalTime start = LocalTime.of(startHour, startMinute);
+        LocalTime end = LocalTime.of(endHour, endMinute);
+
+        if (start.isBefore(end)) {
+            return !time.isBefore(start) && !time.isAfter(end);
+        } else {
+            return !time.isBefore(start) || time.isBefore(end);
         }
     }
 }

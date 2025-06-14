@@ -51,6 +51,8 @@ public class Main {
                         .addOption(OptionType.USER, "user", "The member who is gonna receive your money.", true)
                         .addOption(OptionType.STRING, "amount", "The quantity of money you are gonna loose.", true)
                         .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.", false))
+                .addCommands(Commands.slash("hi", "Receive a greeting from our friendly bot.")
+                        .setContexts(InteractionContextType.GUILD))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
