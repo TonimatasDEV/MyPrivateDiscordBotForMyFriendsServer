@@ -31,7 +31,7 @@ public class Main {
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
-                new PaymentListener()
+                new TransactionListener()
         );
 
         jda.updateCommands()
