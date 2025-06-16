@@ -1,7 +1,8 @@
 package dev.tonimatas;
 
-import dev.tonimatas.config.*;
+import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
+import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-// TODO: Add stop method.
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
@@ -62,7 +62,26 @@ public class Main {
         } catch (InterruptedException e) {
             throw new RuntimeException("Error initializing JDA!", e);
         }
-
+        
+        addStopHook(jda);
+        
         LOGGER.info("Done!");
+    }
+    
+    private static void addStopHook(JDA jda) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("Stopping...");
+            jda.shutdown();
+
+            try {
+                jda.awaitShutdown();
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Error stopping JDA!", e);
+            }
+
+            ExecutorManager.stop();
+
+            LOGGER.info("Stopped!");
+        }));
     }
 }
