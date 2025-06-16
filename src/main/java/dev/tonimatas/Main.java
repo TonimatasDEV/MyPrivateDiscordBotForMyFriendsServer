@@ -2,6 +2,7 @@ package dev.tonimatas;
 
 import dev.tonimatas.config.*;
 import dev.tonimatas.listeners.*;
+import dev.tonimatas.systems.bank.DailyNotifier;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -14,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // TODO: Add stop method.
 public class Main {
@@ -34,6 +38,8 @@ public class Main {
                 new PaymentListener()
         );
 
+        DailyNotifier.start(jda);
+
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
                 .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
@@ -53,6 +59,8 @@ public class Main {
                         .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.", false))
                 .addCommands(Commands.slash("hi", "Receive a greeting from our friendly bot.")
                         .setContexts(InteractionContextType.GUILD))
+                .addCommands(Commands.slash("options", "Configure your preferences")
+                        .addOption(OptionType.BOOLEAN, "daily_notify", "Do you prefer if the bot remembers when your daily reward is up?", true))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
