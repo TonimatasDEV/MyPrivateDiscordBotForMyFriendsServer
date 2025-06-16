@@ -1,14 +1,18 @@
 package dev.tonimatas.config;
 
+import dev.tonimatas.systems.bank.Transaction;
+import dev.tonimatas.util.TimeUtils;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BankData extends JsonFile {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     public Map<String, Long> bank = new HashMap<>();
     public Map<String, String> daily = new HashMap<>();
+    private Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
 
     @Override
     protected String getFilePath() {
@@ -20,16 +24,16 @@ public class BankData extends JsonFile {
             setDaily(id, LocalDateTime.now().minusHours(25));
         }
 
-        return FORMATTER.parse(daily.get(id), LocalDateTime::from);
+        return TimeUtils.getLocalDateTime(daily.get(id));
     }
 
     public void setDaily(String id, LocalDateTime time) {
-        daily.put(id, FORMATTER.format(time));
+        daily.put(id, TimeUtils.getStr(time));
         save();
     }
 
     public String getNextFormattedDaily(String id) {
-        return FORMATTER.format(getDaily(id).plusHours(24));
+        return TimeUtils.getStr(getDaily(id).plusHours(24));
     }
 
     public long getMoney(String memberID) {
@@ -40,16 +44,55 @@ public class BankData extends JsonFile {
         return bank.get(memberID);
     }
 
-    public void setMoney(String memberID, long money) {
+    private void setMoney(String memberID, long money) {
         bank.put(memberID, money);
         save();
     }
 
-    public void addMoney(String memberID, long money) {
+    public void addMoney(String memberID, long money, String reason) {
+        addTransaction(new Transaction(memberID, money, reason));
         setMoney(memberID, getMoney(memberID) + money);
     }
 
-    public void removeMoney(String memberID, long money) {
+    public void removeMoney(String memberID, long money, String reason) {
+        addTransaction(new Transaction(memberID, -money, reason));
         setMoney(memberID, getMoney(memberID) - money);
+    }
+
+    public void addTransaction(Transaction transaction) {
+        String userId = transaction.getUserId();
+        ArrayList<Transaction> userTransactions = transactions.get(userId);
+
+        if (userTransactions == null) {
+            userTransactions = new ArrayList<>();
+        }
+
+        if (!userTransactions.isEmpty()) {
+            userTransactions.sort(null);
+
+            int deleteCount = transactions.get(userId).size() - 10;
+
+            if (deleteCount > 1) {
+                for (int i = 0; i < deleteCount; i++) {
+                    userTransactions.removeFirst();
+                }
+            }
+        }
+
+        userTransactions.add(transaction);
+        transactions.put(userId, userTransactions);
+        save();
+    }
+
+    public List<Transaction> getTransactions(String userId) {
+        ArrayList<Transaction> userTransactions = transactions.get(userId);
+
+        if (userTransactions == null) {
+            userTransactions = new ArrayList<>();
+        }
+
+        userTransactions.sort(null);
+
+        return userTransactions;
     }
 }

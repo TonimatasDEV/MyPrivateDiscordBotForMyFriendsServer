@@ -2,7 +2,6 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.bank.Bank;
-import dev.tonimatas.systems.bank.Payment;
 import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
@@ -173,7 +172,7 @@ public class SlashCommandListener extends ListenerAdapter {
         LocalDateTime claimedTime = BotFiles.BANK.getDaily(member.getId());
 
         if (now.isAfter(claimedTime.plusHours(24))) {
-            BotFiles.BANK.addMoney(member.getId(), 100);
+            BotFiles.BANK.addMoney(member.getId(), 100, "Daily money!");
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Daily", "Yeah! You claimed 100€.");
             event.replyEmbeds(embed).queue();
             BotFiles.BANK.setDaily(member.getId(), now);
@@ -194,40 +193,54 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
-        Member receiver = event.getOption("user").getAsMember();
-        long amount = event.getOption("amount").getAsLong();
-        String reason = event.getOption("reason") != null ? event.getOption("reason").getAsString() : null;
+        OptionMapping userOption = event.getOption("user");
+        OptionMapping amountOption = event.getOption("amount");
+        OptionMapping reasonOption = event.getOption("reason");
+        String reason = reasonOption != null ? reasonOption.getAsString() : "No reason provided";
 
-        Payment payment = new Payment(sender, receiver, amount, reason);
+        if (userOption != null && amountOption != null) {
+            Member receiver = userOption.getAsMember();
+            long amount = amountOption.getAsLong();
 
-        if (!payment.isValid()) {
-            event.replyEmbeds(Messages.getErrorEmbed(event.getJDA(), "Invalid data.")).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
+            if (amount <= 0) {
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You can't sent 0€.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                return;
+            }
+
+            if (amount > BotFiles.BANK.getMoney(sender.getId())) {
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Insufficient funds.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                return;
+            }
+            
+            if (receiver == null) {
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid receiver. Please try again later.");
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                return;
+            }
+            
+            long fee = (long) (amount * 0.05);
+            
+            MessageEmbed confirmation = Messages.getDefaultEmbed(event.getJDA(), "Confirm Transaction",
+                    String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
+                            amount - fee,
+                            receiver.getEffectiveName(),
+                            fee,
+                            amount,
+                            reason));
+
+            String confirmId = "pay:confirm" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replaceAll(":", "||");
+            String cancelId = "pay:cancel" + sender.getId();
+
+            event.replyEmbeds(confirmation)
+                    .addActionRow(
+                            Button.success(confirmId, "✅"),
+                            Button.danger(cancelId, "❌")
+                    )
+                    .setEphemeral(true)
+                    .queue();
         }
-
-        if (!payment.canAfford()) {
-            event.replyEmbeds(Messages.getErrorEmbed(event.getJDA(), "Insufficient funds.")).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
-        MessageEmbed confirmation = Messages.getDefaultEmbed(event.getJDA(), "Confirm Payment",
-                String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
-                    payment.getAmount(),
-                    receiver.getEffectiveName(),
-                    payment.getFee(),
-                    payment.getTotalCost(),
-                    payment.getReason()));
-
-        String confirmId = "pay:confirm" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + payment.getReason().replaceAll(":", "||");
-        String cancelId = "pay:cancel" + sender.getId();
-
-        event.replyEmbeds(confirmation)
-                .addActionRow(
-                        Button.success(confirmId, "✅"),
-                        Button.danger(cancelId, "❌")
-                )
-                .setEphemeral(true)
-                .queue();
     }
 
     private void executeHi(SlashCommandInteractionEvent event) {

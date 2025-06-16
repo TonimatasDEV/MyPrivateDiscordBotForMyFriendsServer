@@ -44,7 +44,7 @@ public class Roulette {
     }
 
     public void addBet(Bet bet) {
-        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney());
+        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney(), "Roulette");
         bets.add(bet);
 
         if (!rouletteThread.isAlive()) {
@@ -125,7 +125,7 @@ public class Roulette {
             if (member == null) continue;
 
             long reward = bet.getReward(winner);
-            BotFiles.BANK.addMoney(bet.getId(), reward);
+            BotFiles.BANK.addMoney(bet.getId(), reward, "Roulette");
 
             rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
