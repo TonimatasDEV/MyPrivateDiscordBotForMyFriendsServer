@@ -1,6 +1,6 @@
 package dev.tonimatas.config;
 
-import dev.tonimatas.systems.bank.UserSettings;
+import dev.tonimatas.systems.settings.UserSettings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,10 +16,5 @@ public class UserSettingsData extends JsonFile {
 
     public UserSettings getSettings(String userId) {
         return settings.computeIfAbsent(userId, id -> new UserSettings());
-    }
-
-    public void setNotifyDaily(String userId, boolean value) {
-        getSettings(userId).setNotifyDaily(value);
-        save();
     }
 }

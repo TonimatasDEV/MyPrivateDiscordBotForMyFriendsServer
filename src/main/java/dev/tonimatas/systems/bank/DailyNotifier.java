@@ -3,6 +3,7 @@ package dev.tonimatas.systems.bank;
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.executors.ExecutorManager;
+import dev.tonimatas.systems.settings.UserSettings;
 import net.dv8tion.jda.api.JDA;
 
 import java.time.LocalDateTime;
@@ -27,10 +28,10 @@ public class DailyNotifier implements Runnable {
 
         bank.daily.keySet().forEach(userId -> {
             UserSettings settings = BotFiles.SETTINGS.getSettings(userId);
-            if (!settings.isNotifyDaily() || settings.isNotifiedDaily()) return;
-
-            LocalDateTime lastClaim = bank.getDaily(userId);
-            if (lastClaim == null || now.isBefore(lastClaim.plusHours(24))) return;
+            DailyInfo dailyInfo = bank.getDaily(userId);
+            
+            if (!settings.isNotifyDaily() || dailyInfo.isNotified()) return;
+            if (dailyInfo.getLast() == null || now.isBefore(dailyInfo.getNext())) return;
 
             jda.retrieveUserById(userId).queue(user ->
                     user.openPrivateChannel().queue(channel ->
@@ -39,7 +40,7 @@ public class DailyNotifier implements Runnable {
                     )
             );
 
-            settings.setNotifiedDaily(true);
+            dailyInfo.setNotified(true);
             BotFiles.SETTINGS.save();
         });
     }

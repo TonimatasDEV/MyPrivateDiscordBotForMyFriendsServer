@@ -1,5 +1,6 @@
 package dev.tonimatas.config;
 
+import dev.tonimatas.systems.bank.DailyInfo;
 import dev.tonimatas.systems.bank.Transaction;
 import dev.tonimatas.util.TimeUtils;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class BankData extends JsonFile {
     public Map<String, Long> bank = new HashMap<>();
-    public Map<String, String> daily = new HashMap<>();
+    public Map<String, DailyInfo> daily = new HashMap<>();
     @SuppressWarnings("FieldMayBeFinal")
     private Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
 
@@ -20,21 +21,9 @@ public class BankData extends JsonFile {
         return "data/bank.json";
     }
 
-    public LocalDateTime getDaily(String id) {
-        if (!daily.containsKey(id)) {
-            setDaily(id, LocalDateTime.now().minusHours(25));
-        }
-
-        return TimeUtils.getLocalDateTime(daily.get(id));
-    }
-
-    public void setDaily(String id, LocalDateTime time) {
-        daily.put(id, TimeUtils.getStr(time));
-        save();
-    }
-
-    public String getNextFormattedDaily(String id) {
-        return TimeUtils.getStr(getDaily(id).plusHours(24));
+    public DailyInfo getDaily(String userId) {
+        daily.computeIfAbsent(userId, id -> new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false));
+        return daily.get(userId);
     }
 
     public long getMoney(String memberID) {

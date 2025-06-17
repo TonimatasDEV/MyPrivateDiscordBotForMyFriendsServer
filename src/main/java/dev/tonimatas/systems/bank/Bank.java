@@ -45,10 +45,11 @@ public class Bank {
         for (Transaction transaction : transactions) {
             text.append(String.format("%d. ", i++))
                     .append(transaction.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                    .append(" | ")
+                    .append("  |  ")
                     .append(transaction.getReason())
-                    .append(" | ")
-                    .append(transaction.getAmount());
+                    .append("  |  ")
+                    .append(transaction.getAmount())
+                    .append("€\n");
         }
 
         return text.toString();
