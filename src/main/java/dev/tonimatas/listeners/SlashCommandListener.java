@@ -2,6 +2,7 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.bank.Bank;
+import dev.tonimatas.systems.bank.UserSettings;
 import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
@@ -42,6 +43,7 @@ public class SlashCommandListener extends ListenerAdapter {
             case "pay" -> executePay(event);
             case "hi" -> executeHi(event);
             case "transactions" -> executeTransactions(event);
+            case "options" -> executeOptions(event);
         }
     }
 
@@ -177,6 +179,9 @@ public class SlashCommandListener extends ListenerAdapter {
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Daily", "Yeah! You claimed 100€.");
             event.replyEmbeds(embed).queue();
             BotFiles.BANK.setDaily(member.getId(), now);
+            UserSettings settings = BotFiles.SETTINGS.getSettings(event.getUser().getId());
+            settings.setNotifiedDaily(false);
+            BotFiles.SETTINGS.save();
         } else {
             String formattedDate = BotFiles.BANK.getNextFormattedDaily(member.getId());
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You need to wait more. Your next daily will be available at " + formattedDate);
@@ -291,4 +296,17 @@ public class SlashCommandListener extends ListenerAdapter {
         event.replyEmbeds(embed).queue();
     }
 
+    private void executeOptions(SlashCommandInteractionEvent event) {
+        checkTheUseOfCommandsInTheCommandChannel(event);
+        boolean notify = event.getOption("daily_notify").getAsBoolean();
+        UserSettings settings = BotFiles.SETTINGS.getSettings(event.getUser().getId());
+        settings.setNotifyDaily(notify);
+        settings.setNotifiedDaily(false);
+        BotFiles.SETTINGS.save();
+
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Settings changed",
+                "Daily notifier " + (notify ? "enabled." : "disabled."));
+
+        event.replyEmbeds(embed).setEphemeral(true).queue();
+    }
 }

@@ -2,6 +2,7 @@ package dev.tonimatas;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
+import dev.tonimatas.systems.bank.DailyNotifier;
 import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -15,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -33,6 +37,8 @@ public class Main {
                 new TemporalChannelListener(),
                 new TransactionListener()
         );
+
+
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
@@ -53,6 +59,8 @@ public class Main {
                         .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.", false))
                 .addCommands(Commands.slash("hi", "Receive a greeting from our friendly bot.")
                         .setContexts(InteractionContextType.GUILD))
+                .addCommands(Commands.slash("options", "Configure your preferences")
+                        .addOption(OptionType.BOOLEAN, "daily_notify", "Do you prefer if the bot remembers when your daily reward is up?", true))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
@@ -64,7 +72,9 @@ public class Main {
         }
         
         addStopHook(jda);
-        
+
+        DailyNotifier.init(jda);
+
         LOGGER.info("Done!");
     }
     
