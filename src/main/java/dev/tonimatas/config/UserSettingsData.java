@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserSettingsData extends JsonFile {
-    private final Map<String, UserSettings> settings = new HashMap<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private Map<String, UserSettings> settings = new HashMap<>();
 
     @Override
     protected String getFilePath() {

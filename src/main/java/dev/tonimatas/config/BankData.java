@@ -12,7 +12,8 @@ import java.util.Map;
 public class BankData extends JsonFile {
     public Map<String, Long> bank = new HashMap<>();
     public Map<String, String> daily = new HashMap<>();
-    private final Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
+    @SuppressWarnings("FieldMayBeFinal")
+    private Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
 
     @Override
     protected String getFilePath() {

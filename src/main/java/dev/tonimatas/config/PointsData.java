@@ -30,6 +30,4 @@ public class PointsData extends JsonFile {
     public void removePoints(String memberId, long points) {
         setPoints(memberId, getPoints(memberId) - points);
     }
-
-
 }
