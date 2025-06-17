@@ -1,10 +1,11 @@
 package dev.tonimatas.systems.bank;
 
 import dev.tonimatas.util.TimeUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
     private final String userId;
     private final long amount;
     private final String time;
@@ -31,5 +32,12 @@ public class Transaction {
 
     public String getReason() {
         return reason;
+    }
+
+    @Override
+    public int compareTo(@NotNull Transaction o) {
+        if (this.getTime().isAfter(o.getTime())) return -1;
+        if (this.getTime().isBefore(o.getTime())) return 1;
+        return 0;
     }
 }
