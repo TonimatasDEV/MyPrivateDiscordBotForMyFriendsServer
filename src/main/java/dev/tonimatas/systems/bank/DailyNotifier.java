@@ -2,11 +2,10 @@ package dev.tonimatas.systems.bank;
 
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class DailyNotifier implements Runnable {
@@ -41,13 +40,7 @@ public class DailyNotifier implements Runnable {
         });
     }
 
-    public static void start(JDA jda) {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(
-                new DailyNotifier(jda),
-                0,
-                1,
-                TimeUnit.MINUTES
-        );
+    public static void init(JDA jda) {
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda),0,TimeUnit.MINUTES);
     }
 }

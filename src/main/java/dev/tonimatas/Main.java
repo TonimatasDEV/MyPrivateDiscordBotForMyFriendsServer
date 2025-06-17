@@ -2,6 +2,7 @@ package dev.tonimatas;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
+import dev.tonimatas.systems.bank.DailyNotifier;
 import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -37,7 +38,7 @@ public class Main {
                 new TransactionListener()
         );
 
-        DailyNotifier.start(jda);
+
 
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
@@ -71,7 +72,9 @@ public class Main {
         }
         
         addStopHook(jda);
-        
+
+        DailyNotifier.init(jda);
+
         LOGGER.info("Done!");
     }
     
