@@ -27,10 +27,11 @@ public class Main {
                 .setAutoReconnect(true)
                 .build();
 
-        jda.addEventListener(new SlashCommandListener(),
+        jda.addEventListener(new AutoCompleteListener(),
                 new AutoRoleListener(),
                 new CountListener(),
                 new JoinLeaveMessageListener(),
+                new SlashCommandListener(),
                 new TemporalChannelListener(),
                 new TransactionListener()
         );

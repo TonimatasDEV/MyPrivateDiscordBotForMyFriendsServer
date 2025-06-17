@@ -17,7 +17,6 @@ public class CountListener extends ListenerAdapter {
 
         if (message.getAuthor().isBot()) return;
 
-
         if (!channelId.equals(COUNT_CHANNEL_ID)) {
             return;
         }
