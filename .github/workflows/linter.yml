@@ -27,5 +27,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CHECKOV: false
-          SHELL_SHFMT: false
-          BASH_EXEC: false
+          VALIDATE_SHELL_SHFMT: false
+          VALIDATE_BASH_EXEC: false
