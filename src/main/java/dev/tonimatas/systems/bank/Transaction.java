@@ -10,7 +10,7 @@ public class Transaction implements Comparable<Transaction> {
     private final long amount;
     private final String time;
     private final String reason;
-    
+
     public Transaction(String userId, long amount, String reason) {
         this.userId = userId;
         this.amount = amount;

@@ -34,13 +34,23 @@ public class Roulette {
         this.bets = new ArrayList<>();
         this.rouletteThread = rouletteThread();
     }
-    
+
     public static Roulette getRoulette(JDA jda) {
         if (INSTANCE == null) {
             INSTANCE = new Roulette(jda);
         }
-        
+
         return INSTANCE;
+    }
+
+    public static Bet getBet(String type, String id, String option, long money) {
+        return switch (type) {
+            case "color" -> new ColorBet(id, option, money);
+            case "column" -> new ColumnBet(id, option, money);
+            case "dozen" -> new DozenBet(id, option, money);
+            case "number" -> new NumberBet(id, option, money);
+            default -> null;
+        };
     }
 
     public void addBet(Bet bet) {
@@ -145,15 +155,5 @@ public class Roulette {
     @NotNull
     public TextChannel getRouletteChannel() {
         return Objects.requireNonNull(getGuild().getTextChannelById(ROULETTE_CHANNEL));
-    }
-
-    public static Bet getBet(String type, String id, String option, long money) {
-        return switch (type) {
-            case "color" -> new ColorBet(id, option, money);
-            case "column" -> new ColumnBet(id, option, money);
-            case "dozen" -> new DozenBet(id, option, money);
-            case "number" -> new NumberBet(id, option, money);
-            default -> null;
-        };
     }
 }

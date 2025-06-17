@@ -33,7 +33,7 @@ public class SlashCommandListener extends ListenerAdapter {
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
+
         switch (command) {
             case "ping" -> executePing(event);
             case "bet" -> executeBet(event);
@@ -83,16 +83,16 @@ public class SlashCommandListener extends ListenerAdapter {
         event.reply("Pong!").queue(response ->
                 response.editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - startTime).queue());
     }
-    
+
     private void executeBet(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
-        
+
         if (member == null || event.getGuild() == null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
+
         String id = member.getId();
 
         if (!event.getChannel().getId().equals(Roulette.getRoulette(event.getJDA()).getRouletteChannel().getId())) {
@@ -136,7 +136,7 @@ public class SlashCommandListener extends ListenerAdapter {
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
     }
-    
+
     private void executeMoney(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
 
@@ -152,14 +152,14 @@ public class SlashCommandListener extends ListenerAdapter {
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
         event.replyEmbeds(embed).queue();
     }
-    
+
     private void executeMoneyTop(SlashCommandInteractionEvent event) {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money Top", Bank.getMoneyTopString(event.getGuild()));
         event.replyEmbeds(embed).queue();
     }
-    
+
     private void executeDaily(SlashCommandInteractionEvent event) {
         Member member = event.getMember();
 
@@ -219,15 +219,15 @@ public class SlashCommandListener extends ListenerAdapter {
                 event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
-            
+
             if (receiver == null) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid receiver. Please try again later.");
                 event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
-            
+
             long fee = (long) (amount * 0.05);
-            
+
             MessageEmbed confirmation = Messages.getDefaultEmbed(event.getJDA(), "Confirm Transaction",
                     String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
                             amount - fee,

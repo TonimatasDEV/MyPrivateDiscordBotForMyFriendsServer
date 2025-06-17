@@ -5,8 +5,8 @@ import dev.tonimatas.systems.bank.UserSettings;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserSettingsData extends  JsonFile{
-    private Map<String, UserSettings> settings = new HashMap<>();
+public class UserSettingsData extends JsonFile {
+    private final Map<String, UserSettings> settings = new HashMap<>();
 
     @Override
     protected String getFilePath() {

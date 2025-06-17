@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class ExecutorManager {
     private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorManager.class);
-    
+
     public static void addRunnableAtFixedRate(Runnable runnable, long delay, TimeUnit unit) {
         executor.scheduleAtFixedRate(runnable, 0, delay, unit);
     }

@@ -28,12 +28,14 @@ public class Messages {
             if (thing instanceof InteractionHook hook) {
                 hook.deleteOriginal().queue(
                         null,
-                        throwable -> {}
+                        throwable -> {
+                        }
                 );
             } else if (thing instanceof Message msg) {
                 msg.delete().queue(
                         null,
-                        throwable -> {}
+                        throwable -> {
+                        }
                 );
             } else {
                 LOGGER.warn("Messages#deleteBeforeX is not compatible with: {}", thing.getClass().getName());
