@@ -278,7 +278,7 @@ public class SlashCommandListener extends ListenerAdapter {
 
             String description = "Daily notifier " + (dailyNotify ? "enabled." : "disabled.");
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Settings changed", description);
-            event.replyEmbeds(embed).setEphemeral(true).queue();
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
     }
 }
