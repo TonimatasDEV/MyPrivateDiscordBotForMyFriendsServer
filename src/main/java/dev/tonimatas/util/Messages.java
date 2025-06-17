@@ -26,17 +26,9 @@ public class Messages {
             }
 
             if (thing instanceof InteractionHook hook) {
-                hook.deleteOriginal().queue(
-                        null,
-                        throwable -> {
-                        }
-                );
+                hook.deleteOriginal().queue(null, null);
             } else if (thing instanceof Message msg) {
-                msg.delete().queue(
-                        null,
-                        throwable -> {
-                        }
-                );
+                msg.delete().queue(null, null);
             } else {
                 LOGGER.warn("Messages#deleteBeforeX is not compatible with: {}", thing.getClass().getName());
             }
