@@ -18,9 +18,7 @@ import java.util.Map;
 
 public class JoinLeaveMessageListener extends ListenerAdapter {
     private static final String CHANNEL_ID = "1371077003528241253";
-
     private final Map<String, List<Invite>> cachedInvites = new HashMap<>();
-    private GuildInviteDeleteEvent event;
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {

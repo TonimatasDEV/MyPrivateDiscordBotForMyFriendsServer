@@ -3,6 +3,7 @@ package dev.tonimatas.systems.bank;
 import dev.tonimatas.config.BankData;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.executors.ExecutorManager;
+import dev.tonimatas.systems.settings.UserSettings;
 import net.dv8tion.jda.api.JDA;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ public class DailyNotifier implements Runnable {
     }
 
     public static void init(JDA jda) {
-        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 0, TimeUnit.MINUTES);
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
     }
 
     @Override
@@ -27,19 +28,19 @@ public class DailyNotifier implements Runnable {
 
         bank.daily.keySet().forEach(userId -> {
             UserSettings settings = BotFiles.SETTINGS.getSettings(userId);
-            if (!settings.isNotifyDaily() || settings.isNotifiedDaily()) return;
-
-            LocalDateTime lastClaim = bank.getDaily(userId);
-            if (lastClaim == null || now.isBefore(lastClaim.plusHours(24))) return;
+            DailyInfo dailyInfo = bank.getDaily(userId);
+            
+            if (!settings.isNotifyDaily() || dailyInfo.isNotified()) return;
+            if (dailyInfo.getLast() == null || now.isBefore(dailyInfo.getNext())) return;
 
             jda.retrieveUserById(userId).queue(user ->
                     user.openPrivateChannel().queue(channel ->
-                            channel.sendMessage("Reclama tu daily, ya está disponible, usa `/daily` para reclamarla")
+                            channel.sendMessage("Reclama tú daily, ya está disponible, usa `/daily` en el canal de comandos para reclamarlo.")
                                     .queue()
                     )
             );
 
-            settings.setNotifiedDaily(true);
+            dailyInfo.setNotified(true);
             BotFiles.SETTINGS.save();
         });
     }

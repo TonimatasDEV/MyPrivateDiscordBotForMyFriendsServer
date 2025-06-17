@@ -2,15 +2,13 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.bank.Bank;
-import dev.tonimatas.systems.bank.UserSettings;
+import dev.tonimatas.systems.bank.DailyInfo;
 import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
-import dev.tonimatas.util.Strings;
 import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -18,7 +16,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
 
 public class SlashCommandListener extends ListenerAdapter {
     private static final String COMMANDS_CHANNEL = "1380277341405581443";
@@ -44,34 +41,6 @@ public class SlashCommandListener extends ListenerAdapter {
             case "hi" -> executeHi(event);
             case "transactions" -> executeTransactions(event);
             case "options" -> executeOptions(event);
-        }
-    }
-
-    @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
-        if (event.getName().equalsIgnoreCase("bet")) {
-            String option = event.getFocusedOption().getName();
-            String focusedValue = event.getFocusedOption().getValue();
-
-            if (option.equalsIgnoreCase("bet-type")) {
-                String[] options = new String[]{"color", "column", "dozen", "number"};
-                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
-            } else if (option.equalsIgnoreCase("bet-option")) {
-                OptionMapping betType = event.getOption("bet-type");
-
-                if (betType == null) return;
-                String[] options;
-
-                switch (betType.getAsString()) {
-                    case "color" -> options = new String[]{"green", "red", "black"};
-                    case "column", "dozen" -> options = new String[]{"first", "second", "third"};
-                    default -> options = new String[]{};
-                }
-
-                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
-            } else {
-                event.replyChoices(Collections.emptyList()).queue();
-            }
         }
     }
 
@@ -172,18 +141,16 @@ public class SlashCommandListener extends ListenerAdapter {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime claimedTime = BotFiles.BANK.getDaily(member.getId());
+        DailyInfo dailyInfo = BotFiles.BANK.getDaily(member.getId());
 
-        if (now.isAfter(claimedTime.plusHours(24))) {
+        if (now.isAfter(dailyInfo.getNext())) {
             BotFiles.BANK.addMoney(member.getId(), 100, "Daily money!");
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Daily", "Yeah! You claimed 100€.");
             event.replyEmbeds(embed).queue();
-            BotFiles.BANK.setDaily(member.getId(), now);
-            UserSettings settings = BotFiles.SETTINGS.getSettings(event.getUser().getId());
-            settings.setNotifiedDaily(false);
-            BotFiles.SETTINGS.save();
+            dailyInfo.setLast(now);
+            dailyInfo.setNotified(false);
         } else {
-            String formattedDate = BotFiles.BANK.getNextFormattedDaily(member.getId());
+            String formattedDate = BotFiles.BANK.getDaily(member.getId()).getNextFormatted();
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You need to wait more. Your next daily will be available at " + formattedDate);
             event.replyEmbeds(embed).queue();
         }
@@ -236,8 +203,8 @@ public class SlashCommandListener extends ListenerAdapter {
                             amount,
                             reason));
 
-            String confirmId = "pay:confirm" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replaceAll(":", "||");
-            String cancelId = "pay:cancel" + sender.getId();
+            String confirmId = "pay:confirm:" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replaceAll(":", "||");
+            String cancelId = "pay:cancel:" + sender.getId();
 
             event.replyEmbeds(confirmation)
                     .addActionRow(
@@ -298,15 +265,20 @@ public class SlashCommandListener extends ListenerAdapter {
 
     private void executeOptions(SlashCommandInteractionEvent event) {
         checkTheUseOfCommandsInTheCommandChannel(event);
-        boolean notify = event.getOption("daily_notify").getAsBoolean();
-        UserSettings settings = BotFiles.SETTINGS.getSettings(event.getUser().getId());
-        settings.setNotifyDaily(notify);
-        settings.setNotifiedDaily(false);
-        BotFiles.SETTINGS.save();
+        
+        OptionMapping dailyNotifyOption = event.getOption("daily_notify");
+        
+        if (dailyNotifyOption != null) {
+            boolean dailyNotify = dailyNotifyOption.getAsBoolean();
 
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Settings changed",
-                "Daily notifier " + (notify ? "enabled." : "disabled."));
+            String userId = event.getUser().getId();
+            
+            BotFiles.SETTINGS.getSettings(userId).setNotifyDaily(dailyNotify);
+            BotFiles.BANK.getDaily(userId).setNotified(false);
 
-        event.replyEmbeds(embed).setEphemeral(true).queue();
+            String description = "Daily notifier " + (dailyNotify ? "enabled." : "disabled.");
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Settings changed", description);
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+        }
     }
 }

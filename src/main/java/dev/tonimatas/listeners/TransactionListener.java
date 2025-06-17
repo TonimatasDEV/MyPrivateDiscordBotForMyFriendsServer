@@ -35,7 +35,7 @@ public class TransactionListener extends ListenerAdapter {
         if (action.equals("cancel")) {
             event.editMessageEmbeds(Messages.getErrorEmbed(event.getJDA(), "Transaction cancelled."))
                     .setComponents()
-                    .queue();
+                    .queue(Messages.deleteBeforeX(10));
             return;
         }
 
@@ -55,7 +55,7 @@ public class TransactionListener extends ListenerAdapter {
 
             if (BotFiles.BANK.getMoney(sender.getId()) < amount) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You no longer have enough money.");
-                event.editMessageEmbeds(embed).setComponents().queue();
+                event.editMessageEmbeds(embed).setComponents().queue(Messages.deleteBeforeX(10));
                 return;
             }
 
@@ -73,7 +73,7 @@ public class TransactionListener extends ListenerAdapter {
                     )
             );
 
-            event.editMessageEmbeds(success).setComponents().queue();
+            event.editMessageEmbeds(success).setComponents().queue(Messages.deleteBeforeX(15));
         }
     }
 }

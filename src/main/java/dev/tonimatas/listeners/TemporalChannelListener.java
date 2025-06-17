@@ -44,7 +44,6 @@ public class TemporalChannelListener extends ListenerAdapter {
 
         if (category == null) return;
 
-
         removeEmptyChannels(category);
         createChannelIfNecessary(category);
     }
