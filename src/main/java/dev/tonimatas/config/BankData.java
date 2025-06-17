@@ -57,19 +57,17 @@ public class BankData extends JsonFile {
             userTransactions = new ArrayList<>();
         }
 
-        if (!userTransactions.isEmpty()) {
-            userTransactions.sort(null);
+        userTransactions.add(transaction);
+        userTransactions.sort(null);
 
-            int deleteCount = transactions.get(userId).size() - 10;
+        int deleteCount = userTransactions.size() - 10;
 
-            if (deleteCount > 1) {
-                for (int i = 0; i < deleteCount; i++) {
-                    userTransactions.removeFirst();
-                }
+        if (deleteCount > 0) {
+            for (int i = 0; i < deleteCount; i++) {
+                userTransactions.removeLast();
             }
         }
 
-        userTransactions.add(transaction);
         transactions.put(userId, userTransactions);
         save();
     }
