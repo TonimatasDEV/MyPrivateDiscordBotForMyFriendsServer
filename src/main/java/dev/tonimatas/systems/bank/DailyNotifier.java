@@ -18,7 +18,7 @@ public class DailyNotifier implements Runnable {
     }
 
     public static void init(JDA jda) {
-        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 0, TimeUnit.MINUTES);
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
     }
 
     @Override
