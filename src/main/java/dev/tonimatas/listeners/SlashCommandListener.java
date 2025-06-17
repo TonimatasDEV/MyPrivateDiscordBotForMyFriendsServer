@@ -66,7 +66,8 @@ public class SlashCommandListener extends ListenerAdapter {
 
         if (!event.getChannel().getId().equals(Roulette.getRoulette(event.getJDA()).getRouletteChannel().getId())) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Roulette channel.");
-            event.replyEmbeds(embed).setEphemeral(true).queue();
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
         }
 
         OptionMapping betType = event.getOption("bet-type");
