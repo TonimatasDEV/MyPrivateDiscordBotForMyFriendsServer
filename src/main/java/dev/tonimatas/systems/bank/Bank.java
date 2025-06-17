@@ -4,6 +4,7 @@ import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,26 @@ public class Bank {
             }
 
             text.append(i).append(". ").append(name).append(" - ").append(money).append("€\n");
+        }
+
+        return text.toString();
+    }
+
+    public static String getTransactionsString(Member member) {
+        List<Transaction> transactions = BotFiles.BANK.getTransactions(member.getId());
+
+        StringBuilder text = new StringBuilder();
+
+        text.append("**").append(member.getEffectiveName()).append(":**\n");
+
+        int i = 1;
+        for (Transaction transaction : transactions) {
+            text.append(String.format("%d. ", i++))
+                    .append(transaction.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                    .append(" | ")
+                    .append(transaction.getReason())
+                    .append(" | ")
+                    .append(transaction.getAmount());
         }
 
         return text.toString();

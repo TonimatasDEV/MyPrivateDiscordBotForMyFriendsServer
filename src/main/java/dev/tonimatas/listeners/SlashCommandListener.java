@@ -41,6 +41,7 @@ public class SlashCommandListener extends ListenerAdapter {
             case "daily" -> executeDaily(event);
             case "pay" -> executePay(event);
             case "hi" -> executeHi(event);
+            case "transactions" -> executeTransactions(event);
         }
     }
 
@@ -274,5 +275,20 @@ public class SlashCommandListener extends ListenerAdapter {
         return false;
     }
 
+    private void executeTransactions(SlashCommandInteractionEvent event) {
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+
+        Member sender = event.getMember();
+
+        if (sender == null) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", Bank.getTransactionsString(sender));
+
+        event.replyEmbeds(embed).queue();
+    }
 
 }
