@@ -38,8 +38,6 @@ public class Main {
                 new TransactionListener()
         );
 
-
-
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!"))
                 .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
@@ -61,6 +59,7 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("options", "Configure your preferences")
                         .addOption(OptionType.BOOLEAN, "daily_notify", "Do you prefer if the bot remembers when your daily reward is up?", true))
+                .addCommands(Commands.slash("transactions", "See your own transactions."))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
