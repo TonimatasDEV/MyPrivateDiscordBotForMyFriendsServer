@@ -12,7 +12,7 @@ public class TransactionListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         Guild guild = event.getGuild();
-        
+
         if (guild == null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error");
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
@@ -63,8 +63,8 @@ public class TransactionListener extends ListenerAdapter {
             BotFiles.BANK.removeMoney(sender.getId(), amount, "Sent to " + receiver.getEffectiveName());
             BotFiles.BANK.addMoney(receiver.getId(), amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
 
-            MessageEmbed success = Messages.getDefaultEmbed(event.getJDA(), "Transaction Successful", 
-                    String.format("%s sent **%d€** to %s (Fee: %d€)\nReason: %s", 
+            MessageEmbed success = Messages.getDefaultEmbed(event.getJDA(), "Transaction Successful",
+                    String.format("%s sent **%d€** to %s (Fee: %d€)\nReason: %s",
                             sender.getEffectiveName(),
                             amount - fee,
                             receiver.getEffectiveName(),

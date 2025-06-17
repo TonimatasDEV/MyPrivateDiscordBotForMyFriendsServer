@@ -1,7 +1,5 @@
 package dev.tonimatas.config;
 
-import dev.tonimatas.systems.bank.UserSettings;
-
 public class BotFiles {
     public static BotConfig CONFIG = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
     public static BankData BANK = JsonFile.loadOrCreate(BankData.class, "data/bank.json");

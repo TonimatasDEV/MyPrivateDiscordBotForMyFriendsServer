@@ -16,9 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -69,14 +66,14 @@ public class Main {
         } catch (InterruptedException e) {
             throw new RuntimeException("Error initializing JDA!", e);
         }
-        
+
         addStopHook(jda);
 
         DailyNotifier.init(jda);
 
         LOGGER.info("Done!");
     }
-    
+
     private static void addStopHook(JDA jda) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping...");

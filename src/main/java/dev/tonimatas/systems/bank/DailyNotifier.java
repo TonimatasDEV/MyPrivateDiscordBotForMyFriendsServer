@@ -17,6 +17,10 @@ public class DailyNotifier implements Runnable {
         this.bank = BotFiles.BANK;
     }
 
+    public static void init(JDA jda) {
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 0, TimeUnit.MINUTES);
+    }
+
     @Override
     public void run() {
         LocalDateTime now = LocalDateTime.now();
@@ -29,18 +33,14 @@ public class DailyNotifier implements Runnable {
             if (lastClaim == null || now.isBefore(lastClaim.plusHours(24))) return;
 
             jda.retrieveUserById(userId).queue(user ->
-                user.openPrivateChannel().queue(channel ->
-                    channel.sendMessage("Reclama tu daily, ya está disponible, usa `/daily` para reclamarla")
-                            .queue()
-                )
+                    user.openPrivateChannel().queue(channel ->
+                            channel.sendMessage("Reclama tu daily, ya está disponible, usa `/daily` para reclamarla")
+                                    .queue()
+                    )
             );
 
             settings.setNotifiedDaily(true);
             BotFiles.SETTINGS.save();
         });
-    }
-
-    public static void init(JDA jda) {
-        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda),0,TimeUnit.MINUTES);
     }
 }

@@ -5,7 +5,8 @@ import dev.tonimatas.systems.bank.UserSettings;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserSettingsData extends  JsonFile{
+public class UserSettingsData extends JsonFile {
+    @SuppressWarnings("FieldMayBeFinal")
     private Map<String, UserSettings> settings = new HashMap<>();
 
     @Override

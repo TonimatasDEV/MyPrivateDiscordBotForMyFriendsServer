@@ -12,8 +12,6 @@ public class TextPointsManager {
     private final Map<String, Long> lastMessageTime = new HashMap<>();
 
 
-
-
     public void processTextMessage(User user, String content) {
         if (user == null || content == null || content.isBlank()) return;
 
@@ -37,7 +35,7 @@ public class TextPointsManager {
     }
 
     private void addPoints(String userId, long points) {
-        userPoints.put(userId, userPoints.getOrDefault(userId,0L) + points);
+        userPoints.put(userId, userPoints.getOrDefault(userId, 0L) + points);
     }
 
     public long getPoints(String userId) {
