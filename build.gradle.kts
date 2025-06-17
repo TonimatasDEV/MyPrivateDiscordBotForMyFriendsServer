@@ -3,9 +3,6 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-beta16"
 }
 
-val jdaVersion: String by extra
-val logbackVersion: String by extra
-val gsonVersion: String by extra
 val projectVersion: String by extra
 
 group = "dev.tonimatas"
@@ -16,12 +13,15 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:$jdaVersion") {
+    // https://github.com/discord-jda/JDA/releases
+    implementation("net.dv8tion:JDA:5.6.1") {
         exclude(module = "opus-java")
     }
 
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("com.google.code.gson:gson:$gsonVersion")
+    // https://github.com/qos-ch/logback/releases
+    implementation("ch.qos.logback:logback-classic:1.5.18")
+    // https://github.com/google/gson/releases
+    implementation("com.google.code.gson:gson:2.13.1")
 }
 
 tasks.jar {
