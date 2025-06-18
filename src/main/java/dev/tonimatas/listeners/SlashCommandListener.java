@@ -25,13 +25,8 @@ public class SlashCommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         String command = event.getFullCommandName();
-        Member member = event.getMember();
 
-        if (member == null || event.getGuild() == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
+        if (checkIfUserOrGuildDoesntExist(event)) return;
 
         switch (command) {
             case "ping" -> executePing(event);
@@ -56,21 +51,16 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeBet(SlashCommandInteractionEvent event) {
-        Member member = event.getMember();
-
-        if (member == null || event.getGuild() == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
-        String id = member.getId();
+        if (checkIfUserOrGuildDoesntExist(event)) return;
 
         if (!event.getChannel().getId().equals(Roulette.getRoulette(event.getJDA()).getRouletteChannel().getId())) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Roulette channel.");
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
+
+        Member member = event.getMember();
+        String id = member.getId();
 
         OptionMapping betType = event.getOption("bet-type");
         OptionMapping betOption = event.getOption("bet-option");
@@ -111,16 +101,11 @@ public class SlashCommandListener extends ListenerAdapter {
 
     private void executeMoney(SlashCommandInteractionEvent event) {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        if (checkIfUserOrGuildDoesntExist(event)) return;
 
         Member member = event.getMember();
-
-        if (member == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
         OptionMapping option = event.getOption("user");
+
         if (option != null) {
             member = option.getAsMember();
         }
@@ -144,15 +129,10 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeDaily(SlashCommandInteractionEvent event) {
-        Member member = event.getMember();
-
-        if (member == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        if (checkIfUserOrGuildDoesntExist(event)) return;
+
+        Member member = event.getMember();
 
         LocalDateTime now = LocalDateTime.now();
         DailyInfo dailyInfo = BotFiles.BANK.getDaily(member.getId());
@@ -172,13 +152,9 @@ public class SlashCommandListener extends ListenerAdapter {
 
     private void executePay(SlashCommandInteractionEvent event) {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        if (checkIfUserOrGuildDoesntExist(event)) return;
 
         Member sender = event.getMember();
-        if (sender == null) {
-            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
-            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
 
         OptionMapping userOption = event.getOption("user");
         OptionMapping amountOption = event.getOption("amount");
@@ -231,20 +207,15 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeHi(SlashCommandInteractionEvent event) {
-        checkTheUseOfCommandsInTheCommandChannel(event);
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        if (checkIfUserOrGuildDoesntExist(event)) return;
+
+        Member member = event.getMember();
 
         LocalTime nowTime = LocalTime.now();
         LocalDate nowDate = LocalDate.now();
 
         String greeting;
-        Member member = event.getMember();
-
-        if (member == null) {
-            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
-            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
         String userName = member.getEffectiveName();
         int startHourNight = isSummer(LocalDateTime.of(nowDate, nowTime)) ? 22 : 18;
 
@@ -261,27 +232,21 @@ public class SlashCommandListener extends ListenerAdapter {
         event.reply(greeting).queue();
     }
 
-    private boolean checkTheUseOfCommandsInTheCommandChannel(SlashCommandInteractionEvent event) {
-        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
-            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
-            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return true;
-        }
+    private boolean isSummer(LocalDateTime date) {
+        // Fechas inicio y fin de verano
+        LocalDateTime summerStart = LocalDateTime.of(date.getYear(), 5, 15, 0, 0);
+        LocalDateTime summerEnd = LocalDateTime.of(date.getYear(), 10, 15, 23, 59);
 
-        return false;
+        return date.isAfter(ChronoLocalDateTime.from(summerStart))
+                && date.isBefore(ChronoLocalDateTime.from(summerEnd));
     }
 
     private void executeTransactions(SlashCommandInteractionEvent event) {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        if (checkIfUserOrGuildDoesntExist(event)) return;
 
         OptionMapping userOption = event.getOption("user");
         Member member = event.getMember();
-
-        if (member == null) {
-            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
-            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
 
         member = userOption != null && userOption.getAsMember() != null ? userOption.getAsMember() : member;
 
@@ -298,7 +263,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeOptions(SlashCommandInteractionEvent event) {
-        checkTheUseOfCommandsInTheCommandChannel(event);
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
         OptionMapping dailyNotifyOption = event.getOption("daily_notify");
 
@@ -316,12 +281,23 @@ public class SlashCommandListener extends ListenerAdapter {
         }
     }
 
-    private boolean isSummer(LocalDateTime date) {
-        // Fechas inicio y fin de verano
-        LocalDateTime summerStart = LocalDateTime.of(date.getYear(), 5, 15, 0, 0);
-        LocalDateTime summerEnd = LocalDateTime.of(date.getYear(), 10, 15, 23, 59);
+    private boolean checkTheUseOfCommandsInTheCommandChannel(SlashCommandInteractionEvent event) {
+        if (!event.getChannel().getId().equals(COMMANDS_CHANNEL)) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "This command can only be run in the Commands channel.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return true;
+        }
 
-        return date.isAfter(ChronoLocalDateTime.from(summerStart))
-                && date.isBefore(ChronoLocalDateTime.from(summerEnd));
+        return false;
+    }
+
+    private boolean checkIfUserOrGuildDoesntExist(SlashCommandInteractionEvent event) {
+        if (event.getMember() == null || event.getGuild() == null) {
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error. Please try again later.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return true;
+        }
+
+        return false;
     }
 }
