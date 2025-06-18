@@ -124,6 +124,12 @@ public class SlashCommandListener extends ListenerAdapter {
             member = option.getAsMember();
         }
 
+        if (member.getUser().isBot()) {
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Bots cannot storage money.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
         long money = BotFiles.BANK.getMoney(member.getId());
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", member.getEffectiveName() + " has " + money + "€.");
         event.replyEmbeds(embed).queue();
