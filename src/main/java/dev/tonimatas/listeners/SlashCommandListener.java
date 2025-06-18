@@ -7,6 +7,7 @@ import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
+import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -108,6 +109,8 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeMoney(SlashCommandInteractionEvent event) {
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+
         Member member = event.getMember();
 
         if (member == null) {
@@ -116,10 +119,13 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
-        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+        OptionMapping option = event.getOption("user");
+        if (option != null) {
+            member = option.getAsMember();
+        }
 
         long money = BotFiles.BANK.getMoney(member.getId());
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", member.getEffectiveName() + " has " + money + "€.");
         event.replyEmbeds(embed).queue();
     }
 
@@ -284,14 +290,14 @@ public class SlashCommandListener extends ListenerAdapter {
 
     private void executeOptions(SlashCommandInteractionEvent event) {
         checkTheUseOfCommandsInTheCommandChannel(event);
-        
+
         OptionMapping dailyNotifyOption = event.getOption("daily_notify");
-        
+
         if (dailyNotifyOption != null) {
             boolean dailyNotify = dailyNotifyOption.getAsBoolean();
 
             String userId = event.getUser().getId();
-            
+
             BotFiles.SETTINGS.getSettings(userId).setNotifyDaily(dailyNotify);
             BotFiles.BANK.getDaily(userId).setNotified(false);
 
