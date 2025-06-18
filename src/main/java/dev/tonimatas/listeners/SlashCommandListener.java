@@ -268,13 +268,14 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
+        member = userOption != null && userOption.getAsMember() != null ? userOption.getAsMember() : member;
+
         if (member.getUser().isBot()) {
             MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "You can't see the transactions of a bot.");
             event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
-        member = userOption != null && userOption.getAsMember() != null ? userOption.getAsMember() : member;
         String transactions = Bank.getTransactionsString(member);
 
         MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", transactions);
