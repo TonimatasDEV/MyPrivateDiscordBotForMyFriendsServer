@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public abstract class JsonFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
@@ -27,10 +28,12 @@ public abstract class JsonFile {
         File file = new File(path);
 
         if (!file.exists()) {
-            boolean folderCreated = file.getParentFile().mkdirs();
+            if (path.split("/").length > 1) {
+                boolean folderCreated = Paths.get(path).getParent().toFile().mkdirs();
 
-            if (!folderCreated) {
-                LOGGER.debug("Error creating {} folder.", path);
+                if (!folderCreated) {
+                    LOGGER.debug("Error creating {} folder.", path);
+                }
             }
 
             try {
