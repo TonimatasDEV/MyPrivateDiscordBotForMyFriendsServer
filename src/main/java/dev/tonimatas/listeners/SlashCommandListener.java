@@ -7,7 +7,6 @@ import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
-import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -15,8 +14,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 public class SlashCommandListener extends ListenerAdapter {
     private static final String COMMANDS_CHANNEL = "1380277341405581443";
@@ -232,7 +233,8 @@ public class SlashCommandListener extends ListenerAdapter {
     private void executeHi(SlashCommandInteractionEvent event) {
         checkTheUseOfCommandsInTheCommandChannel(event);
 
-        LocalTime now = LocalTime.now();
+        LocalTime nowTime = LocalTime.now();
+        LocalDate nowDate = LocalDate.now();
 
         String greeting;
         Member member = event.getMember();
@@ -244,12 +246,13 @@ public class SlashCommandListener extends ListenerAdapter {
         }
 
         String userName = member.getEffectiveName();
+        int startHourNight = isSummer(LocalDateTime.of(nowDate, nowTime)) ? 22 : 18;
 
-        if (TimeUtils.isBetween(now, 6, 0, 12, 30)) {
+        if (TimeUtils.isBetween(nowTime, 6, 0, 12, 30)) {
             greeting = "☀️ ¡Buenos días, " + userName + "! 😊";
-        } else if (TimeUtils.isBetween(now, 12, 31, 18, 0)) {
+        } else if (TimeUtils.isBetween(nowTime, 12, 31, startHourNight, 0)) {
             greeting = "🌤️ ¡Buenas tardes, " + userName + "! 😄";
-        } else if (TimeUtils.isBetween(now, 18, 1, 23, 59) || TimeUtils.isBetween(now, 0, 0, 2, 0)) {
+        } else if (TimeUtils.isBetween(nowTime, startHourNight, 1, 23, 59) || TimeUtils.isBetween(nowTime, 0, 0, 2, 0)) {
             greeting = "🌙 ¡Buenas noches, " + userName + "! 😴";
         } else {
             greeting = "😠 ¡Duérmete, bot! Deja de saludar a estas horas...";
@@ -311,5 +314,14 @@ public class SlashCommandListener extends ListenerAdapter {
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Settings changed", description);
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
+    }
+
+    private boolean isSummer(LocalDateTime date) {
+        // Fechas inicio y fin de verano
+        LocalDateTime summerStart = LocalDateTime.of(date.getYear(), 5, 15, 0, 0);
+        LocalDateTime summerEnd = LocalDateTime.of(date.getYear(), 10, 15, 23, 59);
+
+        return date.isAfter(ChronoLocalDateTime.from(summerStart))
+                && date.isBefore(ChronoLocalDateTime.from(summerEnd));
     }
 }
