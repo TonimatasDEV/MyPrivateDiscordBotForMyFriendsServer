@@ -223,7 +223,15 @@ public class SlashCommandListener extends ListenerAdapter {
         LocalTime now = LocalTime.now();
 
         String greeting;
-        String userName = event.getMember().getEffectiveName();
+        Member member = event.getMember();
+
+        if (member == null) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        String userName = member.getEffectiveName();
 
         if (TimeUtils.isBetween(now, 6, 0, 12, 30)) {
             greeting = "☀️ ¡Buenos días, " + userName + "! 😊";
@@ -260,9 +268,7 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
-        if (userOption != null && userOption.getAsMember() != null) {
-            member = userOption.getAsMember();
-        }
+        member = userOption != null && userOption.getAsMember() != null ? userOption.getAsMember() : member;
 
         if (member.getUser().isBot()) {
             MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "You can't see the transactions of a bot.");
@@ -270,7 +276,9 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", Bank.getTransactionsString(member));
+        String transactions = Bank.getTransactionsString(member);
+
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", transactions);
         event.replyEmbeds(embed).queue();
     }
 
