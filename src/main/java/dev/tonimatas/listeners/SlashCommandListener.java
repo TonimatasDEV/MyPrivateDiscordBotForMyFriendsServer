@@ -109,6 +109,8 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private void executeMoney(SlashCommandInteractionEvent event) {
+        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
+
         Member member = event.getMember();
 
         if (member == null) {
@@ -119,18 +121,11 @@ public class SlashCommandListener extends ListenerAdapter {
 
         OptionMapping option = event.getOption("user");
         if (option != null) {
-            Member externalMember = option.getAsMember();
-            long money = BotFiles.BANK.getMoney(externalMember.getId());
-            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", externalMember.getEffectiveName() + " has " + money + "€.");
-            event.replyEmbeds(embed).queue();
-            return;
+            member = option.getAsMember();
         }
 
-
-        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
-
         long money = BotFiles.BANK.getMoney(member.getId());
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", "You have " + money + "€.");
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", member.getEffectiveName() + " has " + money + "€.");
         event.replyEmbeds(embed).queue();
     }
 
