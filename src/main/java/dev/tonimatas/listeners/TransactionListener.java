@@ -42,7 +42,7 @@ public class TransactionListener extends ListenerAdapter {
         if (action.equals("confirm")) {
             String receiverId = parts[3];
             long amount = Long.parseLong(parts[4]);
-            String reason = parts.length >= 6 ? parts[5].replaceAll("‖", ":") : null;
+            String reason = parts.length >= 6 ? parts[5].replaceAll("‖", ":") : "";
 
             Member sender = event.getGuild().getMemberById(userId);
             Member receiver = event.getGuild().getMemberById(receiverId);
@@ -60,7 +60,12 @@ public class TransactionListener extends ListenerAdapter {
             }
 
             long fee = (long) (amount * 0.05);
-            BotFiles.BANK.removeMoney(sender.getId(), amount, "Sent to " + receiver.getEffectiveName());
+
+            if (!reason.isEmpty()) {
+                reason = " because: " + (reason.endsWith(".") ? reason : reason + ".");
+            }
+
+            BotFiles.BANK.removeMoney(sender.getId(), amount, "Sent to " + receiver.getEffectiveName() + reason);
             BotFiles.BANK.addMoney(receiver.getId(), amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
 
             MessageEmbed success = Messages.getDefaultEmbed(event.getJDA(), "Transaction Successful",
