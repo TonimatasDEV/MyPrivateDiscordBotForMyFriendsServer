@@ -251,16 +251,26 @@ public class SlashCommandListener extends ListenerAdapter {
     private void executeTransactions(SlashCommandInteractionEvent event) {
         if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
 
-        Member sender = event.getMember();
+        OptionMapping userOption = event.getOption("user");
+        Member member = event.getMember();
 
-        if (sender == null) {
+        if (member == null) {
             MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "Internal error. Sender not found, please try again later.");
             event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", Bank.getTransactionsString(sender));
+        if (userOption != null && userOption.getAsMember() != null) {
+            member = userOption.getAsMember();
+        }
 
+        if (member.getUser().isBot()) {
+            MessageEmbed err = Messages.getErrorEmbed(event.getJDA(), "You can't see the transactions of a bot.");
+            event.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Transactions", Bank.getTransactionsString(member));
         event.replyEmbeds(embed).queue();
     }
 

@@ -57,7 +57,8 @@ public class Main {
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("options", "Configure your preferences")
                         .addOption(OptionType.BOOLEAN, "daily_notify", "Do you prefer if the bot remembers when your daily reward is up?", true))
-                .addCommands(Commands.slash("transactions", "See your own transactions."))
+                .addCommands(Commands.slash("transactions", "See your own transactions.")
+                        .addOption(OptionType.USER, "user", "If you want to see the transactions of an specific user.", false))
                 .queue();
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
