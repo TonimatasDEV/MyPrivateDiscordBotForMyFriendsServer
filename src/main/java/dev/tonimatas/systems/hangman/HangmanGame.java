@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class HangmanGame {
-    private static final int COST = 50;
-    private static final int REWARD = 75;
-    private static final Duration TIME_LIMIT = Duration.ofMinutes(3);
-    private static final int MAX_ATTEMPTS = 6;
+public class HangmanGame implements Runnable {
+    public static final int COST = 50;
+    public static final int REWARD = 75;
+    public static final Duration TIME_LIMIT = Duration.ofMinutes(3);
+    public static final int MAX_ATTEMPTS = 6;
+    public static final String REASON = "Charge for entrying HangMan MiniGame.";
 
     private final User user;
     private final String language;
@@ -111,6 +112,26 @@ public class HangmanGame {
             return;
         }
 
-        BotFiles.BANK.removeMoney(user.getId(), COST, "Charge for entrying HangMan MiniGame.");
+        BotFiles.BANK.removeMoney(user.getId(), COST, REASON);
+    }
+
+    @Override
+    public void run() {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + TIME_LIMIT.toMillis();
+
+        while (!isTimeOver() && System.currentTimeMillis() < endTime) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+
+            long timeLeft = endTime - System.currentTimeMillis();
+            if (timeLeft > 0) {
+
+            }
+        }
     }
 }

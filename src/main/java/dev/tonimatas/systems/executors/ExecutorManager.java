@@ -15,6 +15,10 @@ public class ExecutorManager {
         executor.scheduleAtFixedRate(runnable, 0, delay, unit);
     }
 
+    public static void submit(Runnable runnable) {
+        executor.execute(runnable);
+    }
+
     public static void stop() {
         LOGGER.info("Stopping ExecutorManager.");
         executor.shutdown();
