@@ -14,10 +14,7 @@ public class AutoCompleteListener extends ListenerAdapter {
             String option = event.getFocusedOption().getName();
             String focusedValue = event.getFocusedOption().getValue();
 
-            if (option.equalsIgnoreCase("bet-type")) {
-                String[] options = new String[]{"color", "column", "dozen", "number"};
-                event.replyChoices(Strings.getStartWithValues(options, focusedValue)).queue();
-            } else if (option.equalsIgnoreCase("bet-option")) {
+            if (option.equalsIgnoreCase("bet-option")) {
                 OptionMapping betType = event.getOption("bet-type");
 
                 if (betType == null) return;

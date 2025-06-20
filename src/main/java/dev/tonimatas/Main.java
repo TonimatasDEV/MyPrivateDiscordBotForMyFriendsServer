@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.DiscordLocale;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.localization.LocalizationFunction;
 import net.dv8tion.jda.api.interactions.commands.localization.ResourceBundleLocalizationFunction;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -48,7 +49,11 @@ public class Main {
                         .setLocalizationFunction(localization))
                 .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
                         .setLocalizationFunction(localization)
-                        .addOption(OptionType.STRING, "bet-type", "Select what you want to bet.", true, true)
+                        .addOptions(new OptionData(OptionType.STRING, "bet-type", "Select what you want to bet.", true)
+                                .addChoice("color", "color")
+                                .addChoice("column", "column")
+                                .addChoice("dozen", "dozen")
+                                .addChoice("number", "number"))
                         .addOption(OptionType.STRING, "bet-option", "Select the option.", true, true)
                         .addOption(OptionType.STRING, "bet-money", "Money for the bet.", true)
                         .setContexts(InteractionContextType.GUILD))
