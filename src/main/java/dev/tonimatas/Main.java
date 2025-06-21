@@ -36,7 +36,7 @@ public class Main {
                 .fromBundles("lang", DiscordLocale.SPANISH)
                 .build();
 
-        jda.addEventListener(new AutoCompleteListener(),
+        jda.addEventListener(
                 new AutoRoleListener(),
                 new CountListener(),
                 new JoinLeaveMessageListener(),
