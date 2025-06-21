@@ -63,8 +63,8 @@ public class SlashCommandListener extends ListenerAdapter {
         String id = member.getId();
 
         String type = event.getSubcommandName();
-        OptionMapping betOption = event.getOption("bet-option");
-        OptionMapping betMoney = event.getOption("bet-money");
+        OptionMapping betOption = event.getOption("option");
+        OptionMapping betMoney = event.getOption("money");
 
         if (type == null || betOption == null || betMoney == null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet type, option or money.");
