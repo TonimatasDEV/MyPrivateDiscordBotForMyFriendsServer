@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.interactions.DiscordLocale;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.commands.localization.LocalizationFunction;
 import net.dv8tion.jda.api.interactions.commands.localization.ResourceBundleLocalizationFunction;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -34,7 +36,7 @@ public class Main {
                 .fromBundles("lang", DiscordLocale.SPANISH)
                 .build();
 
-        jda.addEventListener(new AutoCompleteListener(),
+        jda.addEventListener(
                 new AutoRoleListener(),
                 new CountListener(),
                 new JoinLeaveMessageListener(),
@@ -48,9 +50,25 @@ public class Main {
                         .setLocalizationFunction(localization))
                 .addCommands(Commands.slash("bet", "Make a bet on the roulette!")
                         .setLocalizationFunction(localization)
-                        .addOption(OptionType.STRING, "bet-type", "Select what you want to bet.", true, true)
-                        .addOption(OptionType.STRING, "bet-option", "Select the option.", true, true)
-                        .addOption(OptionType.STRING, "bet-money", "Money for the bet.", true)
+                        .addSubcommands(new SubcommandData("color", "Bet to color")
+                                .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                                .addChoice("green", "green")
+                                                .addChoice("red", "red")
+                                                .addChoice("black", "black"),
+                                        new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                        .addSubcommands(new SubcommandData("column", "Bet to column")
+                                .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                                .addChoice("first", "first")
+                                                .addChoice("second", "second")
+                                                .addChoice("third", "third"),
+                                        new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                        .addSubcommands(new SubcommandData("dozen", "Bet to dozen")
+                                .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                                .addChoice("first", "first")
+                                                .addChoice("second", "second")
+                                                .addChoice("third", "third"),
+                                        new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                        .addSubcommands(new SubcommandData("number", "Bet to number"))
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("money", "See your amount of money.")
                         .setLocalizationFunction(localization)
