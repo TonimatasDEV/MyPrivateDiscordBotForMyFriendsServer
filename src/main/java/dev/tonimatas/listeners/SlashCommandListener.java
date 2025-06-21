@@ -24,7 +24,7 @@ public class SlashCommandListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        String command = event.getFullCommandName();
+        String command = event.getName();
         Member member = event.getMember();
 
         if (member == null || event.getGuild() == null) {
@@ -72,17 +72,16 @@ public class SlashCommandListener extends ListenerAdapter {
             return;
         }
 
-        OptionMapping betType = event.getOption("bet-type");
-        OptionMapping betOption = event.getOption("bet-option");
-        OptionMapping betMoney = event.getOption("bet-money");
+        String type = event.getSubcommandName();
+        OptionMapping betOption = event.getOption("option");
+        OptionMapping betMoney = event.getOption("money");
 
-        if (betType == null || betOption == null || betMoney == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet type or option.");
+        if (type == null || betOption == null || betMoney == null) {
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet type, option or money.");
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
-        String type = betType.getAsString();
         String option = betOption.getAsString();
         long money = betMoney.getAsLong();
 
