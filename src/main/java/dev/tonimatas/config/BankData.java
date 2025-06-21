@@ -40,8 +40,10 @@ public class BankData extends JsonFile {
     }
 
     public void addMoney(String memberID, long money, String reason) {
-        addTransaction(new Transaction(memberID, money, reason));
-        setMoney(memberID, getMoney(memberID) + money);
+        if (money != 0) {
+            addTransaction(new Transaction(memberID, money, reason));
+            setMoney(memberID, getMoney(memberID) + money);
+        }
     }
 
     public void removeMoney(String memberID, long money, String reason) {
