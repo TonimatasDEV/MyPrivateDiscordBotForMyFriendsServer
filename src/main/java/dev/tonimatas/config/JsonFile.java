@@ -13,11 +13,11 @@ import java.nio.file.Paths;
 
 public abstract class JsonFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static <T extends JsonFile> T load(Class<T> clazz, String path) {
         try (FileReader reader = new FileReader(path)) {
-            return gson.fromJson(reader, clazz);
+            return GSON.fromJson(reader, clazz);
         } catch (IOException e) {
             LOGGER.error("Error loading {} config file.", path);
             throw new RuntimeException(e);
@@ -53,7 +53,7 @@ public abstract class JsonFile {
 
     public void save() {
         try (FileWriter writer = new FileWriter(getFilePath())) {
-            gson.toJson(this, writer);
+            GSON.toJson(this, writer);
         } catch (IOException e) {
             LOGGER.error("Error saving {} config file.", getFilePath());
             throw new RuntimeException(e);

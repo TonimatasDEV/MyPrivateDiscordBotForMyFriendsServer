@@ -26,29 +26,29 @@ public class BankData extends JsonFile {
         return daily.get(userId);
     }
 
-    public long getMoney(String memberID) {
-        if (!bank.containsKey(memberID)) {
-            setMoney(memberID, 0);
+    public long getMoney(String userId) {
+        if (!bank.containsKey(userId)) {
+            setMoney(userId, 0);
         }
 
-        return bank.get(memberID);
+        return bank.get(userId);
     }
 
-    private void setMoney(String memberID, long money) {
-        bank.put(memberID, money);
+    private void setMoney(String userId, long money) {
+        bank.put(userId, money);
         save();
     }
 
-    public void addMoney(String memberID, long money, String reason) {
+    public void addMoney(String userId, long money, String reason) {
         if (money != 0) {
-            addTransaction(new Transaction(memberID, money, reason));
-            setMoney(memberID, getMoney(memberID) + money);
+            addTransaction(new Transaction(userId, money, reason));
+            setMoney(userId, getMoney(userId) + money);
         }
     }
 
-    public void removeMoney(String memberID, long money, String reason) {
-        addTransaction(new Transaction(memberID, -money, reason));
-        setMoney(memberID, getMoney(memberID) - money);
+    public void removeMoney(String userId, long money, String reason) {
+        addTransaction(new Transaction(userId, -money, reason));
+        setMoney(userId, getMoney(userId) - money);
     }
 
     public void addTransaction(Transaction transaction) {

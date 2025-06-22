@@ -9,9 +9,9 @@ public abstract class Bet {
         this.money = money;
     }
 
-    public String getRewardMessage(int winnerNumber) {
-        if (isWinner(winnerNumber)) {
-            return "bet on " + getTypePart() + " and won " + getReward(winnerNumber) + "€.";
+    public String getRewardMessage(int number) {
+        if (isWinner(number)) {
+            return "bet on " + getTypePart() + " and won " + getReward(number) + "€.";
         } else {
             return "bet on " + getTypePart() + " and lost " + getMoney() + "€.";
         }
@@ -25,7 +25,7 @@ public abstract class Bet {
 
     abstract int getMultiplier();
 
-    abstract boolean isWinner(int winnerNumber);
+    abstract boolean isWinner(int number);
 
     public abstract boolean isValid();
 
@@ -37,8 +37,8 @@ public abstract class Bet {
         return money;
     }
 
-    public long getReward(int winnerNumber) {
-        if (!isWinner(winnerNumber)) return 0;
+    public long getReward(int number) {
+        if (!isWinner(number)) return 0;
 
         return getMultiplier() * money;
     }
