@@ -1,32 +1,59 @@
 package dev.tonimatas.systems.tictactoe;
 
-public class TicTacToeGame {
-    private final String userId;
+public class TicTacToeGame implements Runnable {
+    private final Player playerX;
+    private final Player playerO;
     private final boolean vsBot;
-    private final TicTacToeBoard board;
-    private char currentTurn;
 
-    public TicTacToeGame(String userId, boolean vsBot) {
-        this.userId = userId;
+    private final TicTacToeBoard board = new TicTacToeBoard();
+    private Player turn;
+    private volatile boolean over = false;
+    private volatile String resultMessage = "";
+
+    public TicTacToeGame(Player playerX, Player playerO, boolean vsBot) {
+        this.playerX = playerX;
+        this.playerO = playerO;
         this.vsBot = vsBot;
-        this.board = new TicTacToeBoard();
-        this.currentTurn = 'X';
+        this.turn = playerX;
     }
 
-    public boolean makeMove(int row, int col, char player) {
-        if (board.makeMove(row, col, player)) {
-            currentTurn = (currentTurn == 'X') ? 'O' : 'X';
+    public synchronized boolean makeMove(int row, int col, String userId) {
+        if (over || !turn.getMember().getId().equals(userId)) return false;
+        if (board.makeMove(row, col, turn.getSymbol())) {
+            checkMatchAfterTurn();
+            if (!over) advanceTurn();
             return true;
         }
         return false;
     }
 
-    public boolean isOver() {
-        return board.isFull() || board.checkWinner() != ' ';
+    private void advanceTurn() {
+        turn = (turn == playerX) ? playerO : playerX;
     }
 
-    public String getUserId() {
-        return userId;
+    private void checkMatchAfterTurn() {
+        char winner = board.checkWinner();
+        if (winner != ' ') {
+            over = true;
+            resultMessage = (winner == playerX.getSymbol() ? playerX.getMention() : playerO.getMention()) + " wins.";
+            return;
+        }
+        if (board.isFull()) {
+            over = true;
+            resultMessage = "Draw.";
+        }
+    }
+
+    public Player getTurn() {
+        return turn;
+    }
+
+    public boolean isOver() {
+        return over;
+    }
+
+    public String getResultMessage() {
+        return resultMessage;
     }
 
     public boolean isVsBot() {
@@ -37,11 +64,10 @@ public class TicTacToeGame {
         return board;
     }
 
-    public char getCurrentTurn() {
-        return currentTurn;
-    }
-
-    public void setCurrentTurn(char currentTurn) {
-        this.currentTurn = currentTurn;
+    @Override
+    public void run() {
+        //TODO: Implement bot AI :)
     }
 }
+
+
