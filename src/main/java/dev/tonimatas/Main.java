@@ -1,5 +1,8 @@
 package dev.tonimatas;
 
+import dev.tonimatas.cjda.CJDA;
+import dev.tonimatas.cjda.CJDABuilder;
+import dev.tonimatas.commands.MoneyCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.systems.bank.DailyNotifier;
@@ -36,15 +39,24 @@ public class Main {
                 .fromBundles("lang", DiscordLocale.SPANISH)
                 .build();
 
+        CJDA cjda = CJDABuilder.createLocalized(jda, localization);
+
+        cjda.registerCommand(
+                new MoneyCommand()
+        );
+
+        cjda.init().queue();
+
         jda.addEventListener(
                 new AutoRoleListener(),
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new SlashCommandListener(),
                 new TemporalChannelListener(),
-                new TransactionListener()
+                new TransactionListener(),
+                cjda
         );
-
+        
         jda.updateCommands()
                 .addCommands(Commands.slash("ping", "Discord Ping! Pong!")
                         .setLocalizationFunction(localization))
@@ -69,10 +81,6 @@ public class Main {
                                                 .addChoice("third", "third"),
                                         new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
                         .addSubcommands(new SubcommandData("number", "Bet to number"))
-                        .setContexts(InteractionContextType.GUILD))
-                .addCommands(Commands.slash("money", "See your amount of money.")
-                        .setLocalizationFunction(localization)
-                        .addOption(OptionType.USER, "user", "The user that you want to check their amount of money.", false)
                         .setContexts(InteractionContextType.GUILD))
                 .addCommands(Commands.slash("money-top", "The top 10 richest people among us!")
                         .setLocalizationFunction(localization)

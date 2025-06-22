@@ -31,7 +31,6 @@ public class SlashCommandListener extends ListenerAdapter {
         switch (command) {
             case "ping" -> executePing(event);
             case "bet" -> executeBet(event);
-            case "money" -> executeMoney(event);
             case "money-top" -> executeMoneyTop(event);
             case "daily" -> executeDaily(event);
             case "pay" -> executePay(event);
@@ -96,28 +95,6 @@ public class SlashCommandListener extends ListenerAdapter {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Invalid bet option \"" + option + "\" for \"" + type + "\".");
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
-    }
-
-    private void executeMoney(SlashCommandInteractionEvent event) {
-        if (checkTheUseOfCommandsInTheCommandChannel(event)) return;
-        if (checkIfUserOrGuildDoesntExist(event)) return;
-
-        Member member = event.getMember();
-        OptionMapping option = event.getOption("user");
-
-        if (option != null) {
-            member = option.getAsMember();
-        }
-
-        if (member.getUser().isBot()) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Bots cannot storage money.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
-        long money = BotFiles.BANK.getMoney(member.getId());
-        MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Money", member.getEffectiveName() + " has " + money + "€.");
-        event.replyEmbeds(embed).queue();
     }
 
     private void executeMoneyTop(SlashCommandInteractionEvent event) {
