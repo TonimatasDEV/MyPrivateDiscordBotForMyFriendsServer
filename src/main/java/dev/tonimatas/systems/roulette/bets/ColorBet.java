@@ -1,11 +1,11 @@
 package dev.tonimatas.systems.roulette.bets;
 
 public class ColorBet extends Bet {
-    private final String input;
+    private final String color;
 
     public ColorBet(String id, String color, long money) {
         super(id, money);
-        this.input = color;
+        this.color = color;
     }
 
     private static String getColor(int number) {
@@ -24,12 +24,12 @@ public class ColorBet extends Bet {
 
     @Override
     public String getTypePart() {
-        return input;
+        return color;
     }
 
     @Override
     int getMultiplier() {
-        return switch (input) {
+        return switch (color) {
             case "green" -> 36;
             case "red", "black" -> 2;
             default -> 0;
@@ -37,12 +37,12 @@ public class ColorBet extends Bet {
     }
 
     @Override
-    boolean isWinner(int winnerNumber) {
-        return getColor(winnerNumber).equalsIgnoreCase(input);
+    boolean isWinner(int number) {
+        return getColor(number).equalsIgnoreCase(color);
     }
 
     @Override
     public boolean isValid() {
-        return input.equalsIgnoreCase("red") || input.equalsIgnoreCase("green") || input.equalsIgnoreCase("black");
+        return color.equalsIgnoreCase("red") || color.equalsIgnoreCase("green") || color.equalsIgnoreCase("black");
     }
 }

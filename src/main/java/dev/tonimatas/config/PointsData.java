@@ -11,23 +11,23 @@ public class PointsData extends JsonFile {
         return "data/points.json";
     }
 
-    public long getPoints(String memberId) {
-        if (!points.containsKey(memberId)) {
-            setPoints(memberId, 0);
+    public long getPoints(String userId) {
+        if (!points.containsKey(userId)) {
+            setPoints(userId, 0);
         }
-        return this.points.get(memberId);
+        return this.points.get(userId);
     }
 
-    public void setPoints(String memberId, long points) {
-        this.points.put(memberId, points);
+    public void setPoints(String userId, long points) {
+        this.points.put(userId, points);
         save();
     }
 
-    public void addPoints(String memberId, long points) {
-        setPoints(memberId, getPoints(memberId) + points);
+    public void addPoints(String userId, long points) {
+        setPoints(userId, getPoints(userId) + points);
     }
 
-    public void removePoints(String memberId, long points) {
-        setPoints(memberId, getPoints(memberId) - points);
+    public void removePoints(String userId, long points) {
+        setPoints(userId, getPoints(userId) - points);
     }
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class Roulette {
     private static final String ROULETTE_CHANNEL = "1371077395141885972";
     private static final String GUILD_ID = "1371074572786597960";
-    private static final Random RAND = new SecureRandom();
+    private static final Random RANDOM = new SecureRandom();
     private static Roulette INSTANCE;
     private final List<Bet> bets;
     private final JDA jda;
@@ -68,7 +68,7 @@ public class Roulette {
 
             while (true) {
                 if (remainingTime == 0) {
-                    int winner = RAND.nextInt(0, 37);
+                    int winner = RANDOM.nextInt(0, 37);
 
                     giveRewards(winner);
 
