@@ -41,11 +41,9 @@ public class Main {
 
         CJDA cjda = CJDABuilder.createLocalized(jda, localization);
 
-        cjda.registerCommand(
+        cjda.registerCommands(
                 new MoneyCommand()
-        );
-
-        cjda.init().queue();
+        ).init().queue();
 
         jda.addEventListener(
                 new AutoRoleListener(),
@@ -53,8 +51,7 @@ public class Main {
                 new JoinLeaveMessageListener(),
                 new SlashCommandListener(),
                 new TemporalChannelListener(),
-                new TransactionListener(),
-                cjda
+                new TransactionListener()
         );
         
         jda.updateCommands()
