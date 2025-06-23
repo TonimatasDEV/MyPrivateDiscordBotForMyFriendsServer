@@ -1,0 +1,105 @@
+package dev.tonimatas.commands;
+
+import dev.tonimatas.cjda.slash.SlashCommand;
+import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.roulette.Roulette;
+import dev.tonimatas.systems.roulette.bets.Bet;
+import dev.tonimatas.util.Messages;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+
+import java.util.List;
+
+public class BetCommand implements SlashCommand {
+    @Override
+    public void execute(SlashCommandInteraction interaction) {
+        JDA jda = interaction.getJDA();
+        String id = interaction.getUser().getId();
+
+        if (!interaction.getChannel().getId().equals(Roulette.getRoulette(jda).getRouletteChannel().getId())) {
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "This command can only be run in the Roulette channel.");
+            interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        String type = interaction.getSubcommandName();
+        OptionMapping betOption = interaction.getOption("option");
+        OptionMapping betMoney = interaction.getOption("money");
+
+        if (type == null || betOption == null || betMoney == null) {
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid bet type, option or money.");
+            interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        String option = betOption.getAsString();
+        long money = betMoney.getAsLong();
+
+        Bet bet = Roulette.getBet(type, id, option, money);
+
+        if (bet == null) {
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "This bet type \"" + type + "\" doesn't exist.");
+            interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return;
+        }
+
+        if (bet.isValid()) {
+            if (bet.getMoney() <= BotFiles.BANK.getMoney(id)) {
+                Roulette.getRoulette(jda).addBet(bet);
+                MessageEmbed embed = Messages.getDefaultEmbed(jda, "Bet", "Your " + type + " bet has been added to the Roulette.");
+                interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            } else {
+                MessageEmbed embed = Messages.getErrorEmbed(jda, "You don't have enough money.");
+                interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            }
+        } else {
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid bet option \"" + option + "\" for \"" + type + "\".");
+            interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+        }
+    }
+
+    @Override
+    public String getCommandName() {
+        return "bet";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Make a bet on the roulette!";
+    }
+
+    @Override
+    public List<InteractionContextType> getContexts() {
+        return List.of(InteractionContextType.GUILD);
+    }
+
+    @Override
+    public SlashCommandData init(SlashCommandData data) {
+        return data.addSubcommands(new SubcommandData("color", "Bet to color")
+                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                        .addChoice("green", "green")
+                                        .addChoice("red", "red")
+                                        .addChoice("black", "black"),
+                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                .addSubcommands(new SubcommandData("column", "Bet to column")
+                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                        .addChoice("first", "first")
+                                        .addChoice("second", "second")
+                                        .addChoice("third", "third"),
+                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                .addSubcommands(new SubcommandData("dozen", "Bet to dozen")
+                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                                        .addChoice("first", "first")
+                                        .addChoice("second", "second")
+                                        .addChoice("third", "third"),
+                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                .addSubcommands(new SubcommandData("number", "Bet to number"));
+    }
+}

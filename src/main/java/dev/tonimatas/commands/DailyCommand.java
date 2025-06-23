@@ -1,0 +1,54 @@
+package dev.tonimatas.commands;
+
+import dev.tonimatas.cjda.slash.SlashCommand;
+import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.bank.DailyInfo;
+import dev.tonimatas.util.CommandUtils;
+import dev.tonimatas.util.Messages;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class DailyCommand implements SlashCommand {
+    @Override
+    public void execute(SlashCommandInteraction interaction) {
+        if (CommandUtils.isNotCommandsChannel(interaction)) return;
+
+        JDA jda = interaction.getJDA();
+        User user = interaction.getUser();
+        LocalDateTime now = LocalDateTime.now();
+        DailyInfo dailyInfo = BotFiles.BANK.getDaily(user.getId());
+
+        if (now.isAfter(dailyInfo.getNext())) {
+            BotFiles.BANK.addMoney(user.getId(), 100, "Daily money!");
+            MessageEmbed embed = Messages.getDefaultEmbed(jda, "Daily", "Yeah! You claimed 100€.");
+            interaction.replyEmbeds(embed).queue();
+            dailyInfo.setLast(now);
+            dailyInfo.setNotified(false);
+        } else {
+            String formattedDate = BotFiles.BANK.getDaily(user.getId()).getNextFormatted();
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "You need to wait more. Your next daily will be available at " + formattedDate);
+            interaction.replyEmbeds(embed).queue();
+        }
+    }
+
+    @Override
+    public String getCommandName() {
+        return "daily";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Daily money!";
+    }
+
+    @Override
+    public List<InteractionContextType> getContexts() {
+        return List.of(InteractionContextType.GUILD);
+    }
+}

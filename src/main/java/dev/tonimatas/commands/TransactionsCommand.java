@@ -1,9 +1,10 @@
 package dev.tonimatas.commands;
 
 import dev.tonimatas.cjda.slash.SlashCommand;
-import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.bank.Bank;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
@@ -14,43 +15,42 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.List;
 
-public class MoneyCommand implements SlashCommand {
+public class TransactionsCommand implements SlashCommand {
     @Override
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
 
-
+        OptionMapping userOption = interaction.getOption("user");
+        JDA jda = interaction.getJDA();
         User user = interaction.getUser();
-        OptionMapping option = interaction.getOption("user");
 
-        if (option != null) {
-            user = option.getAsUser();
-        }
+        user = userOption != null && userOption.getAsMember() != null ? userOption.getAsUser() : user;
 
         if (user.isBot()) {
-            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "Bots cannot storage money.");
-            interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            MessageEmbed err = Messages.getErrorEmbed(jda, "You can't see the transactions of a bot.");
+            interaction.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
-        long money = BotFiles.BANK.getMoney(user.getId());
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money", user.getEffectiveName() + " has " + money + "€.");
+        String transactions = Bank.getTransactionsString(user);
+
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Transactions", transactions);
         interaction.replyEmbeds(embed).queue();
     }
 
     @Override
-    public SlashCommandData init(SlashCommandData slashCommandData) {
-        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their amount of money.", false);
+    public SlashCommandData init(SlashCommandData data) {
+        return data.addOption(OptionType.USER, "user", "If you want to see the transactions of an specific user.", false);
     }
 
     @Override
     public String getCommandName() {
-        return "user";
+        return "transactions";
     }
 
     @Override
     public String getDescription() {
-        return "The user that you want to check their amount of money.";
+        return "See your own transactions.";
     }
 
     @Override
