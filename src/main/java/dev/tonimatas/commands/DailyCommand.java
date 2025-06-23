@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public class DailyCommand implements SlashCommand {
     @Override
@@ -38,7 +38,7 @@ public class DailyCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "daily";
     }
 
@@ -48,7 +48,7 @@ public class DailyCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return List.of(InteractionContextType.GUILD);
+    public Set<InteractionContextType> getContexts() {
+        return Set.of(InteractionContextType.GUILD);
     }
 }

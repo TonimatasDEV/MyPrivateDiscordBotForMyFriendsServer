@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
-import java.util.List;
+import java.util.Set;
 
 public class MoneyTopCommand implements SlashCommand {
     @Override
@@ -29,7 +29,7 @@ public class MoneyTopCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "money-top";
     }
 
@@ -39,7 +39,7 @@ public class MoneyTopCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return List.of(InteractionContextType.GUILD);
+    public Set<InteractionContextType> getContexts() {
+        return Set.of(InteractionContextType.GUILD);
     }
 }

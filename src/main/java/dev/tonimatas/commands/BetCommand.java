@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
-import java.util.List;
+import java.util.Set;
 
 public class BetCommand implements SlashCommand {
     @Override
@@ -66,7 +66,7 @@ public class BetCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "bet";
     }
 
@@ -76,8 +76,8 @@ public class BetCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return List.of(InteractionContextType.GUILD);
+    public Set<InteractionContextType> getContexts() {
+        return Set.of(InteractionContextType.GUILD);
     }
 
     @Override

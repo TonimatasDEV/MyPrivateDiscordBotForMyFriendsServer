@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
-import java.util.List;
+import java.util.Set;
 
 public class OptionsCommand implements SlashCommand {
 
@@ -33,7 +33,7 @@ public class OptionsCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "options";
     }
 
@@ -43,8 +43,8 @@ public class OptionsCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL.stream().toList();
+    public Set<InteractionContextType> getContexts() {
+        return InteractionContextType.ALL;
     }
 
     @Override

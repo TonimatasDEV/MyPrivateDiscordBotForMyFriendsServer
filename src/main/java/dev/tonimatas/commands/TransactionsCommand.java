@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
-import java.util.List;
+import java.util.Set;
 
 public class TransactionsCommand implements SlashCommand {
     @Override
@@ -44,7 +44,7 @@ public class TransactionsCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "transactions";
     }
 
@@ -54,7 +54,7 @@ public class TransactionsCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return List.of(InteractionContextType.GUILD);
+    public Set<InteractionContextType> getContexts() {
+        return Set.of(InteractionContextType.GUILD);
     }
 }

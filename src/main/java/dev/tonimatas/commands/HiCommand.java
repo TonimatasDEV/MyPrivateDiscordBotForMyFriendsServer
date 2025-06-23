@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public class HiCommand implements SlashCommand {
     @Override
@@ -37,7 +37,7 @@ public class HiCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "hi";
     }
 
@@ -47,8 +47,8 @@ public class HiCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL.stream().toList();
+    public Set<InteractionContextType> getContexts() {
+        return InteractionContextType.ALL;
     }
 
     private boolean isSummer(LocalDateTime date) {

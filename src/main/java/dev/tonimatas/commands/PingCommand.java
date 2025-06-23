@@ -4,7 +4,7 @@ import dev.tonimatas.cjda.slash.SlashCommand;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
-import java.util.List;
+import java.util.Set;
 
 public class PingCommand implements SlashCommand {
     @Override
@@ -16,7 +16,7 @@ public class PingCommand implements SlashCommand {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "ping";
     }
 
@@ -26,7 +26,7 @@ public class PingCommand implements SlashCommand {
     }
 
     @Override
-    public List<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL.stream().toList();
+    public Set<InteractionContextType> getContexts() {
+        return InteractionContextType.ALL;
     }
 }
