@@ -43,8 +43,7 @@ public abstract class JsonFile {
                 return instance;
             } catch (Exception e) {
                 LOGGER.error("Error creating {} config file. {}", path, e.getMessage());
-                Thread.currentThread().interrupt();
-                return null;
+                Runtime.getRuntime().exit(-1);
             }
         }
 
@@ -58,7 +57,7 @@ public abstract class JsonFile {
             GSON.toJson(this, writer);
         } catch (IOException e) {
             LOGGER.error("Error saving {} config file. {}", getFilePath(), e.getMessage());
-            Thread.currentThread().interrupt();
+            Runtime.getRuntime().exit(-1);
         }
     }
 }
