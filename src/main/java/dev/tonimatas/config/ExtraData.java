@@ -1,7 +1,16 @@
 package dev.tonimatas.config;
 
 public class ExtraData extends JsonFile {
-    private long count = 0;
+    private long count;
+
+    @SuppressWarnings("unused")
+    public ExtraData() {
+        this(0);
+    }
+
+    public ExtraData(long count) {
+        this.count = count;
+    }
 
     @Override
     protected String getFilePath() {

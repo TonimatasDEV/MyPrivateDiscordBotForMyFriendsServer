@@ -11,10 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 public class BankData extends JsonFile {
-    public Map<String, Long> bank = new HashMap<>();
-    public Map<String, DailyInfo> daily = new HashMap<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    private Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
+    public final Map<String, Long> bank;
+    public final Map<String, DailyInfo> daily;
+    private final Map<String, ArrayList<Transaction>> transactions;
+
+    @SuppressWarnings("unused")
+    public BankData() {
+        this(new HashMap<>(), new HashMap<>(), new HashMap<>());
+    }
+
+    public BankData(Map<String, Long> bank, Map<String, DailyInfo> daily, Map<String, ArrayList<Transaction>> transactions) {
+        this.bank = bank;
+        this.daily = daily;
+        this.transactions = transactions;
+    }
 
     @Override
     protected String getFilePath() {
