@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(BotFiles.CONFIG.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
@@ -57,12 +57,7 @@ public class Main {
         );
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
-
-        try {
-            jda.awaitReady();
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Error initializing JDA!", e);
-        }
+        jda.awaitReady();
 
         addStopHook(jda);
 
@@ -79,7 +74,8 @@ public class Main {
             try {
                 jda.awaitShutdown();
             } catch (InterruptedException e) {
-                throw new RuntimeException("Error stopping JDA!", e);
+                LOGGER.error("Error stopping JDA: {}", e.getMessage());
+                Thread.currentThread().interrupt();
             }
 
             ExecutorManager.stop();

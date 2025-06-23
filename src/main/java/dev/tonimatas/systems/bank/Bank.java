@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Bank {
+    private Bank() {
+        // We don't need a constructor
+    }
+
     public static String getMoneyTopString(Guild guild) {
         List<Map.Entry<String, Long>> sortedList = BotFiles.BANK.bank.entrySet()
                 .stream()

@@ -45,7 +45,7 @@ public class MoneyCommand implements SlashCommand {
 
     @Override
     public String getName() {
-        return "user";
+        return "money";
     }
 
     @Override

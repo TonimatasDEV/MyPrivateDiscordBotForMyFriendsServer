@@ -4,7 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PointsData extends JsonFile {
-    public Map<String, Long> points = new HashMap<>();
+    public final Map<String, Long> points;
+
+    @SuppressWarnings("unused")
+    public PointsData() {
+        this(new HashMap<>());
+    }
+
+    public PointsData(Map<String, Long> points) {
+        this.points = points;
+    }
 
     @Override
     protected String getFilePath() {
