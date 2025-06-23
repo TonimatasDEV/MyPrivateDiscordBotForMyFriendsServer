@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.Set;
 
 public class OptionsCommand implements SlashCommand {
-
     @Override
     public void execute(SlashCommandInteraction interaction) {
         OptionMapping dailyNotifyOption = interaction.getOption("daily_notify");

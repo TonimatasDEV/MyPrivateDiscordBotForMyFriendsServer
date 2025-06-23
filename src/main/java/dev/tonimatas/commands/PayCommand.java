@@ -62,7 +62,7 @@ public class PayCommand implements SlashCommand {
                             amount,
                             reason));
 
-            String confirmId = "pay:confirm:" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replaceAll(":", "||");
+            String confirmId = "pay:confirm:" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replace(":", "||");
             String cancelId = "pay:cancel:" + sender.getId();
 
             interaction.replyEmbeds(confirmation)
