@@ -8,8 +8,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 public class CountListener extends ListenerAdapter {
-    private static final String COUNT_CHANNEL_ID = "1371077663812222976";
-
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Message message = event.getMessage();
@@ -17,7 +15,7 @@ public class CountListener extends ListenerAdapter {
 
         if (message.getAuthor().isBot()) return;
 
-        if (!channelId.equals(COUNT_CHANNEL_ID)) {
+        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId())) {
             return;
         }
 

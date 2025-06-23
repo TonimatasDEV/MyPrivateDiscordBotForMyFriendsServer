@@ -1,5 +1,6 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,17 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 public class JoinLeaveMessageListener extends ListenerAdapter {
-    private static final String CHANNEL_ID = "1371077003528241253";
     private final Map<String, List<Invite>> cachedInvites = new HashMap<>();
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         Member member = event.getMember();
         int memberCount = event.getGuild().getMemberCount();
-        TextChannel channel = event.getGuild().getTextChannelById(CHANNEL_ID);
+        TextChannel channel = BotFiles.CONFIG.getJoinLeftChannel(event.getJDA());
 
         if (channel == null) return;
-
 
         StringBuilder welcome = new StringBuilder("Hola ")
                 .append(member.getAsMention())
@@ -74,7 +73,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-        TextChannel channel = event.getGuild().getTextChannelById(CHANNEL_ID);
+        TextChannel channel = BotFiles.CONFIG.getJoinLeftChannel(event.getJDA());
 
         if (channel != null) {
             channel.sendMessageFormat("%s Se ha salido del servidor.", event.getUser().getName()).queue();

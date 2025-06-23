@@ -23,7 +23,7 @@ public class BetCommand implements SlashCommand {
         JDA jda = interaction.getJDA();
         String id = interaction.getUser().getId();
 
-        if (!interaction.getChannel().getId().equals(Roulette.getRoulette(jda).getRouletteChannel().getId())) {
+        if (!interaction.getChannel().getId().equals(BotFiles.CONFIG.getRouletteChannel(jda).getId())) {
             MessageEmbed embed = Messages.getErrorEmbed(jda, "This command can only be run in the Roulette channel.");
             interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;

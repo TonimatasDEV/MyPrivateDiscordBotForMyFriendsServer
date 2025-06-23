@@ -1,5 +1,9 @@
+import kotlin.io.path.createDirectory
+import kotlin.io.path.exists
+
 plugins {
     java
+    application
     id("com.gradleup.shadow") version "9.0.0-beta17"
 }
 
@@ -24,6 +28,16 @@ dependencies {
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("dev.tonimatas:CJDA:1.0.3")
+}
+
+application {
+    mainClass = "dev.tonimatas.Main"
+}
+
+tasks.named<JavaExec>("run") {
+    val path = rootDir.toPath().resolve("run")
+    workingDir = path.toFile()
+    if (!path.exists()) path.createDirectory()
 }
 
 tasks.jar {
