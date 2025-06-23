@@ -11,10 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 public class BankData extends JsonFile {
-    public Map<String, Long> bank = new HashMap<>();
-    public Map<String, DailyInfo> daily = new HashMap<>();
-    @SuppressWarnings("FieldMayBeFinal")
-    private Map<String, ArrayList<Transaction>> transactions = new HashMap<>();
+    public final Map<String, Long> bank;
+    public final Map<String, DailyInfo> daily;
+    private final Map<String, ArrayList<Transaction>> transactions;
+
+    @SuppressWarnings("unused")
+    public BankData() {
+        this(new HashMap<>(), new HashMap<>(), new HashMap<>());
+    }
+
+    public BankData(Map<String, Long> bank, Map<String, DailyInfo> daily, Map<String, ArrayList<Transaction>> transactions) {
+        this.bank = bank;
+        this.daily = daily;
+        this.transactions = transactions;
+    }
 
     @Override
     protected String getFilePath() {
@@ -26,27 +36,29 @@ public class BankData extends JsonFile {
         return daily.get(userId);
     }
 
-    public long getMoney(String memberID) {
-        if (!bank.containsKey(memberID)) {
-            setMoney(memberID, 0);
+    public long getMoney(String userId) {
+        if (!bank.containsKey(userId)) {
+            setMoney(userId, 0);
         }
 
-        return bank.get(memberID);
+        return bank.get(userId);
     }
 
-    private void setMoney(String memberID, long money) {
-        bank.put(memberID, money);
+    private void setMoney(String userId, long money) {
+        bank.put(userId, money);
         save();
     }
 
-    public void addMoney(String memberID, long money, String reason) {
-        addTransaction(new Transaction(memberID, money, reason));
-        setMoney(memberID, getMoney(memberID) + money);
+    public void addMoney(String userId, long money, String reason) {
+        if (money != 0) {
+            addTransaction(new Transaction(userId, money, reason));
+            setMoney(userId, getMoney(userId) + money);
+        }
     }
 
-    public void removeMoney(String memberID, long money, String reason) {
-        addTransaction(new Transaction(memberID, -money, reason));
-        setMoney(memberID, getMoney(memberID) - money);
+    public void removeMoney(String userId, long money, String reason) {
+        addTransaction(new Transaction(userId, -money, reason));
+        setMoney(userId, getMoney(userId) - money);
     }
 
     public void addTransaction(Transaction transaction) {

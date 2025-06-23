@@ -29,7 +29,7 @@ public class DailyNotifier implements Runnable {
         bank.daily.keySet().forEach(userId -> {
             UserSettings settings = BotFiles.SETTINGS.getSettings(userId);
             DailyInfo dailyInfo = bank.getDaily(userId);
-            
+
             if (!settings.isNotifyDaily() || dailyInfo.isNotified()) return;
             if (dailyInfo.getLast() == null || now.isBefore(dailyInfo.getNext())) return;
 

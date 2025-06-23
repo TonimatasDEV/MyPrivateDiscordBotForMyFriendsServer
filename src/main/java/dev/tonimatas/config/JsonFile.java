@@ -9,17 +9,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public abstract class JsonFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static <T extends JsonFile> T load(Class<T> clazz, String path) {
         try (FileReader reader = new FileReader(path)) {
-            return gson.fromJson(reader, clazz);
+            return GSON.fromJson(reader, clazz);
         } catch (IOException e) {
-            LOGGER.error("Error loading {} config file.", path);
-            throw new RuntimeException(e);
+            LOGGER.error("Error loading {} config file. {}", path, e.getMessage());
+            Thread.currentThread().interrupt();
+            return null;
         }
     }
 
@@ -27,10 +29,12 @@ public abstract class JsonFile {
         File file = new File(path);
 
         if (!file.exists()) {
-            boolean folderCreated = file.getParentFile().mkdirs();
+            if (path.split("/").length > 1) {
+                boolean folderCreated = Paths.get(path).getParent().toFile().mkdirs();
 
-            if (!folderCreated) {
-                LOGGER.debug("Error creating {} folder.", path);
+                if (!folderCreated) {
+                    LOGGER.debug("Error creating {} folder.", path);
+                }
             }
 
             try {
@@ -38,8 +42,8 @@ public abstract class JsonFile {
                 instance.save();
                 return instance;
             } catch (Exception e) {
-                LOGGER.error("Error creating {} config file.", path);
-                throw new RuntimeException(e);
+                LOGGER.error("Error creating {} config file. {}", path, e.getMessage());
+                Runtime.getRuntime().exit(-1);
             }
         }
 
@@ -50,10 +54,10 @@ public abstract class JsonFile {
 
     public void save() {
         try (FileWriter writer = new FileWriter(getFilePath())) {
-            gson.toJson(this, writer);
+            GSON.toJson(this, writer);
         } catch (IOException e) {
-            LOGGER.error("Error saving {} config file.", getFilePath());
-            throw new RuntimeException(e);
+            LOGGER.error("Error saving {} config file. {}", getFilePath(), e.getMessage());
+            Runtime.getRuntime().exit(-1);
         }
     }
 }

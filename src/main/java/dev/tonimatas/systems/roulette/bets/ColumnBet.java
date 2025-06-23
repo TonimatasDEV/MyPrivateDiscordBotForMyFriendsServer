@@ -1,11 +1,11 @@
 package dev.tonimatas.systems.roulette.bets;
 
 public class ColumnBet extends Bet {
-    private final String input;
+    private final String column;
 
     public ColumnBet(String id, String column, long money) {
         super(id, money);
-        this.input = column;
+        this.column = column;
     }
 
     private static String getColumn(int number) {
@@ -24,7 +24,7 @@ public class ColumnBet extends Bet {
 
     @Override
     public String getTypePart() {
-        return "the " + input + " column";
+        return "the " + column + " column";
     }
 
     @Override
@@ -33,12 +33,12 @@ public class ColumnBet extends Bet {
     }
 
     @Override
-    boolean isWinner(int winnerNumber) {
-        return getColumn(winnerNumber).equalsIgnoreCase(input);
+    boolean isWinner(int number) {
+        return getColumn(number).equalsIgnoreCase(column);
     }
 
     @Override
     public boolean isValid() {
-        return input.equalsIgnoreCase("first") || input.equalsIgnoreCase("second") || input.equalsIgnoreCase("third");
+        return column.equalsIgnoreCase("first") || column.equalsIgnoreCase("second") || column.equalsIgnoreCase("third");
     }
 }

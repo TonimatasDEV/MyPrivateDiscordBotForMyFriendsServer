@@ -3,12 +3,17 @@ package dev.tonimatas.systems.bank;
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 public class Bank {
+    private Bank() {
+        // We don't need a constructor
+    }
+
     public static String getMoneyTopString(Guild guild) {
         List<Map.Entry<String, Long>> sortedList = BotFiles.BANK.bank.entrySet()
                 .stream()
@@ -34,12 +39,12 @@ public class Bank {
         return text.toString();
     }
 
-    public static String getTransactionsString(Member member) {
-        List<Transaction> transactions = BotFiles.BANK.getTransactions(member.getId());
+    public static String getTransactionsString(User user) {
+        List<Transaction> transactions = BotFiles.BANK.getTransactions(user.getId());
 
         StringBuilder text = new StringBuilder();
 
-        text.append("**").append(member.getEffectiveName()).append(":**\n");
+        text.append("**").append(user.getEffectiveName()).append(":**\n");
 
         int i = 1;
         for (Transaction transaction : transactions) {
