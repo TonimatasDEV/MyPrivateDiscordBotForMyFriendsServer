@@ -22,7 +22,14 @@ public class TicTacToeManager {
     if (isPlaying(userId)) return false;
     if (!vsBot && isPlaying(playerO.getMember().getId())) return false;
 
-    TicTacToeGame game = new TicTacToeGame(playerX, playerO, vsBot);
+    TicTacToeGame game = null;
+
+    if (playerO == null) {
+        game = new TicTacToeGame(playerX);
+    } else {
+        game = new TicTacToeGame(playerX, playerO);
+    }
+
     games.put(userId, game);
 
     if (!vsBot) {
