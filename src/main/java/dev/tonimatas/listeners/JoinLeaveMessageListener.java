@@ -22,47 +22,54 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        Guild guild = event.getGuild();
-        String guildId = guild.getId();
-
+        Member member = event.getMember();
         int memberCount = event.getGuild().getMemberCount();
-
         TextChannel channel = event.getGuild().getTextChannelById(CHANNEL_ID);
 
         if (channel == null) return;
 
+
+        StringBuilder welcome = new StringBuilder("Hola ")
+                .append(member.getAsMention())
+                .append(", bienvenido a nuestro servidor. ¡Ya somos ")
+                .append(memberCount)
+                .append("!");
+        
+        addJoinInvite(welcome, event.getGuild());
+        
+        channel.sendMessage(welcome.toString()).queue();
+    }
+    
+    public void addJoinInvite(StringBuilder welcome, Guild guild) {
         guild.retrieveInvites().queue(newInvites -> {
-            List<Invite> oldInvites = cachedInvites.get(guildId);
-            Invite usedInvite = null;
+            Invite usedInvite  = getUsedInvite(guild, newInvites);
 
-            if (oldInvites != null) {
-                for (Invite newInvite : newInvites) {
-                    for (Invite oldInvite : oldInvites) {
-                        if (newInvite.getCode().equals(oldInvite.getCode()) && newInvite.getUses() > oldInvite.getUses()) {
-                            usedInvite = newInvite;
-                            break;
-                        }
-                    }
-                    if (usedInvite != null) break;
-                }
-            }
-            cachedInvites.put(guildId, newInvites);
-
-            Member newMember = event.getMember();
-
-            StringBuilder welcome = new StringBuilder("Hola ")
-                    .append(newMember.getAsMention())
-                    .append(", bienvenido a nuestro servidor. ¡Ya somos ")
-                    .append(memberCount)
-                    .append("!");
             if (usedInvite != null && usedInvite.getInviter() != null) {
                 welcome.append("\n Invitado por: **")
                         .append(usedInvite.getInviter().getName())
                         .append("**.");
             }
-
-            channel.sendMessage(welcome.toString()).queue();
         });
+    }
+    
+    public Invite getUsedInvite(Guild guild, List<Invite> newInvites) {
+        List<Invite> oldInvites = cachedInvites.get(guild.getId());
+        Invite usedInvite = null;
+
+        if (oldInvites != null) {
+            for (Invite newInvite : newInvites) {
+                for (Invite oldInvite : oldInvites) {
+                    if (newInvite.getCode().equals(oldInvite.getCode()) && newInvite.getUses() > oldInvite.getUses()) {
+                        usedInvite = newInvite;
+                        break;
+                    }
+                }
+                if (usedInvite != null) break;
+            }
+        }
+
+        cachedInvites.put(guild.getId(), newInvites);
+        return usedInvite;
     }
 
     @Override

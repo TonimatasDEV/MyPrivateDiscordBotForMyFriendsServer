@@ -19,8 +19,9 @@ public abstract class JsonFile {
         try (FileReader reader = new FileReader(path)) {
             return GSON.fromJson(reader, clazz);
         } catch (IOException e) {
-            LOGGER.error("Error loading {} config file.", path);
-            throw new RuntimeException(e);
+            LOGGER.error("Error loading {} config file. {}", path, e.getMessage());
+            Thread.currentThread().interrupt();
+            return null;
         }
     }
 
@@ -41,8 +42,9 @@ public abstract class JsonFile {
                 instance.save();
                 return instance;
             } catch (Exception e) {
-                LOGGER.error("Error creating {} config file.", path);
-                throw new RuntimeException(e);
+                LOGGER.error("Error creating {} config file. {}", path, e.getMessage());
+                Thread.currentThread().interrupt();
+                return null;
             }
         }
 
@@ -55,8 +57,8 @@ public abstract class JsonFile {
         try (FileWriter writer = new FileWriter(getFilePath())) {
             GSON.toJson(this, writer);
         } catch (IOException e) {
-            LOGGER.error("Error saving {} config file.", getFilePath());
-            throw new RuntimeException(e);
+            LOGGER.error("Error saving {} config file. {}", getFilePath(), e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 }

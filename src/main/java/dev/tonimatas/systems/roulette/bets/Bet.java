@@ -4,7 +4,7 @@ public abstract class Bet {
     private final String id;
     private final long money;
 
-    public Bet(String id, long money) {
+    protected Bet(String id, long money) {
         this.id = id;
         this.money = money;
     }

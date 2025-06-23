@@ -61,7 +61,8 @@ public class Main {
         try {
             jda.awaitReady();
         } catch (InterruptedException e) {
-            throw new RuntimeException("Error initializing JDA!", e);
+            LOGGER.error("Error starting JDA: {}", e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         addStopHook(jda);
@@ -79,7 +80,8 @@ public class Main {
             try {
                 jda.awaitShutdown();
             } catch (InterruptedException e) {
-                throw new RuntimeException("Error stopping JDA!", e);
+                LOGGER.error("Error stopping JDA: {}", e.getMessage());
+                Thread.currentThread().interrupt();
             }
 
             ExecutorManager.stop();

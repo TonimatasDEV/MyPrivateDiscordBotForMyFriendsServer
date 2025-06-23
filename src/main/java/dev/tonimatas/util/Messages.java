@@ -17,20 +17,22 @@ import java.util.function.Consumer;
 public class Messages {
     private static final Logger LOGGER = LoggerFactory.getLogger(Messages.class);
 
+    private Messages() {
+        // We don't need a constructor
+    }
+    
     public static <T> Consumer<T> deleteBeforeX(long seconds) {
         return thing -> {
             try {
                 TimeUnit.SECONDS.sleep(seconds);
             } catch (InterruptedException e) {
-                return;
+                Thread.currentThread().interrupt();
             }
 
-            if (thing instanceof InteractionHook hook) {
-                hook.deleteOriginal().queue(null, null);
-            } else if (thing instanceof Message msg) {
-                msg.delete().queue(null, null);
-            } else {
-                LOGGER.warn("Messages#deleteBeforeX is not compatible with: {}", thing.getClass().getName());
+            switch (thing) {
+                case InteractionHook hook -> hook.deleteOriginal().queue(null, null);
+                case Message msg -> msg.delete().queue(null, null);
+                default -> LOGGER.warn("Messages#deleteBeforeX is not compatible with: {}", thing.getClass().getName());
             }
         };
     }
