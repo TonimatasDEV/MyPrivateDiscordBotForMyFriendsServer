@@ -5,33 +5,23 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class BotConfig extends JsonFile {
     public final String token;
-    private final String rouletteChannelId;
-    private final String commandsChannelId;
-    private final String temporalChannelId;
-    private final String temporalCategoryId;
-    private final String countingChannelId;
-    private final String joinLeftChannelId;
-    private final String autoRoleId;
+    private final Map<String, String> ids;
     
 
     @SuppressWarnings("unused")
     public BotConfig() {
-        this("default-token", "", "", "", "", "", "", "");
+        this("default-token", new HashMap<>());
     }
 
-    public BotConfig(String token, String rouletteChannelId, String commandsChannelId, String temporalChannelId, String temporalCategoryId, String countingChannelId, String joinLeftChannelId, String autoRoleId) {
+    public BotConfig(String token, Map<String, String> ids) {
         this.token = token;
-        this.rouletteChannelId = rouletteChannelId;
-        this.commandsChannelId = commandsChannelId;
-        this.temporalChannelId = temporalChannelId;
-        this.temporalCategoryId = temporalCategoryId;
-        this.countingChannelId = countingChannelId;
-        this.joinLeftChannelId = joinLeftChannelId;
-        this.autoRoleId = autoRoleId;
+        this.ids = ids;
     }
 
     @Override
@@ -40,30 +30,30 @@ public class BotConfig extends JsonFile {
     }
     
     public TextChannel getRouletteChannel(JDA jda) {
-        return Objects.requireNonNull(jda.getTextChannelById(rouletteChannelId));
+        return Objects.requireNonNull(jda.getTextChannelById(ids.get("rouletteChannelId")));
     }
     
     public String getCommandsChannelId() {
-        return commandsChannelId;
+        return ids.get("commandsChannelId");
     }
     
     public String getTemporaryChannelId() {
-        return temporalChannelId;
+        return ids.get("temporalChannelId");
+    }
+
+    public Category getTemporalCategory(JDA jda) {
+        return Objects.requireNonNull(jda.getCategoryById(ids.get("temporalCategoryId")));
     }
     
     public String getCountingChannelId() {
-        return countingChannelId;
+        return ids.get("countingChannelId");
     }
     
     public TextChannel getJoinLeftChannel(JDA jda) {
-        return Objects.requireNonNull(jda.getTextChannelById(joinLeftChannelId));
+        return Objects.requireNonNull(jda.getTextChannelById(ids.get("joinLeftChannelId")));
     }
     
     public Role getAutoRole(JDA jda) {
-        return Objects.requireNonNull(jda.getRoleById(autoRoleId));
-    }
-    
-    public Category getTemporalCategory(JDA jda) {
-        return Objects.requireNonNull(jda.getCategoryById(temporalCategoryId));
+        return Objects.requireNonNull(jda.getRoleById(ids.get("autoRoleId")));
     }
 }
