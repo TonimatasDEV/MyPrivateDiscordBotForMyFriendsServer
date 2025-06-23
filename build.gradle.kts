@@ -10,6 +10,7 @@ version = projectVersion
 
 repositories {
     mavenCentral()
+    maven("https://maven.tonimatas.dev/releases")
 }
 
 dependencies {
@@ -22,6 +23,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.18")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.1")
+    implementation("dev.tonimatas:CJDA:1.0.3")
 }
 
 tasks.jar {
