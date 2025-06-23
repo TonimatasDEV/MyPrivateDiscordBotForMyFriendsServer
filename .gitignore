@@ -1,4 +1,4 @@
 .gradle
-build/
+build
+run
 .idea
-bot.properties
