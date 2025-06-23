@@ -45,7 +45,7 @@ public class TransactionListener extends ListenerAdapter {
             confirm(event.getJDA(), event.getInteraction(), guild, parts);
         }
     }
-    
+
     public void confirm(JDA jda, ButtonInteraction interaction, Guild guild, String[] parts) {
         String userId = parts[2];
         String receiverId = parts[3];

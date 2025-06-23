@@ -20,7 +20,7 @@ public class Messages {
     private Messages() {
         // We don't need a constructor
     }
-    
+
     public static <T> Consumer<T> deleteBeforeX(long seconds) {
         return thing -> {
             try {

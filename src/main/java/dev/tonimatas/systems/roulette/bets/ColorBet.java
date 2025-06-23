@@ -19,7 +19,7 @@ public class ColorBet extends Bet {
             default -> null;
         };
     }
-    
+
     private static Color getColor(int number) {
         if (number >= 0 && number <= 36) {
             if (number == 0) return Color.GREEN;
@@ -56,7 +56,7 @@ public class ColorBet extends Bet {
     public boolean isValid() {
         return color != null && Arrays.asList(Color.values()).contains(color);
     }
-    
+
     private enum Color {
         GREEN,
         RED,

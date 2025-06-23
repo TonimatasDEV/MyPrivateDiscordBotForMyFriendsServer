@@ -14,7 +14,7 @@ public class ExecutorManager {
     private ExecutorManager() {
         // We don't need a constructor
     }
-    
+
     public static void addRunnableAtFixedRate(Runnable runnable, long period, TimeUnit unit) {
         EXECUTOR.scheduleAtFixedRate(runnable, 0, period, unit);
     }

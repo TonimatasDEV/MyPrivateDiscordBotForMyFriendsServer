@@ -92,13 +92,13 @@ public class Roulette {
             }
         });
     }
-    
+
     private void crash() {
         for (Bet bet : bets) {
             BotFiles.BANK.addMoney(bet.getId(), bet.getMoney(), ROULETTE_NAME + " crashed");
         }
 
-        MessageEmbed embed = Messages.getErrorEmbed(jda, ROULETTE_NAME +" crashed. All money should be in your accounts.");
+        MessageEmbed embed = Messages.getErrorEmbed(jda, ROULETTE_NAME + " crashed. All money should be in your accounts.");
         getRouletteChannel().sendMessageEmbeds(embed).queue();
     }
 

@@ -34,15 +34,15 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
                 .append(", bienvenido a nuestro servidor. ¡Ya somos ")
                 .append(memberCount)
                 .append("!");
-        
+
         addJoinInvite(welcome, event.getGuild());
-        
+
         channel.sendMessage(welcome.toString()).queue();
     }
-    
+
     public void addJoinInvite(StringBuilder welcome, Guild guild) {
         guild.retrieveInvites().queue(newInvites -> {
-            Invite usedInvite  = getUsedInvite(guild, newInvites);
+            Invite usedInvite = getUsedInvite(guild, newInvites);
 
             if (usedInvite != null && usedInvite.getInviter() != null) {
                 welcome.append("\n Invitado por: **")
@@ -51,7 +51,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
             }
         });
     }
-    
+
     public Invite getUsedInvite(Guild guild, List<Invite> newInvites) {
         List<Invite> oldInvites = cachedInvites.get(guild.getId());
         Invite usedInvite = null;
