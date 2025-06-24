@@ -3,14 +3,27 @@ package dev.tonimatas.systems.tictactoe;
 import java.util.Arrays;
 
 public class TicTacToeBoard {
+    /**
+     * An array simulating a 3x3 board
+     */
     private final char[][] board = new char[3][3];
 
+    /**
+     * Main constructor
+     */
     public TicTacToeBoard() {
         for (char[] row : board) {
             Arrays.fill(row, ' ');
         }
     }
 
+    /**
+     * It makes a move to a position according to the available cells
+     * @param row according to the X axis (0-2)
+     * @param col according to the Y axis (0-2)
+     * @param symbol according to the players (X/O)
+     * @return if the move is valid or not
+     */
     public boolean makeMove(int row, int col, char symbol) {
         if (board[row][col] == ' ') {
             board[row][col] = symbol;
@@ -19,6 +32,9 @@ public class TicTacToeBoard {
         return false;
     }
 
+    /**
+     * @return if the board is full or not
+     */
     public boolean isFull() {
         for (char[] row : board) {
             for ( char c : row) {
@@ -30,6 +46,10 @@ public class TicTacToeBoard {
         return true;
     }
 
+    /**
+     * It checks all the possibilities to search if there is a winner
+     * @return if there is a winner it returns the winner's symbol
+     */
     public char checkWinner() {
         for (char[] row : board) {
             if (row[0] != ' ' && row[0] == row[1] && row[1] == row[2]) {
@@ -57,6 +77,10 @@ public class TicTacToeBoard {
         return ' ';
     }
 
+    /**
+     * How the board is going to be shown to the user
+     * @return the string containing the board
+     */
     public String render() {
         StringBuilder sb = new StringBuilder("```\n");
         for (char[] row : board) {
