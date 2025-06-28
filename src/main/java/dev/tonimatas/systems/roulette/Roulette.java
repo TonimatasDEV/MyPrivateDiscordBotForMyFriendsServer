@@ -5,25 +5,20 @@ import dev.tonimatas.systems.roulette.bets.*;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.jetbrains.annotations.NotNull;
+import net.dv8tion.jda.api.entities.User;
 
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Roulette {
-    private static final String ROULETTE_CHANNEL = "1371077395141885972";
-    private static final String GUILD_ID = "1371074572786597960";
-    private static final Random RAND = new SecureRandom();
-    private static Roulette INSTANCE;
+    private static final String ROULETTE_NAME = "Roulette";
+    private static final Random RANDOM = new SecureRandom();
+    private static Roulette instance;
     private final List<Bet> bets;
     private final JDA jda;
     private Thread rouletteThread;
@@ -36,11 +31,11 @@ public class Roulette {
     }
 
     public static Roulette getRoulette(JDA jda) {
-        if (INSTANCE == null) {
-            INSTANCE = new Roulette(jda);
+        if (instance == null) {
+            instance = new Roulette(jda);
         }
 
-        return INSTANCE;
+        return instance;
     }
 
     public static Bet getBet(String type, String id, String option, long money) {
@@ -54,7 +49,7 @@ public class Roulette {
     }
 
     public void addBet(Bet bet) {
-        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney(), "Roulette");
+        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney(), ROULETTE_NAME);
         bets.add(bet);
 
         if (!rouletteThread.isAlive()) {
@@ -68,7 +63,7 @@ public class Roulette {
 
             while (true) {
                 if (remainingTime == 0) {
-                    int winner = RAND.nextInt(0, 37);
+                    int winner = RANDOM.nextInt(0, 37);
 
                     giveRewards(winner);
 
@@ -83,6 +78,8 @@ public class Roulette {
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException ignored) {
+                    crash();
+                    stop();
                 }
 
                 remainingTime--;
@@ -90,9 +87,18 @@ public class Roulette {
         });
     }
 
+    private void crash() {
+        for (Bet bet : bets) {
+            BotFiles.BANK.addMoney(bet.getId(), bet.getMoney(), ROULETTE_NAME + " crashed");
+        }
+
+        MessageEmbed embed = Messages.getErrorEmbed(jda, ROULETTE_NAME + " crashed. All money should be in your accounts.");
+        BotFiles.CONFIG.getRouletteChannel(jda).sendMessageEmbeds(embed).queue();
+    }
+
     public void start() {
-        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", "**Has been started.**");
-        getRouletteChannel().sendMessageEmbeds(embed).queue(hook -> {
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, ROULETTE_NAME, "**Has been started.**");
+        BotFiles.CONFIG.getRouletteChannel(jda).sendMessageEmbeds(embed).queue(hook -> {
             messageId = hook.getId();
             rouletteThread.start();
         });
@@ -114,15 +120,15 @@ public class Roulette {
 
         int count = 1;
         for (Bet bet : bets) {
-            Member member = getGuild().getMemberById(bet.getId());
-            if (member == null) continue;
+            User user = jda.getUserById(bet.getId());
+            if (user == null) continue;
 
-            message.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getBetMessage()).append("\n");
+            message.append(count).append(". ").append(user.getEffectiveName()).append(" ").append(bet.getBetMessage()).append("\n");
             count++;
         }
 
-        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", message.toString());
-        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, ROULETTE_NAME, message.toString());
+        BotFiles.CONFIG.getRouletteChannel(jda).editMessageEmbedsById(messageId, embed).queue();
     }
 
     private void giveRewards(int winner) {
@@ -131,29 +137,19 @@ public class Roulette {
 
         int count = 1;
         for (Bet bet : bets) {
-            Member member = getGuild().getMemberById(bet.getId());
-            if (member == null) continue;
+            User user = jda.getUserById(bet.getId());
+            if (user == null) continue;
 
             long reward = bet.getReward(winner);
-            BotFiles.BANK.addMoney(bet.getId(), reward, "Roulette");
+            BotFiles.BANK.addMoney(bet.getId(), reward, ROULETTE_NAME);
 
-            rewards.append(count).append(". ").append(member.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
+            rewards.append(count).append(". ").append(user.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
         }
 
         bets.clear();
 
-        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Roulette", rewards.toString());
-        getRouletteChannel().editMessageEmbedsById(messageId, embed).queue();
-    }
-
-    @NotNull
-    public Guild getGuild() {
-        return Objects.requireNonNull(jda.getGuildById(GUILD_ID));
-    }
-
-    @NotNull
-    public TextChannel getRouletteChannel() {
-        return Objects.requireNonNull(getGuild().getTextChannelById(ROULETTE_CHANNEL));
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, ROULETTE_NAME, rewards.toString());
+        BotFiles.CONFIG.getRouletteChannel(jda).editMessageEmbedsById(messageId, embed).queue();
     }
 }
