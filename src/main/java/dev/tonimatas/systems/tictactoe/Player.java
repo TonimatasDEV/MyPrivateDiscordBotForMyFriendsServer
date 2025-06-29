@@ -5,9 +5,20 @@ import net.dv8tion.jda.api.entities.Member;
 import java.util.Objects;
 
 public class Player {
+    /**
+     * Member linked to this player
+     */
     private final Member member;
+    /**
+     * Could be X as player 1 or O as player 2
+     */
     private final char symbol;
 
+    /**
+     * Main constructor
+     * @param member Member linked to this player
+     * @param symbol Could be X as player 1 or O as player 2
+     */
     public Player(Member member, char symbol) {
         this.member = member;
         this.symbol = symbol;
