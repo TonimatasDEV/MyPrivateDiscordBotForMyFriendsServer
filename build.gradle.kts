@@ -40,6 +40,12 @@ tasks.named<JavaExec>("run") {
     if (!path.exists()) path.createDirectory()
 }
 
+tasks.compileJava {
+    options.encoding = "UTF-8"
+    java.sourceCompatibility = JavaVersion.VERSION_21
+    java.targetCompatibility = JavaVersion.VERSION_21
+}
+
 tasks.jar {
     dependsOn("shadowJar")
     archiveClassifier.set("plain")
