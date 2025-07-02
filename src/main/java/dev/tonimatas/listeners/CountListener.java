@@ -1,7 +1,9 @@
 package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -21,9 +23,11 @@ public class CountListener extends ListenerAdapter {
 
         long numberFromMessage = getNumber(message);
         long currentNumber = BotFiles.EXTRA.getCount();
+        User user = event.getAuthor();
 
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
+            BotFiles.BANK.addMoney(user.getId(), 1, "Counted correctly.");
             currentNumber++;
             BotFiles.EXTRA.setCount(currentNumber);
             return;
@@ -31,6 +35,7 @@ public class CountListener extends ListenerAdapter {
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa.").queue();
+        BotFiles.BANK.removeMoney(user.getId(), Math.min(BotFiles.BANK.getMoney(user.getId()), 50), "Counted incorrectly");
         BotFiles.EXTRA.setCount(0);
     }
 
