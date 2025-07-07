@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CountListener extends ListenerAdapter {
     private User lastCountUser = null;
+    private String lastCountMessageId = null;
     
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -34,6 +35,7 @@ public class CountListener extends ListenerAdapter {
             currentNumber++;
             BotFiles.EXTRA.setCount(currentNumber);
             lastCountUser = event.getAuthor();
+            lastCountMessageId = event.getMessageId();
             return;
         }
 
@@ -47,13 +49,11 @@ public class CountListener extends ListenerAdapter {
     public void onMessageDelete(MessageDeleteEvent event) {
         String channelId = event.getChannel().getId();
 
-        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId())) {
+        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId()) || lastCountMessageId == null) {
             return;
         }
         
-        String lastMessageId = event.getChannel().getLatestMessageId();
-        
-        if (event.getMessageId().equals(lastMessageId)) {
+        if (event.getMessageId().equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.BANK.removeMoney(lastCountUser.getId(), 100, "Tried to troll.");
             event.getChannel().sendMessage(lastCountUser.getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
@@ -65,13 +65,11 @@ public class CountListener extends ListenerAdapter {
     public void onMessageUpdate(MessageUpdateEvent event) {
         String channelId = event.getChannel().getId();
 
-        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId())) {
+        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId()) || lastCountMessageId == null) {
             return;
         }
 
-        String lastMessageId = event.getChannel().getLatestMessageId();
-
-        if (event.getMessageId().equals(lastMessageId)) {
+        if (event.getMessageId().equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.BANK.removeMoney(lastCountUser.getId(), 100, "Tried to troll.");
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
