@@ -57,8 +57,9 @@ public class BankData extends JsonFile {
     }
 
     public void removeMoney(String userId, long money, String reason) {
-        addTransaction(new Transaction(userId, -money, reason));
-        setMoney(userId, getMoney(userId) - money);
+        long nonNegativeMoney = Math.min(BotFiles.BANK.getMoney(userId), money);
+        addTransaction(new Transaction(userId, -nonNegativeMoney, reason));
+        setMoney(userId, getMoney(userId) -nonNegativeMoney);
     }
 
     public void addTransaction(Transaction transaction) {

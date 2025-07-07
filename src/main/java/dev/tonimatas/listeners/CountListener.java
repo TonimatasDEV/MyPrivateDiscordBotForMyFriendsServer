@@ -41,7 +41,7 @@ public class CountListener extends ListenerAdapter {
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa y perdiste 50€.").queue();
-        BotFiles.BANK.removeMoney(user.getId(), Math.min(BotFiles.BANK.getMoney(user.getId()), 50), "Counted incorrectly");
+        BotFiles.BANK.removeMoney(user.getId(), 50, "Counted incorrectly");
         BotFiles.EXTRA.setCount(0);
     }
 
