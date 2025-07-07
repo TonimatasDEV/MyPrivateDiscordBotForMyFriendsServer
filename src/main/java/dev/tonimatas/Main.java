@@ -45,7 +45,8 @@ public class Main {
                 new OptionsCommand(),
                 new PayCommand(),
                 new TransactionsCommand(),
-                new BetCommand()
+                new BetCommand(),
+                new VersionCommand()
         ).init().queue();
 
         jda.addEventListener(
