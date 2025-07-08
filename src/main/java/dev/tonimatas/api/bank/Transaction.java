@@ -1,4 +1,4 @@
-package dev.tonimatas.systems.bank;
+package dev.tonimatas.api.bank;
 
 import dev.tonimatas.util.TimeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -17,10 +17,6 @@ public class Transaction implements Comparable<Transaction> {
         this.amount = amount;
         this.time = TimeUtils.getNowStr();
         this.reason = reason;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public long getAmount() {

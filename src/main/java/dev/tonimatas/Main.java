@@ -63,6 +63,7 @@ public class Main {
         addStopHook(jda);
 
         DailyNotifier.init(jda);
+        BotFiles.autosave();
 
         LOGGER.info("Done!");
     }

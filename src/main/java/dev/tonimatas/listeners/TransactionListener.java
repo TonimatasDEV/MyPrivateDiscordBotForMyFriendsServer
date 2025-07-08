@@ -61,7 +61,7 @@ public class TransactionListener extends ListenerAdapter {
             return;
         }
 
-        if (BotFiles.BANK.getMoney(sender.getId()) < amount) {
+        if (BotFiles.USER.get(sender.getId()).getMoney() < amount) {
             MessageEmbed embed = Messages.getErrorEmbed(jda, "You no longer have enough money.");
             interaction.editMessageEmbeds(embed).setComponents().queue(Messages.deleteBeforeX(10));
             return;
@@ -73,8 +73,8 @@ public class TransactionListener extends ListenerAdapter {
             reason = " because: " + (reason.endsWith(".") ? reason : reason + ".");
         }
 
-        BotFiles.BANK.removeMoney(sender.getId(), amount, "Sent to " + receiver.getEffectiveName() + reason);
-        BotFiles.BANK.addMoney(receiver.getId(), amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
+        BotFiles.USER.get(sender.getId()).removeMoney(amount, "Sent to " + receiver.getEffectiveName() + reason);
+        BotFiles.USER.get(receiver.getId()).addMoney(amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
 
         MessageEmbed success = Messages.getDefaultEmbed(jda, "Transaction Successful",
                 String.format("%s sent **%d€** to %s (Fee: %d€)%nReason: %s",
