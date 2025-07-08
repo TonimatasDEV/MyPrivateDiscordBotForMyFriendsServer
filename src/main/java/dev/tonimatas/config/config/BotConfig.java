@@ -1,5 +1,6 @@
-package dev.tonimatas.config;
+package dev.tonimatas.config.config;
 
+import dev.tonimatas.config.JsonFile;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;

@@ -1,4 +1,6 @@
-package dev.tonimatas.config;
+package dev.tonimatas.config.data;
+
+import dev.tonimatas.config.JsonFile;
 
 public class ExtraData extends JsonFile {
     private long count;

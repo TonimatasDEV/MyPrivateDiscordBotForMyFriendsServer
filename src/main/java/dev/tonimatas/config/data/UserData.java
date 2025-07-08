@@ -1,6 +1,7 @@
-package dev.tonimatas.config;
+package dev.tonimatas.config.data;
 
 import dev.tonimatas.api.data.UserInfo;
+import dev.tonimatas.config.JsonFile;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,9 @@
 package dev.tonimatas.config;
 
+import dev.tonimatas.config.config.BotConfig;
+import dev.tonimatas.config.data.ExtraData;
+import dev.tonimatas.config.data.UserData;
+
 public class BotFiles {
     public static final BotConfig CONFIG = JsonFile.loadOrCreate(BotConfig.class, "bot.json");
     public static final UserData USER = JsonFile.loadOrCreate(UserData.class, "data/user.json");
