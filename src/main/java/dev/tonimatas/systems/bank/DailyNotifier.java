@@ -1,9 +1,9 @@
 package dev.tonimatas.systems.bank;
 
-import dev.tonimatas.api.data.DailyInfo;
+import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.executors.ExecutorManager;
-import dev.tonimatas.api.data.UserSettings;
+import dev.tonimatas.api.user.UserSettings;
 import net.dv8tion.jda.api.JDA;
 
 import java.time.LocalDateTime;

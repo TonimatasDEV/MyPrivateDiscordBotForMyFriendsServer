@@ -1,7 +1,8 @@
-package dev.tonimatas.api.data;
+package dev.tonimatas.api.user;
 
+import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.config.BotFiles;
-import dev.tonimatas.systems.bank.Transaction;
+import dev.tonimatas.api.bank.Transaction;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -79,7 +80,7 @@ public class UserInfo {
         return transactions;
     }
     
-    protected static void save() {
+    public static void save() {
         BotFiles.USER.save();
     }
 }

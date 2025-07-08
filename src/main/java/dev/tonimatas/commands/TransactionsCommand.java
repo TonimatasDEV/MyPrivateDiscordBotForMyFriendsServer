@@ -1,7 +1,8 @@
 package dev.tonimatas.commands;
 
 import dev.tonimatas.cjda.slash.SlashCommand;
-import dev.tonimatas.systems.bank.Bank;
+import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.api.bank.Transaction;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
@@ -13,6 +14,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 
 public class TransactionsCommand implements SlashCommand {
@@ -32,10 +35,31 @@ public class TransactionsCommand implements SlashCommand {
             return;
         }
 
-        String transactions = Bank.getTransactionsString(user);
+        String transactions = getTransactionsString(user);
 
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Transactions", transactions);
         interaction.replyEmbeds(embed).queue();
+    }
+
+    private static String getTransactionsString(User user) {
+        List<Transaction> transactions = BotFiles.USER.get(user.getId()).getTransactions();
+
+        StringBuilder text = new StringBuilder();
+
+        text.append("**").append(user.getEffectiveName()).append(":**\n");
+
+        int i = 1;
+        for (Transaction transaction : transactions) {
+            text.append(String.format("%d. ", i++))
+                    .append(transaction.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                    .append("  |  ")
+                    .append(transaction.getReason())
+                    .append("  |  ")
+                    .append(transaction.getAmount())
+                    .append("€\n");
+        }
+
+        return text.toString();
     }
 
     @Override

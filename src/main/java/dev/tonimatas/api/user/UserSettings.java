@@ -1,4 +1,4 @@
-package dev.tonimatas.api.data;
+package dev.tonimatas.api.user;
 
 public class UserSettings {
     private boolean notifyDaily = false;

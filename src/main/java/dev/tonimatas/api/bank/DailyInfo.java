@@ -1,5 +1,6 @@
-package dev.tonimatas.api.data;
+package dev.tonimatas.api.bank;
 
+import dev.tonimatas.api.user.UserInfo;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
