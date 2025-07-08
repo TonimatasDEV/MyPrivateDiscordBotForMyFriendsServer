@@ -16,22 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class MoneyTopCommand implements SlashCommand {
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
-        if (CommandUtils.isNotCommandsChannel(interaction)) return;
-
-        Guild guild = interaction.getGuild();
-
-        if (guild == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "You need to be in a guild!");
-            interaction.replyEmbeds(embed).setEphemeral(true).queue();
-            return;
-        }
-
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money Top", getMoneyTopString(guild));
-        interaction.replyEmbeds(embed).queue();
-    }
-
     private static String getMoneyTopString(Guild guild) {
         List<Map.Entry<String, UserInfo>> sortedList = BotFiles.USER.getUsers().entrySet()
                 .stream()
@@ -55,6 +39,22 @@ public class MoneyTopCommand implements SlashCommand {
         }
 
         return text.toString();
+    }
+
+    @Override
+    public void execute(SlashCommandInteraction interaction) {
+        if (CommandUtils.isNotCommandsChannel(interaction)) return;
+
+        Guild guild = interaction.getGuild();
+
+        if (guild == null) {
+            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "You need to be in a guild!");
+            interaction.replyEmbeds(embed).setEphemeral(true).queue();
+            return;
+        }
+
+        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money Top", getMoneyTopString(guild));
+        interaction.replyEmbeds(embed).queue();
     }
 
     @Override

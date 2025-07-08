@@ -22,7 +22,7 @@ public class UserData extends JsonFile {
         save();
         return user;
     }
-    
+
     public Map<String, UserInfo> getUsers() {
         return users;
     }

@@ -1,8 +1,8 @@
 package dev.tonimatas.api.user;
 
 import dev.tonimatas.api.bank.DailyInfo;
-import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.api.bank.Transaction;
+import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -17,18 +17,23 @@ public class UserInfo {
     private long money;
     private long points;
     private UserStats stats;
-    
+
     public UserInfo(String userId) {
-        this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0);
+        this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0, new UserStats());
     }
-    
-    public UserInfo(String userId, DailyInfo daily, ArrayList<Transaction> transactions, UserSettings settings, long money, long points) {
+
+    public UserInfo(String userId, DailyInfo daily, ArrayList<Transaction> transactions, UserSettings settings, long money, long points, UserStats stats) {
         this.userId = userId;
         this.daily = daily;
         this.transactions = transactions;
         this.settings = settings;
         this.money = money;
         this.points = points;
+        this.stats = stats;
+    }
+
+    public static void save() {
+        BotFiles.USER.save();
     }
 
     public DailyInfo getDaily() {
@@ -54,7 +59,7 @@ public class UserInfo {
     public void removeMoney(long money, String reason) {
         long nonNegativeMoney = Math.min(this.money, money);
         addTransaction(new Transaction(userId, -nonNegativeMoney, reason));
-        setMoney(getMoney() -nonNegativeMoney);
+        setMoney(getMoney() - nonNegativeMoney);
     }
 
     public void addTransaction(Transaction transaction) {
@@ -83,9 +88,5 @@ public class UserInfo {
 
     public UserStats getStats() {
         return stats;
-    }
-
-    public static void save() {
-        BotFiles.USER.save();
     }
 }

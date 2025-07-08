@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class CountListener extends ListenerAdapter {
     private User lastCountUser = null;
     private String lastCountMessageId = null;
-    
+
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Message message = event.getMessage();
@@ -54,7 +54,7 @@ public class CountListener extends ListenerAdapter {
         if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId()) || lastCountMessageId == null) {
             return;
         }
-        
+
         if (event.getMessageId().equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();

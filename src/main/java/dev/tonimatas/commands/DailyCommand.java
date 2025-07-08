@@ -1,8 +1,8 @@
 package dev.tonimatas.commands;
 
+import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
-import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;

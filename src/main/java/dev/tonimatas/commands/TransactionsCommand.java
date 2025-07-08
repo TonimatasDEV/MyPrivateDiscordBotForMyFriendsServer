@@ -1,8 +1,8 @@
 package dev.tonimatas.commands;
 
+import dev.tonimatas.api.bank.Transaction;
 import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
-import dev.tonimatas.api.bank.Transaction;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
@@ -19,6 +19,27 @@ import java.util.List;
 import java.util.Set;
 
 public class TransactionsCommand implements SlashCommand {
+    private static String getTransactionsString(User user) {
+        List<Transaction> transactions = BotFiles.USER.get(user.getId()).getTransactions();
+
+        StringBuilder text = new StringBuilder();
+
+        text.append("**").append(user.getEffectiveName()).append(":**\n");
+
+        int i = 1;
+        for (Transaction transaction : transactions) {
+            text.append(String.format("%d. ", i++))
+                    .append(transaction.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                    .append("  |  ")
+                    .append(transaction.getReason())
+                    .append("  |  ")
+                    .append(transaction.getAmount())
+                    .append("€\n");
+        }
+
+        return text.toString();
+    }
+
     @Override
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
@@ -39,27 +60,6 @@ public class TransactionsCommand implements SlashCommand {
 
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Transactions", transactions);
         interaction.replyEmbeds(embed).queue();
-    }
-
-    private static String getTransactionsString(User user) {
-        List<Transaction> transactions = BotFiles.USER.get(user.getId()).getTransactions();
-
-        StringBuilder text = new StringBuilder();
-
-        text.append("**").append(user.getEffectiveName()).append(":**\n");
-
-        int i = 1;
-        for (Transaction transaction : transactions) {
-            text.append(String.format("%d. ", i++))
-                    .append(transaction.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                    .append("  |  ")
-                    .append(transaction.getReason())
-                    .append("  |  ")
-                    .append(transaction.getAmount())
-                    .append("€\n");
-        }
-
-        return text.toString();
     }
 
     @Override
