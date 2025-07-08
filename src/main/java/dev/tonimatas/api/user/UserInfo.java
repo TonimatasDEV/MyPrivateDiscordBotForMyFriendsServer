@@ -44,6 +44,8 @@ public class UserInfo {
     }
 
     public void addMoney(long money, String reason) {
+        stats.increaseMoneyWon(money);
+
         if (money != 0) {
             addTransaction(new Transaction(userId, money, reason));
             setMoney(getMoney() + money);
@@ -51,12 +53,15 @@ public class UserInfo {
     }
 
     public void removeMoney(long money, String reason) {
+        stats.increaseMoneySpent(money);
+
         long nonNegativeMoney = Math.min(this.money, money);
         addTransaction(new Transaction(userId, -nonNegativeMoney, reason));
         setMoney(getMoney() - nonNegativeMoney);
     }
 
     public void addTransaction(Transaction transaction) {
+        stats.increaseTransactions();
         transactions.add(transaction);
         transactions.sort(null);
 
