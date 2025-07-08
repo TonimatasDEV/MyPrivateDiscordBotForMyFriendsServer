@@ -1,6 +1,6 @@
 package dev.tonimatas.systems.bank;
 
-import dev.tonimatas.api.UserInfo;
+import dev.tonimatas.api.data.UserInfo;
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

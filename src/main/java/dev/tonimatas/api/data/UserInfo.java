@@ -1,4 +1,4 @@
-package dev.tonimatas.api;
+package dev.tonimatas.api.data;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.bank.Transaction;
