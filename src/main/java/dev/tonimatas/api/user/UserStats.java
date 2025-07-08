@@ -23,11 +23,9 @@ public class UserStats {
 
     public void increaseCountCorrectly() {
         countCorrectly++;
-        UserInfo.save();
     }
 
     public void increaseCountIncorrectly() {
         countIncorrectly++;
-        UserInfo.save();
     }
 }

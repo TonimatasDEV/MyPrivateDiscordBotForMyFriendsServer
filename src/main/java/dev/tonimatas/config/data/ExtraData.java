@@ -25,6 +25,5 @@ public class ExtraData extends JsonFile {
 
     public void setCount(long count) {
         this.count = count;
-        save();
     }
 }

@@ -2,7 +2,6 @@ package dev.tonimatas.api.user;
 
 import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.api.bank.Transaction;
-import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -32,10 +31,6 @@ public class UserInfo {
         this.stats = stats;
     }
 
-    public static void save() {
-        BotFiles.USER.save();
-    }
-
     public DailyInfo getDaily() {
         return daily;
     }
@@ -46,7 +41,6 @@ public class UserInfo {
 
     private void setMoney(long money) {
         this.money = money;
-        save();
     }
 
     public void addMoney(long money, String reason) {
@@ -73,8 +67,6 @@ public class UserInfo {
                 transactions.removeLast();
             }
         }
-
-        save();
     }
 
     public UserSettings getSettings() {

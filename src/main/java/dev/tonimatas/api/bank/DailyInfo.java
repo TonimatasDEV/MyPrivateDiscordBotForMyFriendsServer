@@ -1,6 +1,5 @@
 package dev.tonimatas.api.bank;
 
-import dev.tonimatas.api.user.UserInfo;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,6 @@ public class DailyInfo {
 
     public void setLast(LocalDateTime last) {
         this.lastDaily = TimeUtils.getStr(last);
-        UserInfo.save();
     }
 
     public boolean isNotified() {
@@ -29,7 +27,6 @@ public class DailyInfo {
 
     public void setNotified(boolean notified) {
         this.notified = notified;
-        UserInfo.save();
     }
 
     public LocalDateTime getNext() {

@@ -9,6 +9,5 @@ public class UserSettings {
 
     public void setNotifyDaily(boolean notifyDaily) {
         this.notifyDaily = notifyDaily;
-        UserInfo.save();
     }
 }
