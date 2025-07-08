@@ -3,7 +3,9 @@ package dev.tonimatas.listeners;
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -31,18 +33,18 @@ public class CountListener extends ListenerAdapter {
 
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
-            BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountCorrectly();
+            BotFiles.USER.get(user.getId()).getStats().increaseCountCorrectly();
             BotFiles.USER.get(user.getId()).addMoney(1, "Counted correctly.");
             currentNumber++;
             BotFiles.EXTRA.setCount(currentNumber);
-            lastCountUser = event.getAuthor();
+            lastCountUser = user;
             lastCountMessageId = event.getMessageId();
             return;
         }
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa y perdiste 50€.").queue();
-        BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();
+        BotFiles.USER.get(user.getId()).getStats().increaseCountIncorrectly();
         BotFiles.USER.get(user.getId()).removeMoney(50, "Counted incorrectly");
         BotFiles.EXTRA.setCount(0);
     }
@@ -78,6 +80,16 @@ public class CountListener extends ListenerAdapter {
             BotFiles.USER.get(lastCountUser.getId()).removeMoney(100, "Tried to troll.");
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
+        }
+    }
+
+    @Override
+    public void onGuildReady(GuildReadyEvent event) {
+        TextChannel channel = event.getJDA().getTextChannelById(BotFiles.CONFIG.getCountingChannelId());
+
+        if (channel != null) {
+            lastCountMessageId = channel.getLatestMessageId();
+            channel.retrieveMessageById(lastCountMessageId).queue((message -> lastCountUser = message.getAuthor()));
         }
     }
 
