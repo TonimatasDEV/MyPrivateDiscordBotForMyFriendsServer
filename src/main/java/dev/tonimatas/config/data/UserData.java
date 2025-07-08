@@ -18,17 +18,13 @@ public class UserData extends JsonFile {
     }
 
     public UserInfo get(String userId) {
-        return getOrElse(userId);
+        UserInfo user = users.computeIfAbsent(userId, id -> new UserInfo(userId));
+        save();
+        return user;
     }
     
     public Map<String, UserInfo> getUsers() {
         return users;
-    }
-
-    private UserInfo getOrElse(String userId) {
-        UserInfo user = users.computeIfAbsent(userId, id -> new UserInfo(userId));
-        save();
-        return user;
     }
 
     @Override
