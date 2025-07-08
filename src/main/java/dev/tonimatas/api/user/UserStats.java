@@ -43,15 +43,15 @@ public class UserStats {
     public void increaseCountIncorrectly() {
         countIncorrectly++;
     }
-    
+
     public void increaseMoneyWon(long amount) {
         moneyWon += amount;
     }
-    
+
     public void increaseMoneySpent(long amount) {
         moneySpent += amount;
     }
-    
+
     public void increaseTransactions() {
         transactions++;
     }

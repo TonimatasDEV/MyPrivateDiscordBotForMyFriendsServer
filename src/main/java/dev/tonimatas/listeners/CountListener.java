@@ -4,6 +4,7 @@ import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
@@ -51,34 +52,26 @@ public class CountListener extends ListenerAdapter {
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        String channelId = event.getChannel().getId();
-
-        if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId()) || lastCountMessageId == null) {
-            return;
-        }
-
-        if (event.getMessageId().equals(lastCountMessageId)) {
-            String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
-            BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();
-            BotFiles.USER.get(lastCountUser.getId()).removeMoney(100, "Tried to troll.");
-            event.getChannel().sendMessage(lastCountUser.getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
-                    message.addReaction(Emoji.fromUnicode("✅")).queue());
-        }
+        executeTrollAction(event.getChannel(), lastCountUser, event.getMessageId());
     }
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent event) {
-        String channelId = event.getChannel().getId();
+        executeTrollAction(event.getChannel(), event.getAuthor(), event.getMessageId());
+    }
+
+    private void executeTrollAction(MessageChannelUnion channel, User author, String messageId) {
+        String channelId = channel.getId();
 
         if (!channelId.equals(BotFiles.CONFIG.getCountingChannelId()) || lastCountMessageId == null) {
             return;
         }
 
-        if (event.getMessageId().equals(lastCountMessageId)) {
+        if (messageId.equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();
             BotFiles.USER.get(lastCountUser.getId()).removeMoney(100, "Tried to troll.");
-            event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
+            channel.sendMessage(author.getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
         }
     }
