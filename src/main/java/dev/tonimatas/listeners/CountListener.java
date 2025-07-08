@@ -31,7 +31,7 @@ public class CountListener extends ListenerAdapter {
 
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
-            BotFiles.BANK.addMoney(user.getId(), 1, "Counted correctly.");
+            BotFiles.USER.get(user.getId()).addMoney(1, "Counted correctly.");
             currentNumber++;
             BotFiles.EXTRA.setCount(currentNumber);
             lastCountUser = event.getAuthor();
@@ -41,7 +41,7 @@ public class CountListener extends ListenerAdapter {
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrecto. El siguiente número era: " + (currentNumber + 1) + ". Empezamos de nuevo por tu culpa y perdiste 50€.").queue();
-        BotFiles.BANK.removeMoney(user.getId(), 50, "Counted incorrectly");
+        BotFiles.USER.get(user.getId()).removeMoney(50, "Counted incorrectly");
         BotFiles.EXTRA.setCount(0);
     }
 
@@ -55,7 +55,7 @@ public class CountListener extends ListenerAdapter {
         
         if (event.getMessageId().equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
-            BotFiles.BANK.removeMoney(lastCountUser.getId(), 100, "Tried to troll.");
+            BotFiles.USER.get(lastCountUser.getId()).removeMoney(100, "Tried to troll.");
             event.getChannel().sendMessage(lastCountUser.getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
         }
@@ -71,7 +71,7 @@ public class CountListener extends ListenerAdapter {
 
         if (event.getMessageId().equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
-            BotFiles.BANK.removeMoney(lastCountUser.getId(), 100, "Tried to troll.");
+            BotFiles.USER.get(lastCountUser.getId()).removeMoney(100, "Tried to troll.");
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ha intentado hacer que contemos mal, ahora tiene 100€ menos. \nEl siguiente número es: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
         }

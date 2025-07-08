@@ -40,7 +40,7 @@ public class PayCommand implements SlashCommand {
                 return;
             }
 
-            if (amount > BotFiles.BANK.getMoney(sender.getId())) {
+            if (amount > BotFiles.USER.get(sender.getId()).getMoney()) {
                 MessageEmbed embed = Messages.getErrorEmbed(jda, "Insufficient funds.");
                 interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;

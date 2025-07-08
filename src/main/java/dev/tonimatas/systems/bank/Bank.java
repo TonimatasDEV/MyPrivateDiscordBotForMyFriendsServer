@@ -1,5 +1,6 @@
 package dev.tonimatas.systems.bank;
 
+import dev.tonimatas.api.UserInfo;
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -15,9 +16,9 @@ public class Bank {
     }
 
     public static String getMoneyTopString(Guild guild) {
-        List<Map.Entry<String, Long>> sortedList = BotFiles.BANK.bank.entrySet()
+        List<Map.Entry<String, UserInfo>> sortedList = BotFiles.USER.getUsers().entrySet()
                 .stream()
-                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .sorted((a, b) -> Long.compare(b.getValue().getMoney(), a.getValue().getMoney()))
                 .toList();
 
         StringBuilder text = new StringBuilder();
@@ -30,7 +31,7 @@ public class Bank {
                 Member user = guild.getMemberById(sortedList.get(i).getKey());
 
                 name = (user != null) ? user.getEffectiveName() : "Unknown";
-                money = sortedList.get(i).getValue();
+                money = sortedList.get(i).getValue().getMoney();
             }
 
             text.append(i).append(". ").append(name).append(" - ").append(money).append("€\n");
@@ -40,7 +41,7 @@ public class Bank {
     }
 
     public static String getTransactionsString(User user) {
-        List<Transaction> transactions = BotFiles.BANK.getTransactions(user.getId());
+        List<Transaction> transactions = BotFiles.USER.get(user.getId()).getTransactions();
 
         StringBuilder text = new StringBuilder();
 

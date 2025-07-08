@@ -49,7 +49,7 @@ public class Roulette {
     }
 
     public void addBet(Bet bet) {
-        BotFiles.BANK.removeMoney(bet.getId(), bet.getMoney(), ROULETTE_NAME);
+        BotFiles.USER.get(bet.getId()).removeMoney(bet.getMoney(), ROULETTE_NAME);
         bets.add(bet);
 
         if (!rouletteThread.isAlive()) {
@@ -89,7 +89,7 @@ public class Roulette {
 
     private void crash() {
         for (Bet bet : bets) {
-            BotFiles.BANK.addMoney(bet.getId(), bet.getMoney(), ROULETTE_NAME + " crashed");
+            BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney(), ROULETTE_NAME + " crashed");
         }
 
         MessageEmbed embed = Messages.getErrorEmbed(jda, ROULETTE_NAME + " crashed. All money should be in your accounts.");
@@ -141,7 +141,7 @@ public class Roulette {
             if (user == null) continue;
 
             long reward = bet.getReward(winner);
-            BotFiles.BANK.addMoney(bet.getId(), reward, ROULETTE_NAME);
+            BotFiles.USER.get(bet.getId()).addMoney(reward, ROULETTE_NAME);
 
             rewards.append(count).append(". ").append(user.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;

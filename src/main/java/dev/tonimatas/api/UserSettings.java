@@ -1,6 +1,4 @@
-package dev.tonimatas.systems.settings;
-
-import dev.tonimatas.config.BotFiles;
+package dev.tonimatas.api;
 
 public class UserSettings {
     private boolean notifyDaily = false;
@@ -11,6 +9,6 @@ public class UserSettings {
 
     public void setNotifyDaily(boolean notifyDaily) {
         this.notifyDaily = notifyDaily;
-        BotFiles.SETTINGS.save();
+        UserInfo.save();
     }
 }

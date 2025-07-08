@@ -33,7 +33,7 @@ public class MoneyCommand implements SlashCommand {
             return;
         }
 
-        long money = BotFiles.BANK.getMoney(user.getId());
+        long money = BotFiles.USER.get(user.getId()).getMoney();
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money", user.getEffectiveName() + " has " + money + "€.");
         interaction.replyEmbeds(embed).queue();
     }

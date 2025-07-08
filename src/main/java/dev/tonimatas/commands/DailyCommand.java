@@ -2,7 +2,7 @@ package dev.tonimatas.commands;
 
 import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
-import dev.tonimatas.systems.bank.DailyInfo;
+import dev.tonimatas.api.DailyInfo;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
@@ -22,16 +22,16 @@ public class DailyCommand implements SlashCommand {
         JDA jda = interaction.getJDA();
         User user = interaction.getUser();
         LocalDateTime now = LocalDateTime.now();
-        DailyInfo dailyInfo = BotFiles.BANK.getDaily(user.getId());
+        DailyInfo dailyInfo = BotFiles.USER.get(user.getId()).getDaily();
 
         if (now.isAfter(dailyInfo.getNext())) {
-            BotFiles.BANK.addMoney(user.getId(), 100, "Daily money!");
+            BotFiles.USER.get(user.getId()).addMoney(100, "Daily money!");
             MessageEmbed embed = Messages.getDefaultEmbed(jda, "Daily", "Yeah! You claimed 100€.");
             interaction.replyEmbeds(embed).queue();
             dailyInfo.setLast(now);
             dailyInfo.setNotified(false);
         } else {
-            String formattedDate = BotFiles.BANK.getDaily(user.getId()).getNextFormatted();
+            String formattedDate = BotFiles.USER.get(user.getId()).getDaily().getNextFormatted();
             MessageEmbed embed = Messages.getErrorEmbed(jda, "You need to wait more. Your next daily will be available at " + formattedDate);
             interaction.replyEmbeds(embed).queue();
         }

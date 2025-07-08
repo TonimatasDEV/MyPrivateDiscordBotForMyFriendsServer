@@ -51,7 +51,7 @@ public class BetCommand implements SlashCommand {
         }
 
         if (bet.isValid()) {
-            if (bet.getMoney() <= BotFiles.BANK.getMoney(id)) {
+            if (bet.getMoney() <= BotFiles.USER.get(id).getMoney()) {
                 Roulette.getRoulette(jda).addBet(bet);
                 MessageEmbed embed = Messages.getDefaultEmbed(jda, "Bet", "Your " + type + " bet has been added to the Roulette.");
                 interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
