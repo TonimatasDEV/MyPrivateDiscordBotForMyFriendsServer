@@ -16,6 +16,7 @@ public class UserInfo {
     private final UserSettings settings;
     private long money;
     private long points;
+    private UserStats stats;
     
     public UserInfo(String userId) {
         this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0);
@@ -79,7 +80,11 @@ public class UserInfo {
         transactions.sort(null);
         return transactions;
     }
-    
+
+    public UserStats getStats() {
+        return stats;
+    }
+
     public static void save() {
         BotFiles.USER.save();
     }
