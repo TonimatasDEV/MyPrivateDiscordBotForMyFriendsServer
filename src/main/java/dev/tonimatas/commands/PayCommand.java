@@ -55,7 +55,7 @@ public class PayCommand implements SlashCommand {
             long fee = (long) (amount * 0.05);
 
             MessageEmbed confirmation = Messages.getDefaultEmbed(jda, "Confirm Transaction",
-                    String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
+                    String.format("Send **%d€** to **%s**? \nFee: **%d€** \nTotal: **%d€** \nReason: %s",
                             amount - fee,
                             receiver.getEffectiveName(),
                             fee,
