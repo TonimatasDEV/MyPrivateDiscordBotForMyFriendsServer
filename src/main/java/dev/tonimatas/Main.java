@@ -7,6 +7,7 @@ import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.systems.bank.DailyNotifier;
 import dev.tonimatas.systems.executors.ExecutorManager;
+import dev.tonimatas.systems.tictactoe.TicTacToeManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -45,7 +46,8 @@ public class Main {
                 new OptionsCommand(),
                 new PayCommand(),
                 new TransactionsCommand(),
-                new BetCommand()
+                new BetCommand(),
+                new TicTacToeCommand(new TicTacToeManager())
         ).init().queue();
 
         jda.addEventListener(
