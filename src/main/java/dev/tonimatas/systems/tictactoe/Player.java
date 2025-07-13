@@ -49,4 +49,12 @@ public class Player {
     public int hashCode() {
         return Objects.hash(member, symbol);
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "member=" + member.getId() +
+                ", symbol=" + symbol +
+                '}';
+    }
 }

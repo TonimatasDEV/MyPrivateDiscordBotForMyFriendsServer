@@ -64,14 +64,11 @@ public class TicTacToeBoard {
             }
         }
 
-        char center = board [1][1];
-        if (center != ' ') {
-            if (board[0][0] == center && board[2][2] == center) {
-                return center;
-            }
-            if (board[0][2] == center && board[2][0] == center) {
-                return center;
-            }
+        if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            return board[0][0];
+        }
+        if (board[0][2] != ' ' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            return board[0][2];
         }
 
         return ' ';
@@ -85,12 +82,31 @@ public class TicTacToeBoard {
         StringBuilder sb = new StringBuilder("```\n");
         for (char[] row : board) {
             sb.append("| --- | --- | --- |\n");
-            sb.append("|");
+            sb.append("| ");
             for (char c : row) {
-                sb.append(" ").append(c == ' ' ? "_" : c).append("  |");
+                sb.append(" ").append(c == ' ' ? "_" : c).append("  | ");
             }
             sb.append("\n");
         }
         return sb.append("| --- | --- | --- |\n").append("```").toString();
+    }
+
+    /**
+     * Checks if a specific cell is empty
+     * @param row Row index (0-2)
+     * @param col Column index (0-2)
+     * @return true if the cell is empty
+     */
+    public boolean isEmpty(int row, int col) {
+        return board[row][col] == ' ';
+    }
+
+    /**
+     * Reverses a move (used for AI simulations)
+     * @param row Row index
+     * @param col Column index
+     */
+    public void undoMove(int row, int col) {
+        board[row][col] = ' ';
     }
 }

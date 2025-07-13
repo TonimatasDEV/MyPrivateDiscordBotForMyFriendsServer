@@ -52,6 +52,10 @@ public class BotConfig extends JsonFile {
     public TextChannel getJoinLeftChannel(JDA jda) {
         return Objects.requireNonNull(jda.getTextChannelById(ids.get("joinLeftChannelId")));
     }
+
+    public String getTicTacToeChannelId() {
+        return ids.get("tictactoeChannelId");
+    }
     
     public Role getAutoRole(JDA jda) {
         return Objects.requireNonNull(jda.getRoleById(ids.get("autoRoleId")));
