@@ -59,7 +59,7 @@ public class ColorBet extends Bet {
 
     @Override
     public boolean canMerge(Bet bet) {
-        return bet instanceof ColorBet colorBet && colorBet.color == color;
+        return bet.getId().equals(getId()) && bet instanceof ColorBet colorBet && colorBet.color == color;
     }
 
     private enum Color {
