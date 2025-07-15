@@ -1,5 +1,6 @@
 package dev.tonimatas.commands;
 
+import dev.tonimatas.api.user.UserInfo;
 import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
@@ -14,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.Set;
 
-public class MoneyCommand implements SlashCommand {
+public class StatCommand implements SlashCommand {
     @Override
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
@@ -28,29 +29,36 @@ public class MoneyCommand implements SlashCommand {
         }
 
         if (user.isBot()) {
-            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "Bots cannot storage money.");
+            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "Bots don't take part on any statistics.");
             interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
-        long money = BotFiles.USER.get(user.getId()).getMoney();
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money", user.getEffectiveName() + " has " + money + "€.");
+        UserInfo userInfo = BotFiles.USER.get(user.getId());
+        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Stats",
+                "**" + user.getEffectiveName() + " :**" + "\n" +
+                        "Times counted correctly: " + userInfo.getStats().getCountCorrectly() + ".\n" +
+                        "Times counted incorrectly: " + userInfo.getStats().getCountIncorrectly() + ".\n" +
+                        "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
+                        "Money spent: " + userInfo.getStats().getMoneySpent() + "€.\n" +
+                       "Total transactions: " + userInfo.getStats().getTransactions() + "."
+        );
         interaction.replyEmbeds(embed).queue();
     }
 
     @Override
     public SlashCommandData init(SlashCommandData slashCommandData) {
-        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their amount of money.", false);
+        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their stats.", false);
     }
 
     @Override
     public String getName() {
-        return "money";
+        return "stats";
     }
 
     @Override
     public String getDescription() {
-        return "The user that you want to check their amount of money.";
+        return "Show user statistics.";
     }
 
     @Override

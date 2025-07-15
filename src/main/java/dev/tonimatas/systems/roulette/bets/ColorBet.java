@@ -57,6 +57,11 @@ public class ColorBet extends Bet {
         return color != null && Arrays.asList(Color.values()).contains(color);
     }
 
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof ColorBet colorBet && colorBet.color == color;
+    }
+
     private enum Color {
         GREEN,
         RED,

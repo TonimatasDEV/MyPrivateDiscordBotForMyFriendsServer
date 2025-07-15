@@ -5,6 +5,8 @@ import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -13,7 +15,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class PayCommand implements SlashCommand {
                 return;
             }
 
-            if (amount > BotFiles.BANK.getMoney(sender.getId())) {
+            if (amount > BotFiles.USER.get(sender.getId()).getMoney()) {
                 MessageEmbed embed = Messages.getErrorEmbed(jda, "Insufficient funds.");
                 interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
@@ -55,7 +56,7 @@ public class PayCommand implements SlashCommand {
             long fee = (long) (amount * 0.05);
 
             MessageEmbed confirmation = Messages.getDefaultEmbed(jda, "Confirm Transaction",
-                    String.format("Send **%d€** to **%s**?\\nFee: **%d€**\\nTotal: **%d€**\\nReason: %s",
+                    String.format("Send **%d€** to **%s**? \nFee: **%d€** \nTotal: **%d€** \nReason: %s",
                             amount - fee,
                             receiver.getEffectiveName(),
                             fee,
@@ -66,9 +67,11 @@ public class PayCommand implements SlashCommand {
             String cancelId = "pay:cancel:" + sender.getId();
 
             interaction.replyEmbeds(confirmation)
-                    .addActionRow(
-                            Button.success(confirmId, "✅"),
-                            Button.danger(cancelId, "❌")
+                    .addComponents(
+                            ActionRow.of(
+                                    Button.success(confirmId, "✅"),
+                                    Button.danger(cancelId, "❌")
+                            )
                     )
                     .setEphemeral(true)
                     .queue();

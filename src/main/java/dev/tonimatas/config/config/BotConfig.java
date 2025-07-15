@@ -1,5 +1,6 @@
 package dev.tonimatas.config;
 
+import dev.tonimatas.config.JsonFile;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
@@ -56,7 +57,7 @@ public class BotConfig extends JsonFile {
     public String getTicTacToeChannelId() {
         return ids.get("tictactoeChannelId");
     }
-    
+
     public Role getAutoRole(JDA jda) {
         return Objects.requireNonNull(jda.getRoleById(ids.get("autoRoleId")));
     }

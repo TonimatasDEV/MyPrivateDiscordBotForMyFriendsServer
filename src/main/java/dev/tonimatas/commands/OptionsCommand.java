@@ -22,8 +22,8 @@ public class OptionsCommand implements SlashCommand {
 
             String userId = interaction.getUser().getId();
 
-            BotFiles.SETTINGS.getSettings(userId).setNotifyDaily(dailyNotify);
-            BotFiles.BANK.getDaily(userId).setNotified(false);
+            BotFiles.USER.get(userId).getSettings().setNotifyDaily(dailyNotify);
+            BotFiles.USER.get(userId).getDaily().setNotified(false);
 
             String description = "Daily notifier " + (dailyNotify ? "enabled." : "disabled.");
             MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Settings changed", description);

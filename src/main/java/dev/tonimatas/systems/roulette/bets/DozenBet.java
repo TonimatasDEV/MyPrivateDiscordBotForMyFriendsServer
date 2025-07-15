@@ -39,4 +39,9 @@ public class DozenBet extends Bet {
     public boolean isValid() {
         return dozen.equalsIgnoreCase("first") || dozen.equalsIgnoreCase("second") || dozen.equalsIgnoreCase("third");
     }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof DozenBet dozenBet && dozenBet.dozen.equals(dozen);
+    }
 }

@@ -8,7 +8,7 @@ public class CommandUtils {
     private CommandUtils() {
         // We don't need a constructor
     }
-    
+
     public static boolean isNotCommandsChannel(SlashCommandInteraction interaction) {
         if (!interaction.getChannel().getId().equals(BotFiles.CONFIG.getCommandsChannelId())) {
             MessageEmbed err = Messages.getErrorEmbed(interaction.getJDA(), "This command can only be run in the Commands channel.");

@@ -32,4 +32,9 @@ public class NumberBet extends Bet {
     public boolean isValid() {
         return number <= 36 && number >= 0;
     }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof NumberBet numberBet && numberBet.number == number;
+    }
 }

@@ -4,7 +4,7 @@ import kotlin.io.path.exists
 plugins {
     java
     application
-    id("com.gradleup.shadow") version "9.0.0-beta17"
+    id("com.gradleup.shadow") version "9.0.0-rc1"
 }
 
 val projectVersion: String by extra
@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:5.6.1") {
+    implementation("net.dv8tion:JDA:6.0.0-preview") {
         exclude(module = "opus-java")
     }
 
@@ -38,6 +38,12 @@ tasks.named<JavaExec>("run") {
     val path = rootDir.toPath().resolve("run")
     workingDir = path.toFile()
     if (!path.exists()) path.createDirectory()
+}
+
+tasks.compileJava {
+    options.encoding = "UTF-8"
+    java.sourceCompatibility = JavaVersion.VERSION_21
+    java.targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.jar {
