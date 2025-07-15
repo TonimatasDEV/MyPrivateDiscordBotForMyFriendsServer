@@ -49,7 +49,7 @@ public class Roulette {
     }
 
     public void addBet(Bet newBet) {
-        BotFiles.USER.get(newBet.getId()).removeMoney(newBet.getMoney(), ROULETTE_NAME);
+        BotFiles.USER.get(newBet.getId()).removeMoney(newBet.getMoney(), "Bet to the " + ROULETTE_NAME);
 
         Bet mergeableBet = null;
         for (Bet bet : bets) {
@@ -154,7 +154,7 @@ public class Roulette {
             if (user == null) continue;
 
             long reward = bet.getReward(winner);
-            BotFiles.USER.get(bet.getId()).addMoney(reward, ROULETTE_NAME);
+            BotFiles.USER.get(bet.getId()).addMoney(reward, "Won a bet in the " + ROULETTE_NAME);
 
             rewards.append(count).append(". ").append(user.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;
