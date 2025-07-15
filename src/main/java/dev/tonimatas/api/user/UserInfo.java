@@ -15,7 +15,7 @@ public class UserInfo {
     private final UserSettings settings;
     private long money;
     private long points;
-    private UserStats stats;
+    private final UserStats stats;
 
     public UserInfo(String userId) {
         this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0, new UserStats());
@@ -65,7 +65,7 @@ public class UserInfo {
         transactions.sort(null);
 
         Transaction first = transactions.getFirst();
-        if (first.getReason().equals(transaction.getReason())) {
+        if (first != null && first.getReason().equals(transaction.getReason())) {
             transactions.removeFirst();
             transaction = new Transaction(userId, transaction.getAmount() + first.getAmount(), transaction.getReason());
         }
