@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.localization.LocalizationFuncti
 import net.dv8tion.jda.api.interactions.commands.localization.ResourceBundleLocalizationFunction;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public class Main {
         JDA jda = JDABuilder.createDefault(BotFiles.CONFIG.token)
                 .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .enableCache(Arrays.stream(CacheFlag.values()).toList())
                 .setAutoReconnect(true)
                 .build();
 
