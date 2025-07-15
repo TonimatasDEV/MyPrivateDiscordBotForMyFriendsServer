@@ -1,4 +1,4 @@
-package dev.tonimatas.config;
+package dev.tonimatas.config.config;
 
 import dev.tonimatas.config.JsonFile;
 import net.dv8tion.jda.api.JDA;
