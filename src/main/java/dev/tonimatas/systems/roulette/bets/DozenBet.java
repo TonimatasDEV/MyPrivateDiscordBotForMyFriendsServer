@@ -1,11 +1,11 @@
 package dev.tonimatas.systems.roulette.bets;
 
 public class DozenBet extends Bet {
-    private final String input;
+    private final String dozen;
 
     public DozenBet(String id, String dozen, long money) {
         super(id, money);
-        this.input = dozen;
+        this.dozen = dozen;
     }
 
     private static String getDozen(int number) {
@@ -22,7 +22,7 @@ public class DozenBet extends Bet {
 
     @Override
     public String getTypePart() {
-        return "the " + input + " dozen";
+        return "the " + dozen + " dozen";
     }
 
     @Override
@@ -31,12 +31,17 @@ public class DozenBet extends Bet {
     }
 
     @Override
-    boolean isWinner(int winnerNumber) {
-        return getDozen(winnerNumber).equalsIgnoreCase(input);
+    boolean isWinner(int winner) {
+        return getDozen(winner).equalsIgnoreCase(dozen);
     }
 
     @Override
     public boolean isValid() {
-        return input.equalsIgnoreCase("first") || input.equalsIgnoreCase("second") || input.equalsIgnoreCase("third");
+        return dozen.equalsIgnoreCase("first") || dozen.equalsIgnoreCase("second") || dozen.equalsIgnoreCase("third");
+    }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof DozenBet dozenBet && dozenBet.dozen.equals(dozen);
     }
 }

@@ -1,9 +1,10 @@
-package dev.tonimatas.systems.bank;
+package dev.tonimatas.api.bank;
 
 import dev.tonimatas.util.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Transaction implements Comparable<Transaction> {
     private final String userId;
@@ -18,10 +19,6 @@ public class Transaction implements Comparable<Transaction> {
         this.reason = reason;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
     public long getAmount() {
         return amount;
     }
@@ -32,6 +29,18 @@ public class Transaction implements Comparable<Transaction> {
 
     public String getReason() {
         return reason;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, amount, time, reason);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Transaction that = (Transaction) object;
+        return amount == that.amount && Objects.equals(userId, that.userId) && Objects.equals(time, that.time) && Objects.equals(reason, that.reason);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -9,12 +10,9 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class TemporalChannelListener extends ListenerAdapter {
-    private static final String CATEGORY_ID = "1371074573449302209";
-    private static final String CREATE_ID = "1371077321817198704";
-
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
-        Category category = event.getGuild().getCategoryById(CATEGORY_ID);
+        Category category = BotFiles.CONFIG.getTemporalCategory(event.getJDA());
         AudioChannelUnion joined = event.getChannelJoined();
         AudioChannelUnion left = event.getChannelLeft();
 
@@ -22,7 +20,7 @@ public class TemporalChannelListener extends ListenerAdapter {
         if (joined != null) {
             VoiceChannel voice = joined.asVoiceChannel();
 
-            if (voice.getId().equals(CREATE_ID)) {
+            if (voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) {
                 createChannel(category, event.getMember());
             }
         }
@@ -30,7 +28,7 @@ public class TemporalChannelListener extends ListenerAdapter {
         if (left != null) {
             VoiceChannel voice = left.asVoiceChannel();
 
-            if (voice.getId().equals(CREATE_ID)) return;
+            if (voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) return;
 
             if (voice.getMembers().isEmpty()) {
                 left.delete().queue();
@@ -40,7 +38,7 @@ public class TemporalChannelListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
-        Category category = event.getGuild().getCategoryById(CATEGORY_ID);
+        Category category = BotFiles.CONFIG.getTemporalCategory(event.getJDA());
 
         if (category == null) return;
 
@@ -55,7 +53,7 @@ public class TemporalChannelListener extends ListenerAdapter {
 
     private void removeEmptyChannels(Category category) {
         for (VoiceChannel voiceChannel : category.getVoiceChannels()) {
-            if (voiceChannel.getId().equals(CREATE_ID)) continue;
+            if (voiceChannel.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) continue;
 
             if (voiceChannel.getMembers().isEmpty()) {
                 voiceChannel.delete().queue();
@@ -64,7 +62,7 @@ public class TemporalChannelListener extends ListenerAdapter {
     }
 
     private void createChannelIfNecessary(Category category) {
-        VoiceChannel voice = category.getGuild().getVoiceChannelById(CREATE_ID);
+        VoiceChannel voice = category.getGuild().getVoiceChannelById(BotFiles.CONFIG.getTemporaryChannelId());
 
         if (voice == null) return;
 

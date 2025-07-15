@@ -1,6 +1,10 @@
+import kotlin.io.path.createDirectory
+import kotlin.io.path.exists
+
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta17"
+    application
+    id("com.gradleup.shadow") version "9.0.0-rc1"
 }
 
 val projectVersion: String by extra
@@ -10,11 +14,12 @@ version = projectVersion
 
 repositories {
     mavenCentral()
+    maven("https://maven.tonimatas.dev/releases")
 }
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:5.6.1") {
+    implementation("net.dv8tion:JDA:6.0.0-preview") {
         exclude(module = "opus-java")
     }
 
@@ -22,6 +27,23 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.18")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.1")
+    implementation("dev.tonimatas:CJDA:1.0.3")
+}
+
+application {
+    mainClass = "dev.tonimatas.Main"
+}
+
+tasks.named<JavaExec>("run") {
+    val path = rootDir.toPath().resolve("run")
+    workingDir = path.toFile()
+    if (!path.exists()) path.createDirectory()
+}
+
+tasks.compileJava {
+    options.encoding = "UTF-8"
+    java.sourceCompatibility = JavaVersion.VERSION_21
+    java.targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.jar {

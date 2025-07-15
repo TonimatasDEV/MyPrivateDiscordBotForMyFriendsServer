@@ -1,21 +1,21 @@
 package dev.tonimatas.systems.roulette.bets;
 
 public class NumberBet extends Bet {
-    private int input;
+    private int number;
 
     public NumberBet(String id, String number, long money) {
         super(id, money);
 
         try {
-            this.input = Integer.parseInt(number);
+            this.number = Integer.parseInt(number);
         } catch (Exception i) {
-            this.input = -1;
+            this.number = -1;
         }
     }
 
     @Override
     public String getTypePart() {
-        return "number " + input;
+        return "number " + number;
     }
 
     @Override
@@ -24,12 +24,17 @@ public class NumberBet extends Bet {
     }
 
     @Override
-    boolean isWinner(int winnerNumber) {
-        return winnerNumber == input;
+    boolean isWinner(int winner) {
+        return winner == number;
     }
 
     @Override
     public boolean isValid() {
-        return input <= 36 && input >= 0;
+        return number <= 36 && number >= 0;
+    }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof NumberBet numberBet && numberBet.number == number;
     }
 }

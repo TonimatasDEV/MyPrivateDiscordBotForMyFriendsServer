@@ -6,33 +6,40 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class TimeUtils {
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+    private TimeUtils() {
+        // We don't need a constructor
+    }
 
     public static String getNowStr() {
         return getStr(LocalDateTime.now());
     }
 
-    public static String getStr(LocalDateTime localDateTime) {
-        return localDateTime.format(FORMATTER);
+    public static String getStr(LocalDateTime dateTime) {
+        return dateTime.format(FORMATTER);
     }
 
-    public static LocalDateTime getLocalDateTime(String string) {
-        return LocalDateTime.parse(string, FORMATTER);
+    public static LocalDateTime getLocalDateTime(String timeStr) {
+        return LocalDateTime.parse(timeStr, FORMATTER);
     }
 
     public static String formatDuration(Duration duration) {
         long minutes = duration.toMinutes();
         long seconds = duration.minusMinutes(minutes).getSeconds();
+        String result = "Remaining ";
 
         if (minutes > 0 && seconds > 0) {
-            return "Remaining " + minutes + " minute" + (minutes != 1 ? "s" : "") + " and " + seconds + " second" + (seconds != 1 ? "s" : "");
+            result += minutes + " minute" + (minutes != 1 ? "s" : "") + " and " + seconds + " second" + (seconds != 1 ? "s" : "");
         } else if (minutes > 0) {
-            return "Remaining " + minutes + " minute" + (minutes != 1 ? "s" : "");
+            result += minutes + " minute" + (minutes != 1 ? "s" : "");
         } else if (seconds > 0) {
-            return "Remaining " + seconds + " second" + (seconds != 1 ? "s" : "");
+            result += seconds + " second" + (seconds != 1 ? "s" : "");
         } else {
             return "Time's up!";
         }
+
+        return result;
     }
 
     public static boolean isBetween(LocalTime time, int startHour, int startMinute, int endHour, int endMinute) {

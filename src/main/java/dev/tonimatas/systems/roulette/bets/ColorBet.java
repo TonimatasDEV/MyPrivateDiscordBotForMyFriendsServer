@@ -1,48 +1,70 @@
 package dev.tonimatas.systems.roulette.bets;
 
+import java.util.Arrays;
+import java.util.Locale;
+
 public class ColorBet extends Bet {
-    private final String input;
+    private final Color color;
 
     public ColorBet(String id, String color, long money) {
         super(id, money);
-        this.input = color;
+        this.color = getColor(color);
     }
 
-    private static String getColor(int number) {
+    private static Color getColor(String color) {
+        return switch (color) {
+            case "green" -> Color.GREEN;
+            case "red" -> Color.RED;
+            case "black" -> Color.BLACK;
+            default -> null;
+        };
+    }
+
+    private static Color getColor(int number) {
         if (number >= 0 && number <= 36) {
-            if (number == 0) return "green";
+            if (number == 0) return Color.GREEN;
 
             if (number <= 10 || number >= 19 && number <= 28) {
-                return number % 2 == 0 ? "black" : "red";
+                return number % 2 == 0 ? Color.BLACK : Color.RED;
             }
 
-            return number % 2 == 0 ? "red" : "black";
+            return number % 2 == 0 ? Color.RED : Color.BLACK;
         }
 
-        return "invalid";
+        return null;
     }
 
     @Override
     public String getTypePart() {
-        return input;
+        return color.toString().toLowerCase(Locale.ENGLISH);
     }
 
     @Override
     int getMultiplier() {
-        return switch (input) {
-            case "green" -> 36;
-            case "red", "black" -> 2;
-            default -> 0;
+        return switch (color) {
+            case GREEN -> 36;
+            case RED, BLACK -> 2;
         };
     }
 
     @Override
-    boolean isWinner(int winnerNumber) {
-        return getColor(winnerNumber).equalsIgnoreCase(input);
+    boolean isWinner(int number) {
+        return getColor(number) == color;
     }
 
     @Override
     public boolean isValid() {
-        return input.equalsIgnoreCase("red") || input.equalsIgnoreCase("green") || input.equalsIgnoreCase("black");
+        return color != null && Arrays.asList(Color.values()).contains(color);
+    }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet.getId().equals(getId()) && bet instanceof ColorBet colorBet && colorBet.color == color;
+    }
+
+    private enum Color {
+        GREEN,
+        RED,
+        BLACK
     }
 }
