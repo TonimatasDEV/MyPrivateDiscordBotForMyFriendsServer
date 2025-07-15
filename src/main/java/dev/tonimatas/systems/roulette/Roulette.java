@@ -48,9 +48,22 @@ public class Roulette {
         };
     }
 
-    public void addBet(Bet bet) {
-        BotFiles.USER.get(bet.getId()).removeMoney(bet.getMoney(), ROULETTE_NAME);
-        bets.add(bet);
+    public void addBet(Bet newBet) {
+        BotFiles.USER.get(newBet.getId()).removeMoney(newBet.getMoney(), ROULETTE_NAME);
+
+        Bet mergeableBet = null;
+        for (Bet bet : bets) {
+            if (bet.canMerge(newBet)) {
+                mergeableBet = bet;
+                break;
+            }
+        }
+
+        if (mergeableBet != null) {
+            mergeableBet.addMoney(newBet.getMoney());
+        } else {
+            bets.add(newBet);
+        }
 
         if (!rouletteThread.isAlive()) {
             start();

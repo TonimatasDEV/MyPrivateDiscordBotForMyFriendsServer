@@ -41,4 +41,9 @@ public class ColumnBet extends Bet {
     public boolean isValid() {
         return column.equalsIgnoreCase("first") || column.equalsIgnoreCase("second") || column.equalsIgnoreCase("third");
     }
+
+    @Override
+    public boolean canMerge(Bet bet) {
+        return bet instanceof ColumnBet columnBet && columnBet.column.equals(column);
+    }
 }
