@@ -2,7 +2,7 @@ package dev.tonimatas.systems.roulette.bets;
 
 public abstract class Bet {
     private final String id;
-    private final long money;
+    private long money;
 
     protected Bet(String id, long money) {
         this.id = id;
@@ -22,6 +22,8 @@ public abstract class Bet {
     }
 
     public abstract String getTypePart();
+    
+    public abstract boolean canMerge(Bet bet);
 
     abstract int getMultiplier();
 
@@ -41,5 +43,9 @@ public abstract class Bet {
         if (!isWinner(number)) return 0;
 
         return getMultiplier() * money;
+    }
+    
+    public void addMoney(long money) {
+        this.money += money;
     }
 }

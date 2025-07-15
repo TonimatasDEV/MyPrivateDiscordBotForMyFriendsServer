@@ -62,6 +62,14 @@ public class UserInfo {
 
     public void addTransaction(Transaction transaction) {
         stats.increaseTransactions();
+        transactions.sort(null);
+
+        Transaction first = transactions.getFirst();
+        if (first.getReason().equals(transaction.getReason())) {
+            transactions.removeFirst();
+            transaction = new Transaction(userId, transaction.getAmount() + first.getAmount(), transaction.getReason());
+        }
+
         transactions.add(transaction);
         transactions.sort(null);
 
