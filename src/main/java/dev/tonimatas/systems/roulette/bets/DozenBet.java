@@ -42,6 +42,6 @@ public class DozenBet extends Bet {
 
     @Override
     public boolean canMerge(Bet bet) {
-        return bet instanceof DozenBet dozenBet && dozenBet.dozen.equals(dozen);
+        return bet.getId().equals(getId()) && bet instanceof DozenBet dozenBet && dozenBet.dozen.equals(dozen);
     }
 }

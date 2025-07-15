@@ -35,6 +35,6 @@ public class NumberBet extends Bet {
 
     @Override
     public boolean canMerge(Bet bet) {
-        return bet instanceof NumberBet numberBet && numberBet.number == number;
+        return bet.getId().equals(getId()) && bet instanceof NumberBet numberBet && numberBet.number == number;
     }
 }

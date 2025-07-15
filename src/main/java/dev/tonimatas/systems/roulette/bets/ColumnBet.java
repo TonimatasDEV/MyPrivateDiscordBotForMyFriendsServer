@@ -44,6 +44,6 @@ public class ColumnBet extends Bet {
 
     @Override
     public boolean canMerge(Bet bet) {
-        return bet instanceof ColumnBet columnBet && columnBet.column.equals(column);
+        return bet.getId().equals(getId()) && bet instanceof ColumnBet columnBet && columnBet.column.equals(column);
     }
 }
