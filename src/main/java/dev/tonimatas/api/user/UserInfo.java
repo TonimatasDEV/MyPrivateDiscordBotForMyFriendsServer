@@ -64,10 +64,12 @@ public class UserInfo {
         stats.increaseTransactions();
         transactions.sort(null);
 
-        Transaction first = transactions.getFirst();
-        if (first != null && first.getReason().equals(transaction.getReason())) {
-            transactions.removeFirst();
-            transaction = new Transaction(userId, transaction.getAmount() + first.getAmount(), transaction.getReason());
+        if (!transactions.isEmpty()) {
+            Transaction first = transactions.getFirst();
+            if (first.getReason().equals(transaction.getReason())) {
+                transactions.removeFirst();
+                transaction = new Transaction(userId, transaction.getAmount() + first.getAmount(), transaction.getReason());
+            }
         }
 
         transactions.add(transaction);
