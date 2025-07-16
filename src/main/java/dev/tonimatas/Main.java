@@ -50,7 +50,8 @@ public class Main {
                 new TransactionsCommand(),
                 new BetCommand(),
                 new VersionCommand(),
-                new StatsCommand()
+                new StatsCommand(),
+                new ReportCommand()
         ).init().queue();
 
         jda.addEventListener(
@@ -59,7 +60,8 @@ public class Main {
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
                 new TransactionListener(),
-                new StatsListener()
+                new StatsListener(),
+                new ReportListener()
         );
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));

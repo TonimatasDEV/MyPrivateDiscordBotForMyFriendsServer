@@ -34,6 +34,12 @@ public class BotConfig extends JsonFile {
         return Objects.requireNonNull(jda.getTextChannelById(ids.get("rouletteChannelId")));
     }
 
+    public static String getReportChannelId() {
+        return "1371081363540938816";
+    }
+
+
+
     public String getCommandsChannelId() {
         return ids.get("commandsChannelId");
     }
