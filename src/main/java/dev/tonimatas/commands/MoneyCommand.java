@@ -19,7 +19,6 @@ public class MoneyCommand implements SlashCommand {
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
 
-
         User user = interaction.getUser();
         OptionMapping option = interaction.getOption("user");
 

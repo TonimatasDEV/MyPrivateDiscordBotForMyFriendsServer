@@ -36,7 +36,7 @@ public class StatCommand implements SlashCommand {
 
         UserInfo userInfo = BotFiles.USER.get(user.getId());
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Stats",
-                "**" + user.getEffectiveName() + " :**" + "\n" +
+                "**" + user.getEffectiveName() + ":**" + "\n" +
                         "Times counted correctly: " + userInfo.getStats().getCountCorrectly() + ".\n" +
                         "Times counted incorrectly: " + userInfo.getStats().getCountIncorrectly() + ".\n" +
                         "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
