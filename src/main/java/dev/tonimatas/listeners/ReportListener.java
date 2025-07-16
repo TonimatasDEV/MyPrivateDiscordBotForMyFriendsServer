@@ -1,8 +1,8 @@
 package dev.tonimatas.listeners;
 
+import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,42 +12,51 @@ public class ReportListener extends ListenerAdapter {
     private static final Map<String, Set<String>> yesVotes = new ConcurrentHashMap<>();
     private static final Map<String, Set<String>> noVotes = new ConcurrentHashMap<>();
 
-    public static void trackMessage(String messageId) {
-        yesVotes.putIfAbsent(messageId, new HashSet<>());
-        noVotes.putIfAbsent(messageId, new HashSet<>());
+    public static void trackMessage(String reportMessageId, String originalMessageId) {
+        BotFiles.EXTRA.getReportToOriginalMap().put(reportMessageId, originalMessageId);
+        yesVotes.put(reportMessageId, new HashSet<>());
+        noVotes.put(reportMessageId, new HashSet<>());
     }
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
         if (event.getUser().isBot()) return;
 
-        String messageId = event.getMessageId();
+        String reportMessageId = event.getMessageId();
         String userId = event.getUserId();
 
-        if (!yesVotes.containsKey(messageId) && !noVotes.containsKey(messageId)) return;
+        if (!yesVotes.containsKey(reportMessageId)) return;
 
         String emoji = event.getReaction().getEmoji().getName();
 
         if (emoji.equals("✅")) {
-            yesVotes.get(messageId).add(userId);
+            yesVotes.get(reportMessageId).add(userId);
         } else if (emoji.equals("❌")) {
-            noVotes.get(messageId).add(userId);
+            noVotes.get(reportMessageId).add(userId);
+        } else {
+            return;
         }
 
-        Set<String> yes = yesVotes.getOrDefault(messageId, Set.of());
-        Set<String> no = noVotes.getOrDefault(messageId, Set.of());
+        Set<String> yes = yesVotes.get(reportMessageId);
+        Set<String> no = noVotes.get(reportMessageId);
+        String originalMessageId = BotFiles.EXTRA.getReportToOriginalMap().get(reportMessageId);
 
         if (yes.contains(TONIMATAS_DEV_ID) && yes.size() >= 3) {
-            event.getChannel().deleteMessageById(messageId).queue();
-            yesVotes.remove(messageId);
-            noVotes.remove(messageId);
+            event.getChannel().deleteMessageById(originalMessageId).queue();
+            event.getChannel().deleteMessageById(reportMessageId).queue();
+            cleanup(reportMessageId);
             return;
         }
 
         if (no.contains(TONIMATAS_DEV_ID) || no.size() >= 4) {
-            event.getChannel().deleteMessageById(messageId).queue();
-            yesVotes.remove(messageId);
-            noVotes.remove(messageId);
+            event.getChannel().deleteMessageById(reportMessageId).queue();
+            cleanup(reportMessageId);
         }
+    }
+
+    private void cleanup(String reportMessageId) {
+        BotFiles.EXTRA.getReportToOriginalMap().remove(reportMessageId);
+        yesVotes.remove(reportMessageId);
+        noVotes.remove(reportMessageId);
     }
 }
