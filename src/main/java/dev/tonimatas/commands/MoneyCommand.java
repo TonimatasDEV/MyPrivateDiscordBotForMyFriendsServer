@@ -40,7 +40,7 @@ public class MoneyCommand implements SlashCommand {
 
     @Override
     public SlashCommandData init(SlashCommandData slashCommandData) {
-        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their amount of money.", false);
+        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their amount of money.");
     }
 
     @Override

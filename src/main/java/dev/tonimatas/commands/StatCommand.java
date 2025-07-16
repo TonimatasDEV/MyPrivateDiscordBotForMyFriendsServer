@@ -51,7 +51,7 @@ public class StatCommand implements SlashCommand {
 
     @Override
     public SlashCommandData init(SlashCommandData slashCommandData) {
-        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their stats.", false);
+        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their stats.");
     }
 
     @Override
