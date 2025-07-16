@@ -100,6 +100,8 @@ public class BetCommand implements SlashCommand {
                                         .addChoice("second", "second")
                                         .addChoice("third", "third"),
                                 new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
-                .addSubcommands(new SubcommandData("number", "Bet to number"));
+                .addSubcommands(new SubcommandData("number", "Bet to number")
+                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true),
+                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)));
     }
 }

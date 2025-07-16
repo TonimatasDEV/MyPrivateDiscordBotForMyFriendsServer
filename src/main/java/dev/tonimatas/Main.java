@@ -45,11 +45,13 @@ public class Main {
                 new MoneyTopCommand(),
                 new DailyCommand(),
                 new HiCommand(),
+                new StatsTopCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
                 new TransactionsCommand(),
                 new BetCommand(),
-                new StatCommand(),
+                new VersionCommand(),
+                new StatsCommand(),
                 new TicTacToeCommand(new TicTacToeManager())
         ).init().queue();
 
@@ -58,7 +60,8 @@ public class Main {
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
-                new TransactionListener()
+                new TransactionListener(),
+                new StatsListener()
         );
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));

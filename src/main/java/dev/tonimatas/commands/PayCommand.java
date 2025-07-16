@@ -97,6 +97,6 @@ public class PayCommand implements SlashCommand {
     public SlashCommandData init(SlashCommandData data) {
         return data.addOption(OptionType.USER, "user", "The member who is gonna receive your money.", true)
                 .addOption(OptionType.STRING, "amount", "The quantity of money you are gonna loose.", true)
-                .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.", false);
+                .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.");
     }
 }

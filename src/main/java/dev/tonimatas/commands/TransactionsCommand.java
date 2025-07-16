@@ -64,7 +64,7 @@ public class TransactionsCommand implements SlashCommand {
 
     @Override
     public SlashCommandData init(SlashCommandData data) {
-        return data.addOption(OptionType.USER, "user", "If you want to see the transactions of an specific user.", false);
+        return data.addOption(OptionType.USER, "user", "If you want to see the transactions of an specific user.");
     }
 
     @Override
