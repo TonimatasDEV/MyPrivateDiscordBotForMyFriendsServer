@@ -44,6 +44,7 @@ public class Main {
                 new MoneyTopCommand(),
                 new DailyCommand(),
                 new HiCommand(),
+                new LeaderboardCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
                 new TransactionsCommand(),
