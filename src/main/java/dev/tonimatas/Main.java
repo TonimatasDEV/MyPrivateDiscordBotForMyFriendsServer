@@ -44,12 +44,13 @@ public class Main {
                 new MoneyTopCommand(),
                 new DailyCommand(),
                 new HiCommand(),
+                new StatsTopCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
                 new TransactionsCommand(),
                 new BetCommand(),
                 new VersionCommand(),
-                new StatCommand()
+                new StatsCommand()
         ).init().queue();
 
         jda.addEventListener(

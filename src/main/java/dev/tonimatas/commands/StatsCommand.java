@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.Set;
 
-public class StatCommand implements SlashCommand {
+public class StatsCommand implements SlashCommand {
     @Override
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
@@ -36,7 +36,7 @@ public class StatCommand implements SlashCommand {
 
         UserInfo userInfo = BotFiles.USER.get(user.getId());
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Stats",
-                "**" + user.getEffectiveName() + " :**" + "\n" +
+                "**" + user.getEffectiveName() + ":**" + "\n" +
                         "Times counted correctly: " + userInfo.getStats().getCountCorrectly() + ".\n" +
                         "Times counted incorrectly: " + userInfo.getStats().getCountIncorrectly() + ".\n" +
                         "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
@@ -51,7 +51,7 @@ public class StatCommand implements SlashCommand {
 
     @Override
     public SlashCommandData init(SlashCommandData slashCommandData) {
-        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their stats.", false);
+        return slashCommandData.addOption(OptionType.USER, "user", "The user that you want to check their stats.");
     }
 
     @Override
