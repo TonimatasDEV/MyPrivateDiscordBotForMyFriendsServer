@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.Set;
 
-public class StatCommand implements SlashCommand {
+public class StatsCommand implements SlashCommand {
     @Override
     public void execute(SlashCommandInteraction interaction) {
         if (CommandUtils.isNotCommandsChannel(interaction)) return;
