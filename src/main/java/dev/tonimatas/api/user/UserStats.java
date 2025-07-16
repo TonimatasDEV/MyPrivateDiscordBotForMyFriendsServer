@@ -6,15 +6,8 @@ public class UserStats {
     private long moneyWon;
     private long moneySpent;
     private long transactions;
-
-    public UserStats() {
-        this(0, 0);
-    }
-
-    public UserStats(long countCorrectly, long countIncorrectly) {
-        this.countCorrectly = countCorrectly;
-        this.countIncorrectly = countIncorrectly;
-    }
+    private long messagesSent;
+    private long commandsExecuted;
 
     public long getCountCorrectly() {
         return countCorrectly;
@@ -35,6 +28,14 @@ public class UserStats {
     public long getTransactions() {
         return transactions;
     }
+    
+    public long getMessagesSent() {
+        return messagesSent;
+    }
+
+    public long getCommandsExecuted() {
+        return commandsExecuted;
+    }
 
     public void increaseCountCorrectly() {
         countCorrectly++;
@@ -54,5 +55,13 @@ public class UserStats {
 
     public void increaseTransactions() {
         transactions++;
+    }
+
+    public void increaseMessagesSent() {
+        messagesSent++;
+    }
+
+    public void increaseCommandsExecuted() {
+        commandsExecuted++;
     }
 }

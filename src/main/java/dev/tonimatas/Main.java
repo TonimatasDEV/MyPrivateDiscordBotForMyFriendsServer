@@ -57,7 +57,8 @@ public class Main {
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
-                new TransactionListener()
+                new TransactionListener(),
+                new StatsListener()
         );
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
