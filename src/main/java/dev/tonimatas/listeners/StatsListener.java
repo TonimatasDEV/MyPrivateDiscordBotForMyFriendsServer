@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class StatsListener extends ListenerAdapter {
     }
 
     @Override
-    public void onShutdown(ShutdownEvent event) {
+    public void onShutdown(@NotNull ShutdownEvent event) {
         for (Map.Entry<String, LocalDateTime> entry : inVoiceMembers.entrySet()) {
             BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
         }
