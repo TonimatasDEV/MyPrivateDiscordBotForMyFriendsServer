@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class StatsListener extends ListenerAdapter {
     private final Map<String, LocalDateTime> inVoiceMembers = new ConcurrentHashMap<>();
-    
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         getUserStats(event.getUser()).increaseCommandsExecuted();

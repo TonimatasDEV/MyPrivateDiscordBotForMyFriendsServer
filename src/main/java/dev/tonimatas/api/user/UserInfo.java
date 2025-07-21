@@ -10,12 +10,12 @@ import java.util.List;
 
 public class UserInfo {
     private final String userId;
-    private DailyInfo daily;
     private final ArrayList<Transaction> transactions;
+    private final UserStats stats;
+    private DailyInfo daily;
     private UserSettings settings;
     private long money;
     private long points;
-    private final UserStats stats;
 
     public UserInfo(String userId) {
         this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0, new UserStats());
@@ -35,7 +35,7 @@ public class UserInfo {
         if (daily == null) {
             daily = new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false);
         }
-        
+
         return daily;
     }
 
@@ -92,7 +92,7 @@ public class UserInfo {
         if (settings == null) {
             settings = new UserSettings();
         }
-        
+
         return settings;
     }
 

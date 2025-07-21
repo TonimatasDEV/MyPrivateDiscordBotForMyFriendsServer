@@ -15,7 +15,7 @@ public class BotFiles {
     public static void autosave() {
         ExecutorManager.addRunnableAtFixedRate(BotFiles::save, 5, TimeUnit.SECONDS);
     }
-    
+
     public static void save() {
         USER.save();
         EXTRA.save();
