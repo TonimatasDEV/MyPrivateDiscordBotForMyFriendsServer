@@ -13,9 +13,9 @@ public class UserInfo {
     private final DailyInfo daily;
     private final ArrayList<Transaction> transactions;
     private final UserSettings settings;
+    private final UserStats stats;
     private long money;
     private long points;
-    private final UserStats stats;
 
     public UserInfo(String userId) {
         this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0, new UserStats());

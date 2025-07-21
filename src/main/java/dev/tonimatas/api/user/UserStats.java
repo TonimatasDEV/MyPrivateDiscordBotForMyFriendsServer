@@ -28,7 +28,7 @@ public class UserStats {
     public long getTransactions() {
         return transactions;
     }
-    
+
     public long getMessagesSent() {
         return messagesSent;
     }

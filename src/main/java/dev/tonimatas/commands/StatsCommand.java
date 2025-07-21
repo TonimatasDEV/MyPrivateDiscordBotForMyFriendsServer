@@ -41,7 +41,7 @@ public class StatsCommand implements SlashCommand {
                         "Times counted incorrectly: " + userInfo.getStats().getCountIncorrectly() + ".\n" +
                         "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
                         "Money spent: " + userInfo.getStats().getMoneySpent() + "€.\n" +
-                       "Total transactions: " + userInfo.getStats().getTransactions() + ".\n" +
+                        "Total transactions: " + userInfo.getStats().getTransactions() + ".\n" +
                         "Messages sent: " + userInfo.getStats().getMessagesSent() + ".\n" +
                         "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + "."
         );
