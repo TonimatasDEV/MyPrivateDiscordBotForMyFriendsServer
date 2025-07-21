@@ -74,20 +74,22 @@ public class Main {
         LOGGER.info("Done!");
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void addStopHook(JDA jda) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping...");
 
             ExecutorManager.stop();
             jda.shutdown();
-            BotFiles.save();
 
             try {
-                jda.awaitShutdown();
+                jda.awaitShutdown(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 LOGGER.error("Error stopping JDA: {}", e.getMessage());
                 Thread.currentThread().interrupt();
             }
+
+            BotFiles.save();
 
             LOGGER.info("Stopped!");
         }));
