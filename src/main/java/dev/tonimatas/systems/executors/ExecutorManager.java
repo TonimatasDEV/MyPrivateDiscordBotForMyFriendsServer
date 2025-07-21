@@ -24,7 +24,7 @@ public class ExecutorManager {
         EXECUTOR.shutdown();
 
         try {
-            if (!EXECUTOR.awaitTermination(3, TimeUnit.SECONDS)) {
+            if (!EXECUTOR.awaitTermination(10, TimeUnit.SECONDS)) {
                 EXECUTOR.shutdownNow();
             }
         } catch (InterruptedException e) {

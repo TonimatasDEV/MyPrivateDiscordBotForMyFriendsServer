@@ -13,9 +13,11 @@ public class BotFiles {
     public static final ExtraData EXTRA = JsonFile.loadOrCreate(ExtraData.class, "data/extra.json");
 
     public static void autosave() {
-        ExecutorManager.addRunnableAtFixedRate(() -> {
-            USER.save();
-            EXTRA.save();
-        }, 5, TimeUnit.SECONDS);
+        ExecutorManager.addRunnableAtFixedRate(BotFiles::save, 5, TimeUnit.SECONDS);
+    }
+    
+    public static void save() {
+        USER.save();
+        EXTRA.save();
     }
 }

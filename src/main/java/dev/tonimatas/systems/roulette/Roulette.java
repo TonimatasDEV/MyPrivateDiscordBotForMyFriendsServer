@@ -124,7 +124,7 @@ public class Roulette {
 
     private void updatePrimaryMessage(long remainingTime) {
         Duration duration = Duration.ofSeconds(remainingTime);
-        String formatted = TimeUtils.formatDuration(duration);
+        String formatted = TimeUtils.formatDurationForMessage(duration);
 
         StringBuilder message = new StringBuilder();
         message.append("**").append(formatted).append("**\n\n");
