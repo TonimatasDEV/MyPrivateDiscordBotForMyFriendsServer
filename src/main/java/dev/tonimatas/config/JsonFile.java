@@ -5,15 +5,17 @@ import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public abstract class JsonFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonFile.class);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private final Object saveLock = new Object();
 
     private static <T extends JsonFile> T load(Class<T> clazz, String path) {
         try (FileReader reader = new FileReader(path)) {
@@ -53,11 +55,22 @@ public abstract class JsonFile {
     protected abstract String getFilePath();
 
     public void save() {
-        try (FileWriter writer = new FileWriter(getFilePath())) {
-            GSON.toJson(this, writer);
-        } catch (IOException e) {
-            LOGGER.error("Error saving {} config file. {}", getFilePath(), e.getMessage());
-            Runtime.getRuntime().exit(-1);
+        synchronized (saveLock) {
+            Path tempPath = Paths.get(getFilePath() + ".tmp");
+            Path finalPath = Paths.get(getFilePath());
+
+            try (BufferedWriter writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
+                GSON.toJson(this, writer);
+            } catch (IOException e) {
+                LOGGER.error("Error writing temporary config file {}. {}", tempPath, e.getMessage());
+                return;
+            }
+
+            try {
+                Files.move(tempPath, finalPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            } catch (IOException e) {
+                LOGGER.error("Error replacing config file {}. {}", finalPath, e.getMessage());
+            }
         }
     }
 }

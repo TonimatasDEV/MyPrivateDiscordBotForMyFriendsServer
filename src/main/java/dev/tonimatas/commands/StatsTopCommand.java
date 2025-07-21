@@ -91,22 +91,6 @@ public class StatsTopCommand implements SlashCommand {
     }
 
     @Override
-    public void execute(SlashCommandInteraction interaction) {
-        if (CommandUtils.isNotCommandsChannel(interaction)) return;
-
-        String result = getLongStatTop("Times counted correctly", interaction.getJDA(), UserStats::getCountCorrectly) +
-                getLongStatTop("Times counted incorrectly", interaction.getJDA(), UserStats::getCountIncorrectly) +
-                getLongStatTop("Money won", interaction.getJDA(), UserStats::getMoneyWon) +
-                getLongStatTop("Money spent", interaction.getJDA(), UserStats::getMoneySpent) +
-                getLongStatTop("Total transactions", interaction.getJDA(), UserStats::getTransactions) +
-                getLongStatTop("Messages sent", interaction.getJDA(), UserStats::getMessagesSent) +
-                getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted);
-
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Statistics Top", result);
-        interaction.replyEmbeds(embed).queue();
-    }
-
-    @Override
     public String getName() {
         return "stats-top";
     }

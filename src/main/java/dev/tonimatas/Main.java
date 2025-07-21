@@ -68,8 +68,8 @@ public class Main {
 
         addStopHook(jda);
 
-        DailyNotifier.init(jda);
-        BotFiles.autosave();
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
+        ExecutorManager.addRunnableAtFixedRate(BotFiles::save, 5, TimeUnit.SECONDS);
 
         LOGGER.info("Done!");
     }
@@ -77,29 +77,16 @@ public class Main {
     private static void addStopHook(JDA jda) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping...");
+
+            ExecutorManager.stop();
             jda.shutdown();
+            BotFiles.save();
 
             try {
                 jda.awaitShutdown();
             } catch (InterruptedException e) {
                 LOGGER.error("Error stopping JDA: {}", e.getMessage());
                 Thread.currentThread().interrupt();
-            }
-
-            ExecutorManager.stop();
-
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            BotFiles.save();
-
-            try {
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
 
             LOGGER.info("Stopped!");
