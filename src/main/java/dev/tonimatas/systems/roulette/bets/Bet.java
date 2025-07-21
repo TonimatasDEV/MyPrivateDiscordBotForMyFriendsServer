@@ -22,7 +22,7 @@ public abstract class Bet {
     }
 
     public abstract String getTypePart();
-    
+
     public abstract boolean canMerge(Bet bet);
 
     abstract int getMultiplier();
@@ -44,7 +44,7 @@ public abstract class Bet {
 
         return getMultiplier() * money;
     }
-    
+
     public void addMoney(long money) {
         this.money += money;
     }
