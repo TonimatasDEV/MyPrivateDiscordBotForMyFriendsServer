@@ -1,6 +1,7 @@
 package dev.tonimatas.systems.roulette;
 
 import dev.tonimatas.config.BotFiles;
+import dev.tonimatas.systems.executors.ExecutorManager;
 import dev.tonimatas.systems.roulette.bets.*;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
@@ -28,6 +29,11 @@ public class Roulette {
         this.jda = jda;
         this.bets = new ArrayList<>();
         this.rouletteThread = rouletteThread();
+        ExecutorManager.addStopTask(() -> {
+            for (Bet bet : bets) {
+                BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney(), ROULETTE_NAME + " crashed");
+            }
+        });
     }
 
     public static Roulette getRoulette(JDA jda) {
