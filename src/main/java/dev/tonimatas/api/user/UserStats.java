@@ -44,6 +44,10 @@ public class UserStats {
     public Duration getTimeInVoice() {
         return Duration.parse(timeInVoice);
     }
+    
+    public long getTimeInVoiceLong() {
+        return getTimeInVoice().getSeconds();
+    }
 
     public void increaseCountCorrectly() {
         countCorrectly++;
