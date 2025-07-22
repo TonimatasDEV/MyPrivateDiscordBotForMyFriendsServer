@@ -7,7 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.*;
 
 public class ExecutorManager {
-    private static final Queue<Runnable> stopTasks = new ConcurrentLinkedQueue<>();
+    private static final Queue<Runnable> STOP_TASKS = new ConcurrentLinkedQueue<>();
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorManager.class);
 
@@ -20,16 +20,13 @@ public class ExecutorManager {
     }
     
     public static void addStopTask(Runnable runnable) {
-        stopTasks.add(runnable);
+        STOP_TASKS.add(runnable);
     }
 
     public static void stop() {
         LOGGER.info("Stopping ExecutorManager.");
 
-        for (Runnable runnable : stopTasks) {
-            EXECUTOR.submit(runnable);
-        }
-
+        STOP_TASKS.forEach(EXECUTOR::submit);
         EXECUTOR.shutdown();
 
         try {
