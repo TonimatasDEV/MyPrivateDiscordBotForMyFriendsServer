@@ -1,10 +1,14 @@
 package dev.tonimatas.config.data;
 
 import dev.tonimatas.api.user.UserInfo;
+import dev.tonimatas.api.user.UserStats;
 import dev.tonimatas.config.JsonFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserData extends JsonFile {
     private final Map<String, UserInfo> users;
@@ -25,6 +29,15 @@ public class UserData extends JsonFile {
 
     public Map<String, UserInfo> getUsers() {
         return users;
+    }
+
+    public List<Map.Entry<String, UserStats>> getUserStatsEntries() {
+        Map<String, UserStats> entries = users
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getStats()));
+
+        return new ArrayList<>(entries.entrySet());
     }
 
     @Override

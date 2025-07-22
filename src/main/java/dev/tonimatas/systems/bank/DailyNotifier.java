@@ -3,21 +3,15 @@ package dev.tonimatas.systems.bank;
 import dev.tonimatas.api.bank.DailyInfo;
 import dev.tonimatas.api.user.UserSettings;
 import dev.tonimatas.config.BotFiles;
-import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 public class DailyNotifier implements Runnable {
     private final JDA jda;
 
     public DailyNotifier(JDA jda) {
         this.jda = jda;
-    }
-
-    public static void init(JDA jda) {
-        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
     }
 
     @Override

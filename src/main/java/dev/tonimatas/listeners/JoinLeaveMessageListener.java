@@ -5,11 +5,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
-import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,12 +80,9 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
         }
     }
 
-
     @Override
-    public void onReady(@NotNull ReadyEvent event) {
-        for (Guild guild : event.getJDA().getGuilds()) {
-            guild.retrieveInvites().queue(invites -> cachedInvites.put(guild.getId(), invites));
-        }
+    public void onGuildReady(GuildReadyEvent event) {
+        updateCachedInvites(event.getGuild());
     }
 
     @Override

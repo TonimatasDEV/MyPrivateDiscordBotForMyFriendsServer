@@ -3,11 +3,11 @@ package dev.tonimatas.systems.executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Queue;
+import java.util.concurrent.*;
 
 public class ExecutorManager {
+    private static final Queue<Runnable> STOP_TASKS = new ConcurrentLinkedQueue<>();
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorManager.class);
 
@@ -18,13 +18,19 @@ public class ExecutorManager {
     public static void addRunnableAtFixedRate(Runnable runnable, long period, TimeUnit unit) {
         EXECUTOR.scheduleAtFixedRate(runnable, 0, period, unit);
     }
+    
+    public static void addStopTask(Runnable runnable) {
+        STOP_TASKS.add(runnable);
+    }
 
     public static void stop() {
         LOGGER.info("Stopping ExecutorManager.");
+
+        STOP_TASKS.forEach(EXECUTOR::submit);
         EXECUTOR.shutdown();
 
         try {
-            if (!EXECUTOR.awaitTermination(3, TimeUnit.SECONDS)) {
+            if (!EXECUTOR.awaitTermination(10, TimeUnit.SECONDS)) {
                 EXECUTOR.shutdownNow();
             }
         } catch (InterruptedException e) {

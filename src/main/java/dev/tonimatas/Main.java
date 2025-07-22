@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
@@ -67,25 +68,28 @@ public class Main {
 
         addStopHook(jda);
 
-        DailyNotifier.init(jda);
-        BotFiles.autosave();
+        ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
+        ExecutorManager.addRunnableAtFixedRate(BotFiles::save, 5, TimeUnit.SECONDS);
 
         LOGGER.info("Done!");
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void addStopHook(JDA jda) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping...");
+
+            ExecutorManager.stop();
             jda.shutdown();
 
             try {
-                jda.awaitShutdown();
+                jda.awaitShutdown(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 LOGGER.error("Error stopping JDA: {}", e.getMessage());
                 Thread.currentThread().interrupt();
             }
 
-            ExecutorManager.stop();
+            BotFiles.save();
 
             LOGGER.info("Stopped!");
         }));

@@ -5,24 +5,27 @@ import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class StatsTopCommand implements SlashCommand {
     public static String getLongStatTop(String name, JDA jda, Function<? super UserStats, Long> value) {
-        Map<String, UserStats> users = BotFiles.USER.getUsers()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getStats()));
-
-        List<Map.Entry<String, UserStats>> entries = new ArrayList<>(users.entrySet());
+        return getLongStatTop(name, jda, value, null);
+    }
+    
+    
+    public static String getLongStatTop(String name, JDA jda, Function<? super UserStats, Long> value, Function<? super UserStats, String> getter) {
+        List<Map.Entry<String, UserStats>> entries = BotFiles.USER.getUserStatsEntries();
         entries.sort(Comparator.comparingLong(e -> value.apply(e.getValue())));
 
         StringBuilder result = new StringBuilder();
@@ -36,7 +39,14 @@ public class StatsTopCommand implements SlashCommand {
             User user = jda.getUserById(entry.getKey());
             String userName = user == null ? "Unknown" : user.getEffectiveName();
 
-            result.append(" - ").append(i + 1).append(". ").append(userName).append(": ").append(value.apply(entry.getValue())).append("\n");
+            result.append(" - ").append(i + 1).append(". ").append(userName).append(": ");
+            if (getter == null) {
+                result.append(value.apply(entry.getValue()));
+            } else {
+                result.append(getter.apply(entry.getValue()));
+            }
+
+            result.append("\n");
         }
 
         return result.toString();
@@ -52,7 +62,9 @@ public class StatsTopCommand implements SlashCommand {
                 getLongStatTop("Money spent", interaction.getJDA(), UserStats::getMoneySpent) +
                 getLongStatTop("Total transactions", interaction.getJDA(), UserStats::getTransactions) +
                 getLongStatTop("Messages sent", interaction.getJDA(), UserStats::getMessagesSent) +
-                getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted);
+                getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted) +
+                getLongStatTop("Time in voice channels", interaction.getJDA(), UserStats::getTimeInVoiceLong, (stats) -> 
+                        TimeUtils.formatDuration(stats.getTimeInVoice()));
 
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Statistics Top", result);
         interaction.replyEmbeds(embed).queue();

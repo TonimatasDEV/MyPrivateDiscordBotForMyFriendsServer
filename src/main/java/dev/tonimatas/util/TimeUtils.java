@@ -24,7 +24,7 @@ public class TimeUtils {
         return LocalDateTime.parse(timeStr, FORMATTER);
     }
 
-    public static String formatDuration(Duration duration) {
+    public static String formatDurationForMessage(Duration duration) {
         long minutes = duration.toMinutes();
         long seconds = duration.minusMinutes(minutes).getSeconds();
         String result = "Remaining ";
@@ -51,5 +51,15 @@ public class TimeUtils {
         } else {
             return !time.isBefore(start) || time.isBefore(end);
         }
+    }
+
+    public static String formatDuration(Duration duration) {
+        long totalSeconds = duration.getSeconds();
+
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
