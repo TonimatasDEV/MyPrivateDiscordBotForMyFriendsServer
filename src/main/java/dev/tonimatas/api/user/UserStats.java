@@ -78,6 +78,10 @@ public class UserStats {
     }
 
     public void increaseTimeInVoice(LocalDateTime time) {
+        if (time == null) {
+            return;
+        }
+
         Duration actualTime = Duration.parse(timeInVoice);
         timeInVoice = actualTime.plus(Duration.between(time, LocalDateTime.now())).toString();
     }
