@@ -18,4 +18,14 @@ public class CommandUtils {
 
         return false;
     }
+
+    public static boolean isNotTicTacToeChannel(SlashCommandInteraction interaction) {
+        if (!interaction.getChannel().getId().equals(BotFiles.CONFIG.getTicTacToeChannelId())) {
+            MessageEmbed err = Messages.getErrorEmbed(interaction.getJDA(), "This command can only be run in the TicTacToe channel.");
+            interaction.replyEmbeds(err).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            return true;
+        }
+
+        return false;
+    }
 }
