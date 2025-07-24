@@ -52,7 +52,7 @@ public class Main {
                 new BetCommand(),
                 new VersionCommand(),
                 new StatsCommand(),
-                new TicTacToeCommand(new TicTacToeManager())
+                new TicTacToeCommand()
         ).init().queue();
 
         jda.addEventListener(

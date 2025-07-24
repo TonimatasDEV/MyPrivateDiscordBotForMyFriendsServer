@@ -8,7 +8,7 @@ public class Player {
     /**
      * Member linked to this player
      */
-    private final Member member;
+    private final String userId;
     /**
      * Could be X as player 1 or O as player 2
      */
@@ -16,24 +16,16 @@ public class Player {
 
     /**
      * Main constructor
-     * @param member Member linked to this player
+     * @param userId Member linked to this player
      * @param symbol Could be X as player 1 or O as player 2
      */
-    public Player(Member member, char symbol) {
-        this.member = member;
+    public Player(String userId, char symbol) {
+        this.userId = userId;
         this.symbol = symbol;
     }
 
     public char getSymbol() {
         return symbol;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public String getMention() {
-        return member.getAsMention();
     }
 
     @Override
@@ -42,18 +34,18 @@ public class Player {
         if (!(o instanceof Player)) return false;
 
         Player other = (Player) o;
-        return symbol == other.symbol && Objects.equals(member, other.member);
+        return symbol == other.symbol && userId.equals(((Player) o).userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(member, symbol);
+        return Objects.hash(userId, symbol);
     }
 
     @Override
     public String toString() {
         return "Player{" +
-                "member=" + member.getId() +
+                "member=" + userId +
                 ", symbol=" + symbol +
                 '}';
     }

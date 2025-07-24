@@ -5,9 +5,10 @@ import dev.tonimatas.systems.tictactoe.Player;
 import dev.tonimatas.systems.tictactoe.TicTacToeGame;
 import dev.tonimatas.systems.tictactoe.TicTacToeManager;
 import dev.tonimatas.util.CommandUtils;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -17,15 +18,10 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import java.util.Set;
 
 public class TicTacToeCommand implements SlashCommand {
-    private final TicTacToeManager manager;
-
-    public TicTacToeCommand(TicTacToeManager manager) {
-        this.manager = manager;
-    }
+    private final TicTacToeManager manager = new TicTacToeManager();
 
     @Override
     public void execute(SlashCommandInteraction interaction) {
-        JDA jda = interaction.getJDA();
         String subcommand = interaction.getSubcommandName();
         String userId = interaction.getUser().getId();
 
@@ -33,30 +29,34 @@ public class TicTacToeCommand implements SlashCommand {
 
         switch (subcommand) {
             case "start" -> {
-                Member challenger = interaction.getMember();
-                Member opponent = interaction.getOption("user").getAsMember();
+                User challenger = interaction.getUser();
+                OptionMapping userOption = interaction.getOption("user");
+                if (userOption != null) {
+                    User opponent = userOption.getAsUser();
 
-                if (challenger.equals(opponent)) {
-                    interaction.reply("You cannot play against yourself!").setEphemeral(true).queue();
-                    return;
+
+                    if (challenger.equals(opponent)) {
+                        interaction.reply("You cannot play against yourself!").setEphemeral(true).queue();
+                        return;
+                    }
+
+                    if (manager.isPlaying(challenger.getId()) || manager.isPlaying(opponent.getId())) {
+                        interaction.reply("One of the players is already in a game.").setEphemeral(true).queue();
+                        return;
+                    }
+
+                    Player playerX = new Player(challenger, 'X');
+                    Player playerO = new Player(opponent, 'O');
+                    TicTacToeGame game = new TicTacToeGame(playerX, playerO);
+
+                    manager.startGame(challenger.getId(), game);
+                    manager.startGame(opponent.getId(), game);
+
+                    interaction.reply(playerX.getMention() + " vs " + playerO.getMention() + " — Game started!\n" +
+                                    game.getBoard().render() + "\n" +
+                                    "It's " + playerX.getMention() + "'s turn (**X**).")
+                            .queue();
                 }
-
-                if (manager.isPlaying(challenger.getId()) || manager.isPlaying(opponent.getId())) {
-                    interaction.reply("One of the players is already in a game.").setEphemeral(true).queue();
-                    return;
-                }
-
-                Player playerX = new Player(challenger, 'X');
-                Player playerO = new Player(opponent, 'O');
-                TicTacToeGame game = new TicTacToeGame(playerX, playerO);
-
-                manager.startGame(challenger.getId(), game);
-                manager.startGame(opponent.getId(), game);
-
-                interaction.reply(playerX.getMention() + " vs " + playerO.getMention() + " — Game started!\n" +
-                                game.getBoard().render() + "\n" +
-                                "It's " + playerX.getMention() + "'s turn (**X**).")
-                        .queue();
             }
             case "start-bot" -> {
                 Member challenger = interaction.getMember();
