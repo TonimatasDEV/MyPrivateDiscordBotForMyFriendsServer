@@ -43,7 +43,8 @@ public class StatsCommand implements SlashCommand {
                         "Money spent: " + userInfo.getStats().getMoneySpent() + "€.\n" +
                         "Total transactions: " + userInfo.getStats().getTransactions() + ".\n" +
                         "Messages sent: " + userInfo.getStats().getMessagesSent() + ".\n" +
-                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + "."
+                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + ".\n" +
+                        "Time in voice channels: " + userInfo.getStats().getTimeInVoice() + "."
         );
 
         interaction.replyEmbeds(embed).queue();
