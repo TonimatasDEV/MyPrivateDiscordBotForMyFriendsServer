@@ -9,6 +9,10 @@ public class BotFiles {
     public static final UserData USER = JsonFile.loadOrCreate(UserData.class, "data/user.json");
     public static final ExtraData EXTRA = JsonFile.loadOrCreate(ExtraData.class, "data/extra.json");
 
+    private BotFiles() {
+        // We don't need a constructor
+    }
+    
     public static void save() {
         USER.save();
         EXTRA.save();

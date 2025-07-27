@@ -4,6 +4,10 @@ import java.io.File;
 import java.net.URISyntaxException;
 
 public class JarUtils {
+    private JarUtils() {
+        // We don't need a constructor
+    }
+    
     public static String getJarName() {
         try {
             File jarFile = new File(JarUtils.class.getProtectionDomain()

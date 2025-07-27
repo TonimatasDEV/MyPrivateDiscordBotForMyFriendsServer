@@ -83,25 +83,33 @@ public class BetCommand implements SlashCommand {
     @Override
     public SlashCommandData init(SlashCommandData data) {
         return data.addSubcommands(new SubcommandData("color", "Bet to color")
-                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                        .addOptions(createOption()
                                         .addChoice("green", "green")
                                         .addChoice("red", "red")
                                         .addChoice("black", "black"),
-                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                                createMoneyOption()))
                 .addSubcommands(new SubcommandData("column", "Bet to column")
-                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                        .addOptions(createOption()
                                         .addChoice("first", "first")
                                         .addChoice("second", "second")
                                         .addChoice("third", "third"),
-                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                                createMoneyOption()))
                 .addSubcommands(new SubcommandData("dozen", "Bet to dozen")
-                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true)
+                        .addOptions(createOption()
                                         .addChoice("first", "first")
                                         .addChoice("second", "second")
                                         .addChoice("third", "third"),
-                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)))
+                                createMoneyOption()))
                 .addSubcommands(new SubcommandData("number", "Bet to number")
-                        .addOptions(new OptionData(OptionType.STRING, "option", "Select the option.", true),
-                                new OptionData(OptionType.STRING, "money", "Money for the bet", true)));
+                        .addOptions(createOption(),
+                                createMoneyOption()));
+    }
+    
+    private static OptionData createOption() {
+        return new OptionData(OptionType.STRING, "option", "Select the option.", true);
+    }
+    
+    private static OptionData createMoneyOption() {
+        return new OptionData(OptionType.STRING, "money", "Money for the bet", true);
     }
 }
