@@ -34,7 +34,7 @@ application {
     mainClass = "dev.tonimatas.Main"
 }
 
-tasks.named<JavaExec>("run") {
+tasks.run.configure {
     val path = rootDir.toPath().resolve("run")
     workingDir = path.toFile()
     if (!path.exists()) path.createDirectory()
