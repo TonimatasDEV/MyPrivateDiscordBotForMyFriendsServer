@@ -14,15 +14,11 @@ public class JarUtils {
             if (jarFile.getName().endsWith(".jar")) {
                 return jarFile.getName();
             } else {
-                return "No ejecutado desde un JAR.";
+                return "Not executed from Jar.";
             }
 
         } catch (URISyntaxException e) {
-            return "Error obteniendo el nombre del JAR.";
+            return "Error getting the jar file.";
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Nombre del JAR: " + getJarName());
     }
 }
