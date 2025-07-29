@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.events.session.SessionState;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,8 +54,11 @@ public class StatsListener extends ListenerAdapter {
         if (join != null) {
             inVoiceMembers.put(userId, LocalDateTime.now());
         } else if (left != null) {
-            getUserStats(event.getEntity().getUser()).increaseTimeInVoice(inVoiceMembers.get(userId));
-            inVoiceMembers.remove(userId);
+            LocalDateTime joinTime = inVoiceMembers.remove(userId);
+
+            if (joinTime != null) {
+                getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
+            }
         }
     }
 
@@ -69,11 +73,16 @@ public class StatsListener extends ListenerAdapter {
     }
 
     private void save() {
-        for (Map.Entry<String, LocalDateTime> entry : inVoiceMembers.entrySet()) {
-            BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+        Map<String, LocalDateTime> snapshot;
+        
+        synchronized (inVoiceMembers) {
+            snapshot = new HashMap<>(inVoiceMembers);
+            inVoiceMembers.clear();
         }
 
-        inVoiceMembers.clear();
+        for (Map.Entry<String, LocalDateTime> entry : snapshot.entrySet()) {
+            BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+        }
     }
 
     private UserStats getUserStats(User user) {
