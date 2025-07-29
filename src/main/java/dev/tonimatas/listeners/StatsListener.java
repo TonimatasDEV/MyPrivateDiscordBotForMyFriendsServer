@@ -17,10 +17,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class StatsListener extends ListenerAdapter {
-    private final Map<String, LocalDateTime> inVoiceMembers = new ConcurrentHashMap<>();
+    private final Map<String, LocalDateTime> inVoiceMembers = new HashMap<>();
 
     public StatsListener() {
         ExecutorManager.addStopTask(this::save);
@@ -51,30 +50,33 @@ public class StatsListener extends ListenerAdapter {
         AudioChannelUnion join = event.getChannelJoined();
         AudioChannelUnion left = event.getChannelLeft();
 
-        if (join != null) {
-            inVoiceMembers.put(userId, LocalDateTime.now());
-        } else if (left != null) {
-            LocalDateTime joinTime = inVoiceMembers.remove(userId);
-
-            if (joinTime != null) {
-                getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
+        synchronized (inVoiceMembers) {
+            if (join != null) {
+                inVoiceMembers.put(userId, LocalDateTime.now());
+            } else if (left != null) {
+                LocalDateTime joinTime = inVoiceMembers.remove(userId);
+                if (joinTime != null) {
+                    getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
+                }
             }
         }
     }
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
-        event.getGuild().getMembers().forEach(member -> {
-            GuildVoiceState voiceState = member.getVoiceState();
-            if (voiceState != null && voiceState.inAudioChannel()) {
-                inVoiceMembers.put(member.getId(), LocalDateTime.now());
-            }
-        });
+        synchronized (inVoiceMembers) {
+            event.getGuild().getMembers().forEach(member -> {
+                GuildVoiceState voiceState = member.getVoiceState();
+                if (voiceState != null && voiceState.inAudioChannel()) {
+                    inVoiceMembers.put(member.getId(), LocalDateTime.now());
+                }
+            });
+        }
     }
 
     private void save() {
         Map<String, LocalDateTime> snapshot;
-        
+
         synchronized (inVoiceMembers) {
             snapshot = new HashMap<>(inVoiceMembers);
             inVoiceMembers.clear();
