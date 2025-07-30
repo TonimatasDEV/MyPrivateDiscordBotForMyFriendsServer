@@ -15,11 +15,11 @@ import net.dv8tion.jda.api.events.session.SessionState;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class StatsListener extends ListenerAdapter {
-    private final Map<String, LocalDateTime> inVoiceMembers = new ConcurrentHashMap<>();
+    private final Map<String, LocalDateTime> inVoiceMembers = new HashMap<>();
 
     public StatsListener() {
         ExecutorManager.addStopTask(this::save);
@@ -50,30 +50,44 @@ public class StatsListener extends ListenerAdapter {
         AudioChannelUnion join = event.getChannelJoined();
         AudioChannelUnion left = event.getChannelLeft();
 
-        if (join != null) {
-            inVoiceMembers.put(userId, LocalDateTime.now());
-        } else if (left != null) {
-            getUserStats(event.getEntity().getUser()).increaseTimeInVoice(inVoiceMembers.get(userId));
-            inVoiceMembers.remove(userId);
+        synchronized (inVoiceMembers) {
+            if (left != null) {
+                LocalDateTime joinTime = inVoiceMembers.remove(userId);
+                if (joinTime != null) {
+                    getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
+                }
+            }
+            
+            if (join != null) {
+                inVoiceMembers.put(userId, LocalDateTime.now());
+            }
         }
     }
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
-        event.getGuild().getMembers().forEach(member -> {
-            GuildVoiceState voiceState = member.getVoiceState();
-            if (voiceState != null && voiceState.inAudioChannel()) {
-                inVoiceMembers.put(member.getId(), LocalDateTime.now());
-            }
-        });
+        synchronized (inVoiceMembers) {
+            event.getGuild().getMembers().forEach(member -> {
+                GuildVoiceState voiceState = member.getVoiceState();
+
+                if (voiceState != null && voiceState.inAudioChannel()) {
+                    inVoiceMembers.put(member.getId(), LocalDateTime.now());
+                }
+            });
+        }
     }
 
     private void save() {
-        for (Map.Entry<String, LocalDateTime> entry : inVoiceMembers.entrySet()) {
-            BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+        Map<String, LocalDateTime> snapshot;
+
+        synchronized (inVoiceMembers) {
+            snapshot = new HashMap<>(inVoiceMembers);
+            inVoiceMembers.clear();
         }
 
-        inVoiceMembers.clear();
+        for (Map.Entry<String, LocalDateTime> entry : snapshot.entrySet()) {
+            BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+        }
     }
 
     private UserStats getUserStats(User user) {
