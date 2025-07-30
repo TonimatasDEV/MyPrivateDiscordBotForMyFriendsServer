@@ -15,19 +15,17 @@ public class UserInfo {
     private DailyInfo daily;
     private UserSettings settings;
     private long money;
-    private long points;
 
     public UserInfo(String userId) {
-        this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, 0, new UserStats());
+        this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, new UserStats());
     }
 
-    public UserInfo(String userId, DailyInfo daily, ArrayList<Transaction> transactions, UserSettings settings, long money, long points, UserStats stats) {
+    public UserInfo(String userId, DailyInfo daily, List<Transaction> transactions, UserSettings settings, long money, UserStats stats) {
         this.userId = userId;
         this.daily = daily;
-        this.transactions = transactions;
+        this.transactions = new ArrayList<>(transactions);
         this.settings = settings;
         this.money = money;
-        this.points = points;
         this.stats = stats;
     }
 

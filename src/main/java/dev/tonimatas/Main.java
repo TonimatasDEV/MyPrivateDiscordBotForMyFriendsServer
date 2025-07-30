@@ -74,7 +74,6 @@ public class Main {
         LOGGER.info("Done!");
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void addStopHook(JDA jda) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping...");
@@ -83,7 +82,9 @@ public class Main {
             jda.shutdown();
 
             try {
-                jda.awaitShutdown(10, TimeUnit.SECONDS);
+                if (!jda.awaitShutdown(10, TimeUnit.SECONDS)) {
+                    jda.shutdownNow();
+                }
             } catch (InterruptedException e) {
                 LOGGER.error("Error stopping JDA: {}", e.getMessage());
                 Thread.currentThread().interrupt();

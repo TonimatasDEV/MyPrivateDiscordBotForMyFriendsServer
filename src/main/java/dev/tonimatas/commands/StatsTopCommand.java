@@ -17,16 +17,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 public class StatsTopCommand implements SlashCommand {
-    public static String getLongStatTop(String name, JDA jda, Function<? super UserStats, Long> value) {
+    public static String getLongStatTop(String name, JDA jda, ToLongFunction<? super UserStats> value) {
         return getLongStatTop(name, jda, value, null);
     }
     
     
-    public static String getLongStatTop(String name, JDA jda, Function<? super UserStats, Long> value, Function<? super UserStats, String> getter) {
+    public static String getLongStatTop(String name, JDA jda, ToLongFunction<? super UserStats> value, Function<? super UserStats, String> getter) {
         List<Map.Entry<String, UserStats>> entries = BotFiles.USER.getUserStatsEntries();
-        entries.sort(Comparator.comparingLong(e -> value.apply(e.getValue())));
+        entries.sort(Comparator.comparingLong(e -> value.applyAsLong(e.getValue())));
 
         StringBuilder result = new StringBuilder();
 
@@ -41,7 +42,7 @@ public class StatsTopCommand implements SlashCommand {
 
             result.append(" - ").append(i + 1).append(". ").append(userName).append(": ");
             if (getter == null) {
-                result.append(value.apply(entry.getValue()));
+                result.append(value.applyAsLong(entry.getValue()));
             } else {
                 result.append(getter.apply(entry.getValue()));
             }
@@ -63,7 +64,7 @@ public class StatsTopCommand implements SlashCommand {
                 getLongStatTop("Total transactions", interaction.getJDA(), UserStats::getTransactions) +
                 getLongStatTop("Messages sent", interaction.getJDA(), UserStats::getMessagesSent) +
                 getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted) +
-                getLongStatTop("Time in voice channels", interaction.getJDA(), UserStats::getTimeInVoiceLong, (stats) -> 
+                getLongStatTop("Time in voice channels", interaction.getJDA(), UserStats::getTimeInVoiceLong, stats -> 
                         TimeUtils.formatDuration(stats.getTimeInVoice()));
 
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Statistics Top", result);

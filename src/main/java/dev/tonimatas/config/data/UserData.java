@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class UserData extends JsonFile {
     private final Map<String, UserInfo> users;
 
+    @SuppressWarnings("unused")
     public UserData() {
         this(new HashMap<>());
     }

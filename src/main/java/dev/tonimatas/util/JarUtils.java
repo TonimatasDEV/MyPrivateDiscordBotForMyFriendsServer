@@ -4,6 +4,10 @@ import java.io.File;
 import java.net.URISyntaxException;
 
 public class JarUtils {
+    private JarUtils() {
+        // We don't need a constructor
+    }
+    
     public static String getJarName() {
         try {
             File jarFile = new File(JarUtils.class.getProtectionDomain()
@@ -14,15 +18,11 @@ public class JarUtils {
             if (jarFile.getName().endsWith(".jar")) {
                 return jarFile.getName();
             } else {
-                return "No ejecutado desde un JAR.";
+                return "Not executed from Jar.";
             }
 
         } catch (URISyntaxException e) {
-            return "Error obteniendo el nombre del JAR.";
+            return "Error getting the jar file.";
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Nombre del JAR: " + getJarName());
     }
 }
