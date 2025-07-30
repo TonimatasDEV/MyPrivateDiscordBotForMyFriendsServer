@@ -51,13 +51,15 @@ public class StatsListener extends ListenerAdapter {
         AudioChannelUnion left = event.getChannelLeft();
 
         synchronized (inVoiceMembers) {
-            if (join != null) {
-                inVoiceMembers.put(userId, LocalDateTime.now());
-            } else if (left != null) {
+            if (left != null) {
                 LocalDateTime joinTime = inVoiceMembers.remove(userId);
                 if (joinTime != null) {
                     getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
                 }
+            }
+            
+            if (join != null) {
+                inVoiceMembers.put(userId, LocalDateTime.now());
             }
         }
     }
@@ -67,6 +69,7 @@ public class StatsListener extends ListenerAdapter {
         synchronized (inVoiceMembers) {
             event.getGuild().getMembers().forEach(member -> {
                 GuildVoiceState voiceState = member.getVoiceState();
+
                 if (voiceState != null && voiceState.inAudioChannel()) {
                     inVoiceMembers.put(member.getId(), LocalDateTime.now());
                 }

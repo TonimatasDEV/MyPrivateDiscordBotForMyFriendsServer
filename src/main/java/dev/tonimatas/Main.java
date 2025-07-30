@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -27,9 +27,9 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(BotFiles.CONFIG.token)
-                .enableIntents(Arrays.stream(GatewayIntent.values()).toList())
+                .enableIntents(List.of(GatewayIntent.values()))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .enableCache(Arrays.stream(CacheFlag.values()).toList())
+                .enableCache(List.of(CacheFlag.values()))
                 .setAutoReconnect(true)
                 .build();
 
