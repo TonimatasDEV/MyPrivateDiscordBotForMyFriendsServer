@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.session.GenericSessionEvent;
-import net.dv8tion.jda.api.events.session.SessionState;
+import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -36,17 +36,13 @@ public class StatsListener extends ListenerAdapter {
     }
 
     @Override
-    public void onGenericSession(GenericSessionEvent event) {
-        SessionState state = event.getState();
-        
-        if (state == SessionState.INVALIDATED || state == SessionState.DISCONNECTED) {
-            save();
-        }
+    public void onSessionDisconnect(@NotNull SessionDisconnectEvent event) {
+        save();
     }
 
     @Override
     public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
-        String userId = event.getEntity().getId();
+        String userId = event.getMember().getId();
         AudioChannelUnion join = event.getChannelJoined();
         AudioChannelUnion left = event.getChannelLeft();
 
@@ -54,7 +50,7 @@ public class StatsListener extends ListenerAdapter {
             if (left != null) {
                 LocalDateTime joinTime = inVoiceMembers.remove(userId);
                 if (joinTime != null) {
-                    getUserStats(event.getEntity().getUser()).increaseTimeInVoice(joinTime);
+                    getUserStats(event.getMember().getUser()).increaseTimeInVoice(joinTime);
                 }
             }
             
@@ -78,15 +74,12 @@ public class StatsListener extends ListenerAdapter {
     }
 
     private void save() {
-        Map<String, LocalDateTime> snapshot;
-
         synchronized (inVoiceMembers) {
-            snapshot = new HashMap<>(inVoiceMembers);
-            inVoiceMembers.clear();
-        }
+            for (Map.Entry<String, LocalDateTime> entry : inVoiceMembers.entrySet()) {
+                BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+            }
 
-        for (Map.Entry<String, LocalDateTime> entry : snapshot.entrySet()) {
-            BotFiles.USER.get(entry.getKey()).getStats().increaseTimeInVoice(entry.getValue());
+            inVoiceMembers.clear();
         }
     }
 
