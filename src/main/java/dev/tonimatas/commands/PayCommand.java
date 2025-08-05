@@ -7,7 +7,6 @@ import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
@@ -32,7 +31,7 @@ public class PayCommand implements SlashCommand {
         String reason = reasonOption != null ? reasonOption.getAsString() : "No reason provided";
 
         if (userOption != null && amountOption != null) {
-            Member receiver = userOption.getAsMember();
+            User receiver = userOption.getAsUser();
             long amount = amountOption.getAsLong();
 
             if (amount <= 0) {
@@ -47,7 +46,7 @@ public class PayCommand implements SlashCommand {
                 return;
             }
 
-            if (receiver == null) {
+            if (receiver.isBot()) {
                 MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid receiver. Please try again later.");
                 interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
@@ -55,7 +54,7 @@ public class PayCommand implements SlashCommand {
 
             long fee = (long) (amount * 0.05);
 
-            MessageEmbed confirmation = Messages.getDefaultEmbed(jda, "Confirm Transaction",
+            MessageEmbed confirmation = Messages.getDefaultEmbed(jda, "Confirm payment",
                     String.format("""
                                     Send **%d€** to **%s**? Fee: **%d€**
                                     Total: **%d€**
@@ -65,10 +64,11 @@ public class PayCommand implements SlashCommand {
                             receiver.getEffectiveName(),
                             fee,
                             amount,
-                            reason));
+                            reason)
+            );
 
-            String confirmId = "pay:confirm:" + sender.getId() + ":" + receiver.getId() + ":" + amount + ":" + reason.replace(":", "||");
-            String cancelId = "pay:cancel:" + sender.getId();
+            String confirmId = "pay:confirm:" + receiver.getId() + ":" + amount + ":" + reason.replace(":", "‖");
+            String cancelId = "pay:cancel";
 
             interaction.replyEmbeds(confirmation)
                     .addComponents(
