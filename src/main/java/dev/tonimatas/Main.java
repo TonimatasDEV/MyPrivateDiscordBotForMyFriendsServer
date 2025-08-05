@@ -48,7 +48,6 @@ public class Main {
                 new StatsTopCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
-                new TransactionsCommand(),
                 new BetCommand(),
                 new VersionCommand(),
                 new StatsCommand()

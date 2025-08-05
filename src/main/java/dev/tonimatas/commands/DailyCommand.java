@@ -25,7 +25,7 @@ public class DailyCommand implements SlashCommand {
         DailyInfo dailyInfo = BotFiles.USER.get(user.getId()).getDaily();
 
         if (now.isAfter(dailyInfo.getNext())) {
-            BotFiles.USER.get(user.getId()).addMoney(100, "Daily money!");
+            BotFiles.USER.get(user.getId()).addMoney(100);
             MessageEmbed embed = Messages.getDefaultEmbed(jda, "Daily", "Yeah! You claimed 100€.");
             interaction.replyEmbeds(embed).queue();
             dailyInfo.setLast(now);

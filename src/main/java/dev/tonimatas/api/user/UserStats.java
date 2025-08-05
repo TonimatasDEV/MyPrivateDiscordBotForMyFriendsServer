@@ -8,7 +8,6 @@ public class UserStats {
     private long countIncorrectly;
     private long moneyWon;
     private long moneySpent;
-    private long transactions;
     private long messagesSent;
     private long commandsExecuted;
     private String timeInVoice = Duration.ZERO.toString();
@@ -27,10 +26,6 @@ public class UserStats {
 
     public long getMoneySpent() {
         return moneySpent;
-    }
-
-    public long getTransactions() {
-        return transactions;
     }
 
     public long getMessagesSent() {
@@ -63,10 +58,6 @@ public class UserStats {
 
     public void increaseMoneySpent(long amount) {
         moneySpent += amount;
-    }
-
-    public void increaseTransactions() {
-        transactions++;
     }
 
     public void increaseMessagesSent() {

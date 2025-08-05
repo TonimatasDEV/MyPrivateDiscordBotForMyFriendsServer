@@ -56,8 +56,8 @@ public class PayListener extends ListenerAdapter {
             reason = (reason.endsWith(".") ? reason : reason + ".");
         }
 
-        BotFiles.USER.get(sender.getId()).removeMoney(amount, "Sent to " + receiver.getEffectiveName() + reason);
-        BotFiles.USER.get(receiver.getId()).addMoney(amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
+        BotFiles.USER.get(sender.getId()).removeMoney(amount);
+        BotFiles.USER.get(receiver.getId()).addMoney(amount - fee);
 
         MessageEmbed success = Messages.getDefaultEmbed(jda, "Payment",
                 String.format("%s sent **%d€** to %s (Fee: %d€)%nReason: %s",
