@@ -3,59 +3,42 @@ package dev.tonimatas.listeners;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
 
-public class TransactionListener extends ListenerAdapter {
+public class PayListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        Guild guild = event.getGuild();
-
-        if (guild == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Internal error");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
-
         String[] parts = event.getComponentId().split(":");
 
         if (!parts[0].equals("pay")) return;
 
         String action = parts[1];
-        String userId = parts[2];
-
-        if (!event.getUser().getId().equals(userId)) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You can't interact with this payment.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-            return;
-        }
 
         if (action.equals("cancel")) {
-            event.editMessageEmbeds(Messages.getErrorEmbed(event.getJDA(), "Transaction cancelled."))
+            event.editMessageEmbeds(Messages.getErrorEmbed(event.getJDA(), "Payment cancelled."))
                     .setComponents()
                     .queue(Messages.deleteBeforeX(10));
             return;
         }
 
         if (action.equals("confirm")) {
-            confirm(event.getJDA(), event.getInteraction(), guild, parts);
+            confirm(event.getJDA(), event.getInteraction(), parts);
         }
     }
 
-    public void confirm(JDA jda, ButtonInteraction interaction, Guild guild, String[] parts) {
-        String userId = parts[2];
-        String receiverId = parts[3];
-        long amount = Long.parseLong(parts[4]);
-        String reason = parts.length >= 6 ? parts[5].replace("‖", ":") : "";
+    public void confirm(JDA jda, ButtonInteraction interaction, String[] parts) {
+        String receiverId = parts[2];
+        long amount = Long.parseLong(parts[3]);
+        String reason = parts[4].replace("‖", ":");
 
-        Member sender = guild.getMemberById(userId);
-        Member receiver = guild.getMemberById(receiverId);
+        User sender = interaction.getUser();
+        User receiver = jda.getUserById(receiverId);
 
-        if (sender == null || receiver == null) {
+        if (receiver == null) {
             MessageEmbed embed = Messages.getErrorEmbed(jda, "One of the users is no longer available.");
             interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
@@ -70,13 +53,13 @@ public class TransactionListener extends ListenerAdapter {
         long fee = (long) (amount * 0.05);
 
         if (!reason.isEmpty()) {
-            reason = " because: " + (reason.endsWith(".") ? reason : reason + ".");
+            reason = (reason.endsWith(".") ? reason : reason + ".");
         }
 
         BotFiles.USER.get(sender.getId()).removeMoney(amount, "Sent to " + receiver.getEffectiveName() + reason);
         BotFiles.USER.get(receiver.getId()).addMoney(amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
 
-        MessageEmbed success = Messages.getDefaultEmbed(jda, "Transaction Successful",
+        MessageEmbed success = Messages.getDefaultEmbed(jda, "Payment",
                 String.format("%s sent **%d€** to %s (Fee: %d€)%nReason: %s",
                         sender.getEffectiveName(),
                         amount - fee,
@@ -86,6 +69,8 @@ public class TransactionListener extends ListenerAdapter {
                 )
         );
 
-        interaction.editMessageEmbeds(success).setComponents().queue(Messages.deleteBeforeX(15));
+        interaction.deferEdit().complete();
+        interaction.getMessage().delete().complete();
+        interaction.getChannel().sendMessageEmbeds(success).queue();
     }
 }
