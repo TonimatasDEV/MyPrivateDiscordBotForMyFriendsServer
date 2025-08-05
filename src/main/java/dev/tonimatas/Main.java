@@ -48,7 +48,6 @@ public class Main {
                 new StatsTopCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
-                new TransactionsCommand(),
                 new BetCommand(),
                 new VersionCommand(),
                 new StatsCommand()
@@ -59,7 +58,7 @@ public class Main {
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
-                new TransactionListener(),
+                new PayListener(),
                 new StatsListener()
         );
 

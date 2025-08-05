@@ -23,7 +23,7 @@ public class UserData extends JsonFile {
     }
 
     public UserInfo get(String userId) {
-        UserInfo user = users.computeIfAbsent(userId, id -> new UserInfo(userId));
+        UserInfo user = users.computeIfAbsent(userId, id -> new UserInfo());
         save();
         return user;
     }

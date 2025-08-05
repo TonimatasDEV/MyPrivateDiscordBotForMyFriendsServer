@@ -1,29 +1,22 @@
 package dev.tonimatas.api.user;
 
 import dev.tonimatas.api.bank.DailyInfo;
-import dev.tonimatas.api.bank.Transaction;
 import dev.tonimatas.util.TimeUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserInfo {
-    private final String userId;
-    private final ArrayList<Transaction> transactions;
     private final UserStats stats;
     private DailyInfo daily;
     private UserSettings settings;
     private long money;
 
-    public UserInfo(String userId) {
-        this(userId, new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new ArrayList<>(), new UserSettings(), 0, new UserStats());
+    public UserInfo() {
+        this(new DailyInfo(TimeUtils.getStr(LocalDateTime.now().minusHours(25)), false), new UserSettings(), 0, new UserStats());
     }
 
-    public UserInfo(String userId, DailyInfo daily, List<Transaction> transactions, UserSettings settings, long money, UserStats stats) {
-        this.userId = userId;
+    public UserInfo(DailyInfo daily, UserSettings settings, long money, UserStats stats) {
         this.daily = daily;
-        this.transactions = new ArrayList<>(transactions);
         this.settings = settings;
         this.money = money;
         this.stats = stats;
@@ -45,45 +38,19 @@ public class UserInfo {
         this.money = money;
     }
 
-    public void addMoney(long money, String reason) {
+    public void addMoney(long money) {
         stats.increaseMoneyWon(money);
 
         if (money != 0) {
-            addTransaction(new Transaction(userId, money, reason));
             setMoney(getMoney() + money);
         }
     }
 
-    public void removeMoney(long money, String reason) {
+    public void removeMoney(long money) {
         stats.increaseMoneySpent(money);
 
         long nonNegativeMoney = Math.min(this.money, money);
-        addTransaction(new Transaction(userId, -nonNegativeMoney, reason));
         setMoney(getMoney() - nonNegativeMoney);
-    }
-
-    public void addTransaction(Transaction transaction) {
-        stats.increaseTransactions();
-        transactions.sort(null);
-
-        if (!transactions.isEmpty()) {
-            Transaction first = transactions.getFirst();
-            if (first.getReason().equals(transaction.getReason())) {
-                transactions.removeFirst();
-                transaction = new Transaction(userId, transaction.getAmount() + first.getAmount(), transaction.getReason());
-            }
-        }
-
-        transactions.add(transaction);
-        transactions.sort(null);
-
-        int deleteCount = transactions.size() - 10;
-
-        if (deleteCount > 0) {
-            for (int i = 0; i < deleteCount; i++) {
-                transactions.removeLast();
-            }
-        }
     }
 
     public UserSettings getSettings() {
@@ -92,11 +59,6 @@ public class UserInfo {
         }
 
         return settings;
-    }
-
-    public List<Transaction> getTransactions() {
-        transactions.sort(null);
-        return transactions;
     }
 
     public UserStats getStats() {

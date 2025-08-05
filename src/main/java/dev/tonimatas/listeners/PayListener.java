@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
 
-public class TransactionListener extends ListenerAdapter {
+public class PayListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         Guild guild = event.getGuild();
@@ -73,8 +73,8 @@ public class TransactionListener extends ListenerAdapter {
             reason = " because: " + (reason.endsWith(".") ? reason : reason + ".");
         }
 
-        BotFiles.USER.get(sender.getId()).removeMoney(amount, "Sent to " + receiver.getEffectiveName() + reason);
-        BotFiles.USER.get(receiver.getId()).addMoney(amount - fee, "Received by " + sender.getEffectiveName() + " because: " + reason);
+        BotFiles.USER.get(sender.getId()).removeMoney(amount);
+        BotFiles.USER.get(receiver.getId()).addMoney(amount - fee);
 
         MessageEmbed success = Messages.getDefaultEmbed(jda, "Transaction Successful",
                 String.format("%s sent **%d€** to %s (Fee: %d€)%nReason: %s",

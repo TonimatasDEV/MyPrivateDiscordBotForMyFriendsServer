@@ -31,7 +31,7 @@ public class Roulette {
         this.rouletteThread = rouletteThread();
         ExecutorManager.addStopTask(() -> {
             for (Bet bet : bets) {
-                BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney(), ROULETTE_NAME + " crashed");
+                BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney());
             }
         });
     }
@@ -55,7 +55,7 @@ public class Roulette {
     }
 
     public void addBet(Bet newBet) {
-        BotFiles.USER.get(newBet.getId()).removeMoney(newBet.getMoney(), "Bet to the " + ROULETTE_NAME);
+        BotFiles.USER.get(newBet.getId()).removeMoney(newBet.getMoney());
 
         Bet mergeableBet = null;
         for (Bet bet : bets) {
@@ -108,7 +108,7 @@ public class Roulette {
 
     private void crash() {
         for (Bet bet : bets) {
-            BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney(), ROULETTE_NAME + " crashed");
+            BotFiles.USER.get(bet.getId()).addMoney(bet.getMoney());
         }
 
         MessageEmbed embed = Messages.getErrorEmbed(jda, ROULETTE_NAME + " crashed. All money should be in your accounts.");
@@ -160,7 +160,7 @@ public class Roulette {
             if (user == null) continue;
 
             long reward = bet.getReward(winner);
-            BotFiles.USER.get(bet.getId()).addMoney(reward, "Won a bet in the " + ROULETTE_NAME);
+            BotFiles.USER.get(bet.getId()).addMoney(reward);
 
             rewards.append(count).append(". ").append(user.getEffectiveName()).append(" ").append(bet.getRewardMessage(winner)).append("\n");
             count++;

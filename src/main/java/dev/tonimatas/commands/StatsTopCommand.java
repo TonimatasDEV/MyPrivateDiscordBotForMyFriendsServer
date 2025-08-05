@@ -61,7 +61,6 @@ public class StatsTopCommand implements SlashCommand {
                 getLongStatTop("Times counted incorrectly", interaction.getJDA(), UserStats::getCountIncorrectly) +
                 getLongStatTop("Money won", interaction.getJDA(), UserStats::getMoneyWon) +
                 getLongStatTop("Money spent", interaction.getJDA(), UserStats::getMoneySpent) +
-                getLongStatTop("Total transactions", interaction.getJDA(), UserStats::getTransactions) +
                 getLongStatTop("Messages sent", interaction.getJDA(), UserStats::getMessagesSent) +
                 getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted) +
                 getLongStatTop("Time in voice channels", interaction.getJDA(), UserStats::getTimeInVoiceLong, stats -> 
