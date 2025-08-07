@@ -12,10 +12,6 @@ public class TimeUtils {
         // We don't need a constructor
     }
 
-    public static String getNowStr() {
-        return getStr(LocalDateTime.now());
-    }
-
     public static String getStr(LocalDateTime dateTime) {
         return dateTime.format(FORMATTER);
     }
@@ -51,15 +47,5 @@ public class TimeUtils {
         } else {
             return !time.isBefore(start) || time.isBefore(end);
         }
-    }
-
-    public static String formatDuration(Duration duration) {
-        long totalSeconds = duration.getSeconds();
-
-        long hours = totalSeconds / 3600;
-        long minutes = (totalSeconds % 3600) / 60;
-        long seconds = totalSeconds % 60;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

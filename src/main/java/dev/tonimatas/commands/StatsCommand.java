@@ -5,7 +5,6 @@ import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
-import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
@@ -43,8 +42,7 @@ public class StatsCommand implements SlashCommand {
                         "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
                         "Money spent: " + userInfo.getStats().getMoneySpent() + "€.\n" +
                         "Messages sent: " + userInfo.getStats().getMessagesSent() + ".\n" +
-                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + ".\n" +
-                        "Time in voice channels: " + TimeUtils.formatDuration(userInfo.getStats().getTimeInVoice()) + "."
+                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + "."
         );
 
         interaction.replyEmbeds(embed).queue();

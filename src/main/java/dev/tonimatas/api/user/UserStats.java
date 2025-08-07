@@ -1,8 +1,5 @@
 package dev.tonimatas.api.user;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-
 public class UserStats {
     private long countCorrectly;
     private long countIncorrectly;
@@ -10,7 +7,6 @@ public class UserStats {
     private long moneySpent;
     private long messagesSent;
     private long commandsExecuted;
-    private String timeInVoice = Duration.ZERO.toString();
 
     public long getCountCorrectly() {
         return countCorrectly;
@@ -36,14 +32,6 @@ public class UserStats {
         return commandsExecuted;
     }
 
-    public Duration getTimeInVoice() {
-        return Duration.parse(timeInVoice);
-    }
-    
-    public long getTimeInVoiceLong() {
-        return getTimeInVoice().getSeconds();
-    }
-
     public void increaseCountCorrectly() {
         countCorrectly++;
     }
@@ -66,14 +54,5 @@ public class UserStats {
 
     public void increaseCommandsExecuted() {
         commandsExecuted++;
-    }
-
-    public void increaseTimeInVoice(LocalDateTime time) {
-        if (time == null) {
-            return;
-        }
-
-        Duration actualTime = Duration.parse(timeInVoice);
-        timeInVoice = actualTime.plus(Duration.between(time, LocalDateTime.now())).toString();
     }
 }
