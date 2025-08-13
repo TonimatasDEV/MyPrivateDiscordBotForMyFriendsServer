@@ -51,12 +51,4 @@ public class DiceCommand implements SlashCommand {
     public Set<InteractionContextType> getContexts() {
         return InteractionContextType.ALL;
     }
-
-    public static void main(String[] args) {
-        SecureRandom random = new SecureRandom();
-
-        for (int i = 0; i < 100; i++) {
-            System.out.println(random.nextInt(1, 10 + 1));
-        }
-    }
 }
