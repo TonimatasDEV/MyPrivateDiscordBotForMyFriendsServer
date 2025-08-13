@@ -50,7 +50,8 @@ public class Main {
                 new PayCommand(),
                 new BetCommand(),
                 new VersionCommand(),
-                new StatsCommand()
+                new StatsCommand(),
+                new DiceCommand()
         ).init().queue();
 
         jda.addEventListener(
