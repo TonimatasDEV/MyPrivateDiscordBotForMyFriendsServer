@@ -13,28 +13,28 @@ import java.security.SecureRandom;
 import java.util.Set;
 
 public class DiceCommand implements SlashCommand {
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     @Override
     public void execute(SlashCommandInteraction interaction) {
-        SecureRandom random = new SecureRandom();
-        
         OptionMapping min = interaction.getOption("min");
         OptionMapping max = interaction.getOption("max");
-        
+
         if (min == null || max == null) {
             MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "Incorrect arguments");
             interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
-        int result = random.nextInt(min.getAsInt(), max.getAsInt() + 1);
+
+        int result = RANDOM.nextInt(min.getAsInt(), max.getAsInt() + 1);
         MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Dice", "The number is " + result + ".");
         interaction.replyEmbeds(embed).queue();
     }
 
     @Override
     public SlashCommandData init(SlashCommandData data) {
-        return data.addOption(OptionType.INTEGER, "min", "Minimum number")
-                .addOption(OptionType.INTEGER, "max", "Maximum number");
+        return data.addOption(OptionType.INTEGER, "min", "Minimum number", true)
+                .addOption(OptionType.INTEGER, "max", "Maximum number", true);
     }
 
     @Override
