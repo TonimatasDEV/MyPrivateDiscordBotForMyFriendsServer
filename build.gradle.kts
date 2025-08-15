@@ -4,7 +4,7 @@ import kotlin.io.path.exists
 plugins {
     java
     application
-    id("com.gradleup.shadow") version "9.0.1"
+    id("com.gradleup.shadow") version "9.0.2"
 }
 
 val projectVersion: String by extra
