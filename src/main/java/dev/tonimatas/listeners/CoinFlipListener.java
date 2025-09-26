@@ -53,7 +53,7 @@ public class CoinFlipListener extends ListenerAdapter {
             }
 
             String landed = result ? "heads" : "tails";
-            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money + " because it landed " + landed + ".");
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money * 2 + "€ because it landed " + landed + ".");
             event.editMessageEmbeds(embed).setComponents().queue();
         }
     }

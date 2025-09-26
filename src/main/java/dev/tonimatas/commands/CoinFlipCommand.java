@@ -42,9 +42,9 @@ public class CoinFlipCommand implements SlashCommand {
         }
 
         if (typeBoolean || type.equalsIgnoreCase("tails")) {
-            MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Coinflip", "User: " + user.getEffectiveName() + "." +
-                    "\nOption: " + type + "." +
-                    "\nMoney: " + money + "€.");
+            MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Coinflip", "**User:** " + user.getEffectiveName() + "." +
+                    "\n**Option:** " + type + "." +
+                    "\n**Money:** " + money + "€.");
             String buttonId = "coinflip-" + user.getId() + "-" + typeBoolean + "-" + money;
             interaction.replyEmbeds(embed).addComponents(
                     ActionRow.of(
