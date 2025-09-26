@@ -41,6 +41,7 @@ public class Main {
 
         cjda.registerCommands(
                 new MoneyCommand(),
+                new CoinFlipCommand(),
                 new PingCommand(),
                 new MoneyTopCommand(),
                 new DailyCommand(),
@@ -60,7 +61,8 @@ public class Main {
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
                 new PayListener(),
-                new StatsListener()
+                new StatsListener(),
+                new CoinFlipListener()
         );
 
         jda.getPresence().setActivity(Activity.of(Activity.ActivityType.WATCHING, "The Guild"));
