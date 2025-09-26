@@ -12,12 +12,12 @@ import java.util.Random;
 
 public class CoinFlipListener extends ListenerAdapter {
     private static final Random RANDOM = new SecureRandom();
-    
+
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String clickerId = event.getUser().getId();
         String id = event.getButton().getCustomId();
-        
+
         if (id != null && id.startsWith("coinflip")) {
             String[] idSplit = id.split("-");
             String ownerId = idSplit[1];
@@ -35,9 +35,11 @@ public class CoinFlipListener extends ListenerAdapter {
                 event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
-            
+
+            boolean result = RANDOM.nextBoolean();
+
             String winnerName;
-            if (RANDOM.nextBoolean() == ownerOption) {
+            if (result == ownerOption) {
                 User owner = event.getJDA().getUserById(ownerId);
                 winnerName = owner == null ? "Unknown" : owner.getEffectiveName();
 
@@ -50,8 +52,8 @@ public class CoinFlipListener extends ListenerAdapter {
                 BotFiles.USER.get(ownerId).removeMoney(money);
             }
 
-
-            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money + ".");
+            String landed = result ? "heads" : "tails";
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money + " because it landed " + landed + ".");
             event.editMessageEmbeds(embed).setComponents().queue();
         }
     }
