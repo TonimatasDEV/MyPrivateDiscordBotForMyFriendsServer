@@ -41,17 +41,17 @@ public class CoinFlipListener extends ListenerAdapter {
                 User owner = event.getJDA().getUserById(ownerId);
                 winnerName = owner == null ? "Unknown" : owner.getEffectiveName();
 
-                BotFiles.USER.get(ownerId).addMoney(money * 2);
+                BotFiles.USER.get(ownerId).addMoney(money);
                 BotFiles.USER.get(clickerId).removeMoney(money);
             } else {
                 winnerName = event.getUser().getEffectiveName();
 
-                BotFiles.USER.get(clickerId).addMoney(money * 2);
+                BotFiles.USER.get(clickerId).addMoney(money);
                 BotFiles.USER.get(ownerId).removeMoney(money);
             }
 
 
-            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money * 2 + ".");
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money + ".");
             event.editMessageEmbeds(embed).setComponents().queue();
         }
     }
