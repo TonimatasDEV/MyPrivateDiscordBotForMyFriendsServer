@@ -24,7 +24,7 @@ dependencies {
     }
 
     // https://github.com/qos-ch/logback/releases
-    implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("ch.qos.logback:logback-classic:1.5.19")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
     implementation("dev.tonimatas:CJDA:1.0.3")
