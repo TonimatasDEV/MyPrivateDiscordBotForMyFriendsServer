@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.0.0-preview") {
+    implementation("net.dv8tion:JDA:6.0.0") {
         exclude(module = "opus-java")
     }
 
@@ -27,7 +27,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.5.19")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
-    implementation("dev.tonimatas:CJDA:1.0.3")
+    implementation("dev.tonimatas:CJDA:1.0.4")
 }
 
 application {
