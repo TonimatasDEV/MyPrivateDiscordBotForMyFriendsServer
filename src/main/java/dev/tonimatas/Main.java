@@ -52,7 +52,8 @@ public class Main {
                 new BetCommand(),
                 new VersionCommand(),
                 new StatsCommand(),
-                new DiceCommand()
+                new DiceCommand(),
+                new MusicCommand()
         ).init().queue();
 
         jda.addEventListener(
