@@ -14,19 +14,22 @@ version = projectVersion
 
 repositories {
     mavenCentral()
+    maven("https://maven.lavalink.dev/releases")
     maven("https://maven.tonimatas.dev/releases")
 }
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.0.0") {
-        exclude(module = "opus-java")
-    }
-
+    implementation("net.dv8tion:JDA:6.0.0")
+    // https://github.com/lavalink-devs/lavaplayer/releases
+    implementation("dev.arbjerg:lavaplayer:2.2.4")
+    // https://github.com/lavalink-devs/youtube-source/releases
+    implementation("dev.lavalink.youtube:youtube-plugin:1.15.0")
     // https://github.com/qos-ch/logback/releases
     implementation("ch.qos.logback:logback-classic:1.5.19")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
+    // https://github.com/TonimatasDEV/CJDA/releases
     implementation("dev.tonimatas:CJDA:1.0.4")
 }
 
