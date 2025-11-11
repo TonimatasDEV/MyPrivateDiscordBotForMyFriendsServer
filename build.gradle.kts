@@ -26,7 +26,7 @@ dependencies {
     // https://github.com/lavalink-devs/youtube-source/releases
     implementation("dev.lavalink.youtube:youtube-plugin:1.16.0")
     // https://github.com/qos-ch/logback/releases
-    implementation("ch.qos.logback:logback-classic:1.5.20")
+    implementation("ch.qos.logback:logback-classic:1.5.21")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
     // https://github.com/TonimatasDEV/CJDA/releases
