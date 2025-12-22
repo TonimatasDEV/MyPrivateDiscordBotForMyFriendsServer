@@ -22,7 +22,7 @@ dependencies {
     // https://github.com/discord-jda/JDA/releases
     implementation("net.dv8tion:JDA:6.2.0")
     // https://github.com/lavalink-devs/lavaplayer/releases
-    implementation("dev.arbjerg:lavaplayer:2.2.4")
+    implementation("dev.arbjerg:lavaplayer:2.2.6")
     // https://github.com/lavalink-devs/youtube-source/releases
     implementation("dev.lavalink.youtube:youtube-plugin:1.16.0")
     // https://github.com/qos-ch/logback/releases
