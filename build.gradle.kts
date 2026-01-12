@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.2.1")
+    implementation("net.dv8tion:JDA:6.3.0")
     // https://github.com/lavalink-devs/lavaplayer/releases
     implementation("dev.arbjerg:lavaplayer:2.2.6")
     // https://github.com/lavalink-devs/youtube-source/releases
