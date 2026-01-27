@@ -24,7 +24,7 @@ dependencies {
     // https://github.com/lavalink-devs/lavaplayer/releases
     implementation("dev.arbjerg:lavaplayer:2.2.6")
     // https://github.com/lavalink-devs/youtube-source/releases
-    implementation("dev.lavalink.youtube:youtube-plugin:1.16.0")
+    implementation("dev.lavalink.youtube:youtube-plugin:1.17.0")
     // https://github.com/qos-ch/logback/releases
     implementation("ch.qos.logback:logback-classic:1.5.26")
     // https://github.com/google/gson/releases
