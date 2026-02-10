@@ -1,21 +1,21 @@
 package dev.tonimatas.commands;
 
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.util.TimeUtils;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDateTime;
-import java.util.Set;
 
-public class HiCommand implements SlashCommand {
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
-        User user = interaction.getUser();
+public class HiCommand {
+    @Command("hi")
+    @Description("Receive a greeting from our friendly bot.")
+    public void execute(SlashCommandActor actor) {
+        User user = actor.user();
         LocalTime nowTime = LocalTime.now();
         LocalDate nowDate = LocalDate.now();
 
@@ -33,22 +33,7 @@ public class HiCommand implements SlashCommand {
             greeting = "😠 ¡Duérmete, bot! Deja de saludar a estas horas...";
         }
 
-        interaction.reply(greeting).queue();
-    }
-
-    @Override
-    public String getName() {
-        return "hi";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Receive a greeting from our friendly bot.";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL;
+        actor.replyToInteraction(greeting).queue();
     }
 
     private boolean isSummer(LocalDateTime date) {
