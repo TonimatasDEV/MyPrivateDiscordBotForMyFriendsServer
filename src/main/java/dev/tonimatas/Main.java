@@ -1,7 +1,5 @@
 package dev.tonimatas;
 
-import dev.tonimatas.cjda.CJDA;
-import dev.tonimatas.cjda.CJDABuilder;
 import dev.tonimatas.commands.*;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
@@ -43,12 +41,13 @@ public class Main {
 
         Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
-
+        
         lamp.register(
                 new DailyCommand(),
                 new HiCommand(),
                 new MoneyTopCommand(),
                 new PingCommand(),
+                new StatsCommand(),
                 new StatsTopCommand(),
                 new VersionCommand()
         );
