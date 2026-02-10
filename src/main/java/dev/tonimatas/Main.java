@@ -18,6 +18,10 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import revxrsal.commands.Lamp;
+import revxrsal.commands.jda.JDALamp;
+import revxrsal.commands.jda.JDAVisitors;
+import revxrsal.commands.jda.actor.SlashCommandActor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -37,8 +41,15 @@ public class Main {
                 .fromBundles("lang", DiscordLocale.SPANISH)
                 .build();
 
-        CJDA cjda = CJDABuilder.createLocalized(jda, localization);
+        Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
+
+        lamp.register(
+                new VersionCommand()
+        );
+        lamp.accept(JDAVisitors.slashCommands(jda));
+
+        /*
         cjda.registerCommands(
                 new MoneyCommand(),
                 new CoinFlipCommand(),
@@ -50,11 +61,11 @@ public class Main {
                 new OptionsCommand(),
                 new PayCommand(),
                 new BetCommand(),
-                new VersionCommand(),
                 new StatsCommand(),
                 new DiceCommand(),
                 new MusicCommand()
         ).init().queue();
+        */
 
         jda.addEventListener(
                 new AutoRoleListener(),

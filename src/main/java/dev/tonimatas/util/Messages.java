@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,5 +60,15 @@ public class Messages {
                 .setDescription(description)
                 .setColor(Color.RED)
                 .build();
+    }
+
+    // Temporal API
+    public static MessageCreateData getDefaultEmbed_Lamp(JDA jda, String title, String description) {
+        return MessageCreateData.fromEmbeds(getDefaultEmbed(jda, title, description));
+    }
+    
+    // Temporal API
+    public static MessageCreateData getErrorEmbed_Lamp(JDA jda, String description) {
+        return MessageCreateData.fromEmbeds(getErrorEmbed(jda, description));
     }
 }
