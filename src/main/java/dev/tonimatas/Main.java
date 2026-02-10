@@ -45,27 +45,13 @@ public class Main {
 
 
         lamp.register(
+                new MoneyTopCommand(),
+                new PingCommand(),
+                new StatsTopCommand(),
                 new VersionCommand()
         );
+        
         lamp.accept(JDAVisitors.slashCommands(jda));
-
-        /*
-        cjda.registerCommands(
-                new MoneyCommand(),
-                new CoinFlipCommand(),
-                new PingCommand(),
-                new MoneyTopCommand(),
-                new DailyCommand(),
-                new HiCommand(),
-                new StatsTopCommand(),
-                new OptionsCommand(),
-                new PayCommand(),
-                new BetCommand(),
-                new StatsCommand(),
-                new DiceCommand(),
-                new MusicCommand()
-        ).init().queue();
-        */
 
         jda.addEventListener(
                 new AutoRoleListener(),

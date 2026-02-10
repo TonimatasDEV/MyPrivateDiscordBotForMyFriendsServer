@@ -1,32 +1,16 @@
 package dev.tonimatas.commands;
 
-import dev.tonimatas.cjda.slash.SlashCommand;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
 
-import java.util.Set;
-
-public class PingCommand implements SlashCommand {
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
+public class PingCommand {
+    @Command("ping")
+    @Description("Discord Ping! Pong!")
+    public void execute(SlashCommandActor actor) {
         long startTime = System.currentTimeMillis();
 
-        interaction.reply("Pong!").setEphemeral(true).queue(response ->
+        actor.replyToInteraction("Pong!").setEphemeral(true).queue(response ->
                 response.editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - startTime).queue());
-    }
-
-    @Override
-    public String getName() {
-        return "ping";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Discord Ping! Pong!";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL;
     }
 }
