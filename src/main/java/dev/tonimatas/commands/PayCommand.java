@@ -16,16 +16,15 @@ public class PayCommand {
     @Command("pay")
     @Description("Send an amount of money to a member.")
     @GuildOnly
-    public void execute(SlashCommandActor actor, 
+    public void execute(SlashCommandActor actor,
                         @Named("user") @Description("The member who is gonna receive your money.") User user,
                         @Named("amount") @Description("The quantity of money you are gonna loose.") @Range(min = 1) long amount,
-                        @Named("reason") @Description("If you want to say why are you paying.") @Optional String reason)
-    {
+                        @Named("reason") @Description("If you want to say why are you paying.") @Optional String reason) {
         if (CommandUtils.isNotCommandsChannel(actor)) return;
 
         JDA jda = actor.jda();
         User sender = actor.user();
-        
+
         reason = reason != null ? reason : "No reason provided";
 
         if (user != null) {

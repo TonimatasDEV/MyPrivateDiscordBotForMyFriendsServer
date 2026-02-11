@@ -43,7 +43,7 @@ public class BetCommand {
     public void executeBetNumber(SlashCommandActor actor, @Named("option") @Description("Select the option.") @Range(min = 0, max = 36) Integer option, @Named("money") @Description("Money for the bet") @Range(min = 1) long money) {
         execute(actor, String.valueOf(option), money);
     }
-    
+
     public void execute(SlashCommandActor actor, String option, long money) {
         JDA jda = actor.jda();
         String id = actor.user().getId();

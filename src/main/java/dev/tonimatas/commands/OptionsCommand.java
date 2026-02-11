@@ -3,10 +3,13 @@ package dev.tonimatas.commands;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 
-public class OptionsCommand  {
+public class OptionsCommand {
     @Command("options")
     @Description("Configure your preferences")
     @Subcommand("daily_notify")

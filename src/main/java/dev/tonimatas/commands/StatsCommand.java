@@ -23,7 +23,7 @@ public class StatsCommand {
         if (user == null) {
             user = actor.user();
         }
-        
+
         if (user.isBot()) {
             MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Bots don't take part on any statistics.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
