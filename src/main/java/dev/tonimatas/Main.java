@@ -45,7 +45,9 @@ public class Main {
         lamp.register(
                 new DailyCommand(),
                 new HiCommand(),
+                new MoneyCommand(),
                 new MoneyTopCommand(),
+                new OptionsCommand(),
                 new PingCommand(),
                 new StatsCommand(),
                 new StatsTopCommand(),
