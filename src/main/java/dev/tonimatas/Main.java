@@ -44,6 +44,7 @@ public class Main {
         
         lamp.register(
                 new DailyCommand(),
+                new DiceCommand(),
                 new HiCommand(),
                 new MoneyCommand(),
                 new MoneyTopCommand(),
