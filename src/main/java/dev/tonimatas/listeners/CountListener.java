@@ -82,6 +82,7 @@ public class CountListener extends ListenerAdapter {
 
         if (channel != null) {
             lastCountMessageId = channel.getLatestMessageId();
+            if (lastCountMessageId.equals("0")) return;
             channel.retrieveMessageById(lastCountMessageId).queue((message -> lastCountUser = message.getAuthor()));
         }
     }
