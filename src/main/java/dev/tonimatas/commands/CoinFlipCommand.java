@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Range;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 import revxrsal.commands.jda.annotation.Choices;
 import revxrsal.commands.jda.annotation.GuildOnly;
@@ -19,8 +21,8 @@ public class CoinFlipCommand {
     @Description("Flip the coin and steal money from the others with your luck.")
     @GuildOnly
     public void execute(SlashCommandActor actor,
-                        @Description("Select what you want to play. Heads or tails.") @Choices(value = {"heads", "tails"}) String type,
-                        @Description("Money amount") Long money
+                        @Named("type") @Description("Select what you want to play. Heads or tails.") @Choices(value = {"heads", "tails"}) String type,
+                        @Named("money") @Description("Money amount") @Range(min = 1) long money
     ) {
         User user = actor.user();
 

@@ -8,8 +8,7 @@ import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 import revxrsal.commands.jda.annotation.GuildOnly;
 
@@ -18,9 +17,9 @@ public class PayCommand {
     @Description("Send an amount of money to a member.")
     @GuildOnly
     public void execute(SlashCommandActor actor, 
-                        @Description("The member who is gonna receive your money.") User user,
-                        @Description("The quantity of money you are gonna loose.") Long amount,
-                        @Description("If you want to say why are you paying.") String reason)
+                        @Named("user") @Description("The member who is gonna receive your money.") User user,
+                        @Named("amount") @Description("The quantity of money you are gonna loose.") @Range(min = 1) long amount,
+                        @Named("reason") @Description("If you want to say why are you paying.") @Optional String reason)
     {
         if (CommandUtils.isNotCommandsChannel(actor)) return;
 
@@ -29,7 +28,7 @@ public class PayCommand {
         
         reason = reason != null ? reason : "No reason provided";
 
-        if (user != null && amount != null) {
+        if (user != null) {
             if (amount <= 0) {
                 MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "You can't sent 0€.");
                 actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));

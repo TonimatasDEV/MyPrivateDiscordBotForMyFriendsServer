@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 import revxrsal.commands.jda.annotation.GuildOnly;
 
@@ -14,7 +16,7 @@ public class MoneyCommand {
     @Command("money")
     @Description("The user that you want to check their amount of money.")
     @GuildOnly
-    public void execute(SlashCommandActor actor, @Description("The user that you want to check their amount of money.") User user) {
+    public void execute(SlashCommandActor actor, @Named("user") @Description("The user that you want to check their amount of money.") @Optional User user) {
         if (CommandUtils.isNotCommandsChannel(actor)) return;
 
         if (user == null) {
