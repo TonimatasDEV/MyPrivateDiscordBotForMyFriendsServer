@@ -1,6 +1,5 @@
 package dev.tonimatas.commands;
 
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
@@ -17,7 +16,8 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 import java.util.Set;
 
-public class BetCommand implements SlashCommand {
+public class BetCommand {
+    /*
     @Override
     public void execute(SlashCommandInteraction interaction) {
         JDA jda = interaction.getJDA();
@@ -111,5 +111,5 @@ public class BetCommand implements SlashCommand {
     
     private static OptionData createMoneyOption() {
         return new OptionData(OptionType.STRING, "money", "Money for the bet", true);
-    }
+    }*/
 }
