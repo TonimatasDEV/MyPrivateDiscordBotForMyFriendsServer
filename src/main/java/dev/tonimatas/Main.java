@@ -41,7 +41,6 @@ public class Main {
 
         Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
-        
         lamp.register(
                 new DailyCommand(),
                 new CoinFlipCommand(),
@@ -56,7 +55,7 @@ public class Main {
                 new StatsTopCommand(),
                 new VersionCommand()
         );
-        
+
         lamp.accept(JDAVisitors.slashCommands(jda));
 
         jda.addEventListener(
