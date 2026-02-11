@@ -1,106 +1,78 @@
 package dev.tonimatas.commands;
 
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
+import revxrsal.commands.jda.annotation.GuildOnly;
 
-import java.util.Set;
+public class PayCommand {
+    @Command("pay")
+    @Description("Send an amount of money to a member.")
+    @GuildOnly
+    public void execute(SlashCommandActor actor, 
+                        @Description("The member who is gonna receive your money.") User user,
+                        @Description("The quantity of money you are gonna loose.") Long amount,
+                        @Description("If you want to say why are you paying.") String reason)
+    {
+        if (CommandUtils.isNotCommandsChannel(actor)) return;
 
-public class PayCommand implements SlashCommand {
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
-        if (CommandUtils.isNotCommandsChannel(interaction)) return;
+        JDA jda = actor.jda();
+        User sender = actor.user();
+        
+        reason = reason != null ? reason : "No reason provided";
 
-        JDA jda = interaction.getJDA();
-        User sender = interaction.getUser();
-
-        OptionMapping userOption = interaction.getOption("user");
-        OptionMapping amountOption = interaction.getOption("amount");
-        OptionMapping reasonOption = interaction.getOption("reason");
-        String reason = reasonOption != null ? reasonOption.getAsString() : "No reason provided";
-
-        if (userOption != null && amountOption != null) {
-            User receiver = userOption.getAsUser();
-            long amount = amountOption.getAsLong();
-
+        if (user != null && amount != null) {
             if (amount <= 0) {
-                MessageEmbed embed = Messages.getErrorEmbed(jda, "You can't sent 0€.");
-                interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "You can't sent 0€.");
+                actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             if (amount > BotFiles.USER.get(sender.getId()).getMoney()) {
-                MessageEmbed embed = Messages.getErrorEmbed(jda, "Insufficient funds.");
-                interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "Insufficient funds.");
+                actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
-            if (receiver.isBot()) {
-                MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid receiver. Please try again later.");
-                interaction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            if (user.isBot()) {
+                MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "Invalid receiver. Please try again later.");
+                actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             long fee = (long) (amount * 0.05);
 
-            MessageEmbed confirmation = Messages.getDefaultEmbed(jda, "Confirm payment",
+            MessageCreateData confirmation = Messages.getDefaultEmbed_Lamp(jda, "Confirm payment",
                     String.format("""
                                     Send **%d€** to **%s**? Fee: **%d€**
                                     Total: **%d€**
                                     Reason: %s
                                     """,
                             amount - fee,
-                            receiver.getEffectiveName(),
+                            user.getEffectiveName(),
                             fee,
                             amount,
                             reason)
             );
 
-            String confirmId = "pay:confirm:" + receiver.getId() + ":" + amount + ":" + reason.replace(":", "‖");
+            String confirmId = "pay:confirm:" + user.getId() + ":" + amount + ":" + reason.replace(":", "‖");
             String cancelId = "pay:cancel";
 
-            interaction.replyEmbeds(confirmation)
+            actor.replyToInteraction(confirmation)
                     .addComponents(
                             ActionRow.of(
                                     Button.success(confirmId, "✅"),
                                     Button.danger(cancelId, "❌")
                             )
-                    )
-                    .setEphemeral(true)
-                    .queue();
+                    ).setEphemeral(true).queue();
         }
-    }
-
-    @Override
-    public String getName() {
-        return "pay";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Send an amount of money to a member.";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return Set.of(InteractionContextType.GUILD);
-    }
-
-    @Override
-    public SlashCommandData init(SlashCommandData data) {
-        return data.addOption(OptionType.USER, "user", "The member who is gonna receive your money.", true)
-                .addOption(OptionType.STRING, "amount", "The quantity of money you are gonna loose.", true)
-                .addOption(OptionType.STRING, "reason", "If you want to say why are you paying.");
     }
 }

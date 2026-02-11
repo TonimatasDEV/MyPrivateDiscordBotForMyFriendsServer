@@ -44,11 +44,13 @@ public class Main {
         
         lamp.register(
                 new DailyCommand(),
+                new CoinFlipCommand(),
                 new DiceCommand(),
                 new HiCommand(),
                 new MoneyCommand(),
                 new MoneyTopCommand(),
                 new OptionsCommand(),
+                new PayCommand(),
                 new PingCommand(),
                 new StatsCommand(),
                 new StatsTopCommand(),
