@@ -42,6 +42,7 @@ public class Main {
         Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
         lamp.register(
+                new BetCommand(),
                 new DailyCommand(),
                 new CoinFlipCommand(),
                 new DiceCommand(),
