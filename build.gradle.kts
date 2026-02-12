@@ -14,7 +14,6 @@ version = projectVersion
 
 repositories {
     mavenCentral()
-    maven("https://maven.tonimatas.dev/releases")
 }
 
 dependencies {
