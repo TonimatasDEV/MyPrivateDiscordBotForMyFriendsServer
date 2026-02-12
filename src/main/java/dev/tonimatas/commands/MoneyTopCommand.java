@@ -30,6 +30,8 @@ public class MoneyTopCommand {
 
             if (sortedList.size() > i) {
                 Member user = guild.getMemberById(sortedList.get(i).getKey());
+                
+                if (user != null && user.getUser().isBot()) continue;
 
                 name = (user != null) ? user.getEffectiveName() : "Unknown";
                 money = sortedList.get(i).getValue().getMoney();
