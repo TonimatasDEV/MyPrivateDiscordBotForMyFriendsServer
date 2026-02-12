@@ -1,33 +1,17 @@
 package dev.tonimatas.commands;
 
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.util.JarUtils;
 import dev.tonimatas.util.Messages;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
 
-import java.util.Set;
-
-public class VersionCommand implements SlashCommand {
-    @Override
-    public void execute(SlashCommandInteraction slashCommandInteraction) {
-        MessageEmbed embed = Messages.getDefaultEmbed(slashCommandInteraction.getJDA(), "Version", JarUtils.getJarName());
-        slashCommandInteraction.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
-    }
-
-    @Override
-    public String getName() {
-        return "version";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Shows the version of the bot.";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return InteractionContextType.ALL;
+public class VersionCommand {
+    @Command("version")
+    @Description("Shows the version of the bot.")
+    public void execute(SlashCommandActor actor) {
+        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Version", JarUtils.getJarName());
+        actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
     }
 }

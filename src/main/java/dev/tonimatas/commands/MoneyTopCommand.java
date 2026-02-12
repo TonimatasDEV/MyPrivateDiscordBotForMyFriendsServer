@@ -1,21 +1,21 @@
 package dev.tonimatas.commands;
 
 import dev.tonimatas.api.user.UserInfo;
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
+import revxrsal.commands.jda.annotation.GuildOnly;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public class MoneyTopCommand implements SlashCommand {
+public class MoneyTopCommand {
     private static String getMoneyTopString(Guild guild) {
         List<Map.Entry<String, UserInfo>> sortedList = BotFiles.USER.getUsers().entrySet()
                 .stream()
@@ -41,34 +41,15 @@ public class MoneyTopCommand implements SlashCommand {
         return text.toString();
     }
 
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
-        if (CommandUtils.isNotCommandsChannel(interaction)) return;
+    @Command("money-top")
+    @Description("The top 10 richest people among us!")
+    @GuildOnly
+    public void execute(SlashCommandActor actor) {
+        if (CommandUtils.isNotCommandsChannel(actor)) return;
 
-        Guild guild = interaction.getGuild();
+        Guild guild = actor.guild();
 
-        if (guild == null) {
-            MessageEmbed embed = Messages.getErrorEmbed(interaction.getJDA(), "You need to be in a guild!");
-            interaction.replyEmbeds(embed).setEphemeral(true).queue();
-            return;
-        }
-
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Money Top", getMoneyTopString(guild));
-        interaction.replyEmbeds(embed).queue();
-    }
-
-    @Override
-    public String getName() {
-        return "money-top";
-    }
-
-    @Override
-    public String getDescription() {
-        return "The top 10 richest people among us!";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return Set.of(InteractionContextType.GUILD);
+        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Money Top", getMoneyTopString(guild));
+        actor.replyToInteraction(embed).queue();
     }
 }

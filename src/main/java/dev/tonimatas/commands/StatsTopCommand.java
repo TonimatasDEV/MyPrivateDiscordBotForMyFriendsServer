@@ -1,23 +1,23 @@
 package dev.tonimatas.commands;
 
 import dev.tonimatas.api.user.UserStats;
-import dev.tonimatas.cjda.slash.SlashCommand;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.interactions.InteractionContextType;
-import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.jda.actor.SlashCommandActor;
+import revxrsal.commands.jda.annotation.GuildOnly;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.ToLongFunction;
 
-public class StatsTopCommand implements SlashCommand {
+public class StatsTopCommand {
     public static String getLongStatTop(String name, JDA jda, ToLongFunction<? super UserStats> value) {
         List<Map.Entry<String, UserStats>> entries = BotFiles.USER.getUserStatsEntries();
         entries.sort(Comparator.comparingLong(e -> value.applyAsLong(e.getValue())));
@@ -39,33 +39,22 @@ public class StatsTopCommand implements SlashCommand {
         return result.toString();
     }
 
-    @Override
-    public void execute(SlashCommandInteraction interaction) {
-        if (CommandUtils.isNotCommandsChannel(interaction)) return;
+    @Command("stats-top")
+    @Description("Shows the statistics top.")
+    @GuildOnly
+    public void execute(SlashCommandActor actor) {
+        if (CommandUtils.isNotCommandsChannel(actor)) return;
 
-        String result = getLongStatTop("Times counted correctly", interaction.getJDA(), UserStats::getCountCorrectly) +
-                getLongStatTop("Times counted incorrectly", interaction.getJDA(), UserStats::getCountIncorrectly) +
-                getLongStatTop("Money won", interaction.getJDA(), UserStats::getMoneyWon) +
-                getLongStatTop("Money spent", interaction.getJDA(), UserStats::getMoneySpent) +
-                getLongStatTop("Messages sent", interaction.getJDA(), UserStats::getMessagesSent) +
-                getLongStatTop("Commands Executed", interaction.getJDA(), UserStats::getCommandsExecuted);
+        JDA jda = actor.jda();
 
-        MessageEmbed embed = Messages.getDefaultEmbed(interaction.getJDA(), "Statistics Top", result);
-        interaction.replyEmbeds(embed).queue();
-    }
+        String result = getLongStatTop("Times counted correctly", jda, UserStats::getCountCorrectly) +
+                getLongStatTop("Times counted incorrectly", jda, UserStats::getCountIncorrectly) +
+                getLongStatTop("Money won", jda, UserStats::getMoneyWon) +
+                getLongStatTop("Money spent", jda, UserStats::getMoneySpent) +
+                getLongStatTop("Messages sent", jda, UserStats::getMessagesSent) +
+                getLongStatTop("Commands Executed", jda, UserStats::getCommandsExecuted);
 
-    @Override
-    public String getName() {
-        return "stats-top";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Shows the statistics top.";
-    }
-
-    @Override
-    public Set<InteractionContextType> getContexts() {
-        return Set.of(InteractionContextType.GUILD);
+        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(jda, "Statistics Top", result);
+        actor.replyToInteraction(embed).queue();
     }
 }
