@@ -2,16 +2,13 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.Utils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
 public class CoinFlipListener extends ListenerAdapter {
-    private static final Random RANDOM = new SecureRandom();
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
@@ -36,7 +33,7 @@ public class CoinFlipListener extends ListenerAdapter {
                 return;
             }
 
-            boolean result = RANDOM.nextBoolean();
+            boolean result = Utils.RANDOM.nextBoolean();
 
             String winnerName;
             if (result == ownerOption) {

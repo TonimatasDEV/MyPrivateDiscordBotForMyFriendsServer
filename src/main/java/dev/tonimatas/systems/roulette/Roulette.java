@@ -5,20 +5,18 @@ import dev.tonimatas.systems.executors.ExecutorManager;
 import dev.tonimatas.systems.roulette.bets.*;
 import dev.tonimatas.util.Messages;
 import dev.tonimatas.util.TimeUtils;
+import dev.tonimatas.util.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Roulette {
     private static final String ROULETTE_NAME = "Roulette";
-    private static final Random RANDOM = new SecureRandom();
     private static Roulette instance;
     private final List<Bet> bets;
     private final JDA jda;
@@ -82,7 +80,7 @@ public class Roulette {
 
             while (true) {
                 if (remainingTime == 0) {
-                    int winner = RANDOM.nextInt(0, 37);
+                    int winner = Utils.RANDOM.nextInt(0, 37);
 
                     giveRewards(winner);
 
