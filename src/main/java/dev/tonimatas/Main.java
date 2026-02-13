@@ -35,10 +35,6 @@ public class Main {
                 .setAutoReconnect(true)
                 .build();
 
-        LocalizationFunction localization = ResourceBundleLocalizationFunction
-                .fromBundles("lang", DiscordLocale.SPANISH)
-                .build();
-
         Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
         lamp.register(

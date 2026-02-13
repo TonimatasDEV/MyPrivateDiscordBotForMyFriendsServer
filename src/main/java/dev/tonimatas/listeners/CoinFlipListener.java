@@ -33,24 +33,30 @@ public class CoinFlipListener extends ListenerAdapter {
                 return;
             }
 
+            User owner = event.getJDA().getUserById(ownerId);
             boolean result = Utils.RANDOM.nextBoolean();
 
             String winnerName;
+            String lostName;
             if (result == ownerOption) {
-                User owner = event.getJDA().getUserById(ownerId);
                 winnerName = owner == null ? "Unknown" : owner.getEffectiveName();
+                lostName = event.getUser().getEffectiveName();
 
                 BotFiles.USER.get(ownerId).addMoney(money);
                 BotFiles.USER.get(clickerId).removeMoney(money);
             } else {
                 winnerName = event.getUser().getEffectiveName();
+                lostName = owner == null ? "Unknown" : owner.getEffectiveName();
 
                 BotFiles.USER.get(clickerId).addMoney(money);
                 BotFiles.USER.get(ownerId).removeMoney(money);
             }
 
             String landed = result ? "heads" : "tails";
-            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", winnerName + " won " + money * 2 + "€ because it landed " + landed + ".");
+            
+            ;
+            MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip",
+                    String.format("%s won %d€ and %s lost %d€ because it landed %s.", winnerName, money * 2, lostName, money, landed));
             event.editMessageEmbeds(embed).setComponents().queue();
         }
     }

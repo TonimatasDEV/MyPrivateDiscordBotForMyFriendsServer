@@ -16,7 +16,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
 
         if (channel == null) return;
 
-        String welcome = "Hola " + member.getAsMention() + ", bienvenido a nuestro servidor. ¡Ya somos " + memberCount + "!";
+        String welcome = "Hello " + member.getAsMention() + ", welcome to our server. We are now " + memberCount + "!";
         channel.sendMessage(welcome).queue();
     }
 
@@ -25,7 +25,7 @@ public class JoinLeaveMessageListener extends ListenerAdapter {
         TextChannel channel = BotFiles.CONFIG.getJoinLeftChannel(event.getJDA());
 
         if (channel != null) {
-            channel.sendMessageFormat("%s Se ha salido del servidor.", event.getUser().getName()).queue();
+            channel.sendMessageFormat("Ohh no! %s left this server.", event.getUser().getName()).queue();
         }
     }
 }
