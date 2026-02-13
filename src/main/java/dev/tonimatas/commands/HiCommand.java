@@ -24,13 +24,13 @@ public class HiCommand {
         int startHourNight = isSummer(LocalDateTime.of(nowDate, nowTime)) ? 22 : 18;
 
         if (TimeUtils.isBetween(nowTime, 6, 0, 12, 30)) {
-            greeting = "☀️ ¡Buenos días, " + userName + "! 😊";
+            greeting = "☀️ Good morning, " + userName + "! 😊";
         } else if (TimeUtils.isBetween(nowTime, 12, 31, startHourNight, 0)) {
-            greeting = "🌤️ ¡Buenas tardes, " + userName + "! 😄";
+            greeting = "🌤️ Good afternoon, " + userName + "! 😄";
         } else if (TimeUtils.isBetween(nowTime, startHourNight, 1, 23, 59) || TimeUtils.isBetween(nowTime, 0, 0, 2, 0)) {
-            greeting = "🌙 ¡Buenas noches, " + userName + "! 😴";
+            greeting = "🌙 Good night, " + userName + "! 😴";
         } else {
-            greeting = "😠 ¡Duérmete, bot! Deja de saludar a estas horas...";
+            greeting = "😠 Go to sleep, bot! Stop greeting at this hours...";
         }
 
         actor.replyToInteraction(greeting).queue();

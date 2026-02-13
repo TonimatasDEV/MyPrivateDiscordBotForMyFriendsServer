@@ -27,7 +27,7 @@ public class DailyNotifier implements Runnable {
 
             jda.retrieveUserById(userId).queue(user ->
                     user.openPrivateChannel().queue(channel ->
-                            channel.sendMessage("Reclama tú daily, ya está disponible, usa `/daily` en el canal de comandos para reclamarlo.")
+                            channel.sendMessage("Claim your daily, now available, use `/daily` in the commands channel!")
                                     .queue()
                     )
             );
