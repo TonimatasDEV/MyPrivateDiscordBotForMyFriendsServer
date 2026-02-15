@@ -8,9 +8,6 @@ import dev.tonimatas.systems.executors.ExecutorManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.interactions.DiscordLocale;
-import net.dv8tion.jda.api.interactions.commands.localization.LocalizationFunction;
-import net.dv8tion.jda.api.interactions.commands.localization.ResourceBundleLocalizationFunction;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -47,6 +44,7 @@ public class Main {
                 new MoneyTopCommand(),
                 new OptionsCommand(),
                 new PayCommand(),
+                new PeakImpostorCommand(),
                 new PingCommand(),
                 new StatsCommand(),
                 new StatsTopCommand(),

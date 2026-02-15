@@ -57,4 +57,8 @@ public class BotConfig extends JsonFile {
     public Role getAutoRole(JDA jda) {
         return Objects.requireNonNull(jda.getRoleById(ids.get("autoRoleId")));
     }
+
+    public Role getAllowedGameRole(JDA jda) {
+        return Objects.requireNonNull(jda.getRoleById(ids.get("allowedGameRole")));
+    }
 }
