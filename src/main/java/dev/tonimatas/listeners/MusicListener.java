@@ -74,8 +74,7 @@ public class MusicListener extends ListenerAdapter {
             if (urlMapping != null) {
                 String url = urlMapping.getAsString();
                 musicManager.loadAndPlay(BotFiles.CONFIG.getMusicChannel(event.getJDA()), member.getVoiceState().getChannel().asVoiceChannel(), url);
-                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Your URL has been added to the queue.");
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.deferEdit().queue();
             } else {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error playing your URL. Check your URL and try again later.");
                 event.replyEmbeds(embed).setEphemeral(true).queue();

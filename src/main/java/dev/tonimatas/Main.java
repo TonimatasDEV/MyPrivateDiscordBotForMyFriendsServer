@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    static void main() throws InterruptedException {
         JDA jda = JDABuilder.createDefault(BotFiles.CONFIG.token)
                 .enableIntents(List.of(GatewayIntent.values()))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)

@@ -13,14 +13,17 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MusicManager {
+    public static String messageId = null;
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
 
@@ -59,7 +62,8 @@ public class MusicManager {
 
             @Override
             public void noMatches() {
-                channel.sendMessage("Nothing found by " + trackUrl).queue();
+                MessageEmbed embed = Messages.getErrorEmbed(channel.getJDA(), "Nothing found by " + trackUrl);
+                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(10));
             }
 
             @Override
@@ -87,7 +91,7 @@ public class MusicManager {
         GuildMusicManager musicManager = musicManagers.get(guildId);
 
         if (musicManager == null) {
-            musicManager = new GuildMusicManager(playerManager);
+            musicManager = new GuildMusicManager(playerManager, guild.getJDA());
             musicManagers.put(guildId, musicManager);
         }
 
@@ -99,8 +103,23 @@ public class MusicManager {
     public static void setup(JDA jda) {
         TextChannel channel = BotFiles.CONFIG.getMusicChannel(jda);
         
-        BotFiles.CONFIG.getMusicChannel(jda).sendMessage("Setup").setComponents(
-                ActionRow.of(Button.primary("music-play", "Play"), Button.danger("music-skip", "Skip"))
-        ).queue();
+        List<Message> messages = channel.getHistory().retrievePast(20).complete();
+        
+        for (Message message : messages) {
+            List<MessageEmbed> embeds = message.getEmbeds();
+
+            if (embeds.isEmpty()) {
+                message.delete().queue();
+            } else {
+                messageId = message.getId();
+            }
+        }
+        
+        if (messageId == null) {
+            MessageEmbed embed = Messages.getDefaultEmbed(jda, "Music", "This is the primary message of the music system. Here you have the controls!\n\nQueue:");
+            BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(
+                    ActionRow.of(Button.primary("music-play", "Play"), Button.danger("music-skip", "Skip"), Button.danger("music-stop", "Stop"))
+            ).queue(message -> messageId = message.getId());
+        }
     }
 }
