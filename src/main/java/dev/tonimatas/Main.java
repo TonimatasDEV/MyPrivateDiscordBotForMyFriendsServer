@@ -1,12 +1,15 @@
 package dev.tonimatas;
 
+import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import dev.tonimatas.commands.*;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.listeners.*;
 import dev.tonimatas.systems.bank.DailyNotifier;
 import dev.tonimatas.systems.executors.ExecutorManager;
+import dev.tonimatas.systems.music.MusicManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.audio.AudioModuleConfig;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -28,10 +31,11 @@ public class Main {
         JDA jda = JDABuilder.createDefault(BotFiles.CONFIG.token)
                 .enableIntents(List.of(GatewayIntent.values()))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setAudioModuleConfig(new AudioModuleConfig().withDaveSessionFactory(new JDaveSessionFactory()))
                 .enableCache(List.of(CacheFlag.values()))
                 .setAutoReconnect(true)
                 .build();
-
+        
         Lamp<SlashCommandActor> lamp = JDALamp.builder().build();
 
         lamp.register(
@@ -58,6 +62,7 @@ public class Main {
                 new CountListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
+                new MusicListener(),
                 new PayListener(),
                 new StatsListener(),
                 new CoinFlipListener()
@@ -67,6 +72,8 @@ public class Main {
         jda.awaitReady();
 
         addStopHook(jda);
+
+        MusicManager.setup(jda);
 
         ExecutorManager.addRunnableAtFixedRate(new DailyNotifier(jda), 1, TimeUnit.MINUTES);
         ExecutorManager.addRunnableAtFixedRate(BotFiles::save, 5, TimeUnit.SECONDS);
