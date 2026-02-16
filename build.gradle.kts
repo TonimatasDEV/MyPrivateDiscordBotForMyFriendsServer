@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.3.0") {
+    implementation("net.dv8tion:JDA:6.3.1") {
         exclude(module = "opus-java")
     }
     // https://github.com/qos-ch/logback/releases
