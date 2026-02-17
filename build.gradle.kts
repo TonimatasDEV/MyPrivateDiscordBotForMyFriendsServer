@@ -22,7 +22,7 @@ dependencies {
         exclude(module = "opus-java")
     }
     // https://github.com/qos-ch/logback/releases
-    implementation("ch.qos.logback:logback-classic:1.5.31")
+    implementation("ch.qos.logback:logback-classic:1.5.32")
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
     // https://github.com/Revxrsal/Lamp/releases
