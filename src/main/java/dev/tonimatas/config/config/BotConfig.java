@@ -61,4 +61,8 @@ public class BotConfig extends JsonFile {
     public Role getAllowedGameRole(JDA jda) {
         return Objects.requireNonNull(jda.getRoleById(ids.get("allowedGameRole")));
     }
+    
+    public TextChannel getMusicChannel(JDA jda) {
+        return Objects.requireNonNull(jda.getTextChannelById(ids.get("musicChannelId")));
+    }
 }
