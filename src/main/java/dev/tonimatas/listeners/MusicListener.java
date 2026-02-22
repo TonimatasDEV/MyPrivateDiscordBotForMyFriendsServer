@@ -7,11 +7,14 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -45,7 +48,7 @@ public class MusicListener extends ListenerAdapter {
         
         if (buttonId == null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error! Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
             return;
         }
 
@@ -53,7 +56,7 @@ public class MusicListener extends ListenerAdapter {
 
         if (isInAnotherChannel != null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), isInAnotherChannel);
-            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
             return;
         }
         
@@ -73,9 +76,8 @@ public class MusicListener extends ListenerAdapter {
             
             case STOP_BUTTON -> {
                 musicManager.stopTrack(event.getGuild());
-                isNotNull(event.getGuild()).getAudioManager().closeAudioConnection();
                 MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Bot stopped.");
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(10));
+                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
         }
     }
@@ -89,7 +91,7 @@ public class MusicListener extends ListenerAdapter {
 
             if (isInAnotherChannel != null) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), isInAnotherChannel);
-                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
                 return;
             }
 
@@ -104,7 +106,23 @@ public class MusicListener extends ListenerAdapter {
                 event.deferEdit().queue();
             } else {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error playing your URL. Check your URL and try again later.");
-                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
+            }
+        }
+    }
+
+    @Override
+    public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event) {
+        Guild guild = event.getGuild();
+        AudioChannelUnion left = event.getChannelLeft();
+
+        if (left != null) {
+            VoiceChannel voice = left.asVoiceChannel();
+            
+            if (voice.getMembers().size() == 1) {
+                if (voice.getMembers().getFirst().getId().equals(guild.getSelfMember().getId())) {
+                    musicManager.stopTrack(guild);
+                }
             }
         }
     }

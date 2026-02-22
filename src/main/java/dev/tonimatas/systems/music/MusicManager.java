@@ -42,7 +42,7 @@ public class MusicManager {
             @Override
             public void trackLoaded(AudioTrack track) {
                 MessageEmbed embed = Messages.getDefaultEmbed(channel.getJDA(), "Music", "Adding to queue " + track.getInfo().title);
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(10));
+                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
                 play(channel.getGuild(), toConnect, musicManager, track);
             }
 
@@ -55,7 +55,7 @@ public class MusicManager {
                 }
 
                 MessageEmbed embed = Messages.getDefaultEmbed(channel.getJDA(), "Music", "Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(10));
+                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
 
                 play(channel.getGuild(), toConnect, musicManager, firstTrack);
             }
@@ -63,13 +63,13 @@ public class MusicManager {
             @Override
             public void noMatches() {
                 MessageEmbed embed = Messages.getErrorEmbed(channel.getJDA(), "Nothing found by " + trackUrl);
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(10));
+                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
                 MessageEmbed embed = Messages.getErrorEmbed(channel.getJDA(), "Could not play: " + exception.getMessage());
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(10));
+                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
         });
     }
@@ -87,6 +87,7 @@ public class MusicManager {
     public void stopTrack(Guild guild) {
         GuildMusicManager musicManager = getGuildAudioPlayer(guild);
         musicManager.scheduler.stopQueue();
+        guild.getAudioManager().closeAudioConnection();
     }
 
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
