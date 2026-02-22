@@ -60,6 +60,7 @@ public class Main {
         jda.addEventListener(
                 new AutoRoleListener(),
                 new CountListener(),
+                new DeafenBotsListener(),
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
                 new MusicListener(),
