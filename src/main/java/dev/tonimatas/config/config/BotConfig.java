@@ -12,16 +12,18 @@ import java.util.Objects;
 
 public class BotConfig extends JsonFile {
     public final String token;
+    public final String youtubeToken;
     private final Map<String, String> ids;
 
 
     @SuppressWarnings("unused")
     public BotConfig() {
-        this("default-token", new HashMap<>());
+        this("default-token", "youtube-token", new HashMap<>());
     }
 
-    public BotConfig(String token, Map<String, String> ids) {
+    public BotConfig(String token, String youtubeToken, Map<String, String> ids) {
         this.token = token;
+        this.youtubeToken = youtubeToken;
         this.ids = ids;
     }
 
@@ -60,5 +62,9 @@ public class BotConfig extends JsonFile {
 
     public Role getAllowedGameRole(JDA jda) {
         return Objects.requireNonNull(jda.getRoleById(ids.get("allowedGameRole")));
+    }
+    
+    public TextChannel getMusicChannel(JDA jda) {
+        return Objects.requireNonNull(jda.getTextChannelById(ids.get("musicChannelId")));
     }
 }
