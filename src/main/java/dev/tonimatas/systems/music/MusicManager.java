@@ -31,7 +31,7 @@ public class MusicManager {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
         YoutubeAudioSourceManager source = new YoutubeAudioSourceManager();
-        source.useOauth2(null, false);
+        source.useOauth2(BotFiles.CONFIG.youtubeToken, false);
         playerManager.registerSourceManager(source);
     }
 
