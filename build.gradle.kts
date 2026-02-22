@@ -25,9 +25,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.3.1") {
-        exclude(module = "opus-java")
-    }
+    implementation("net.dv8tion:JDA:6.3.1")
     // https://github.com/qos-ch/logback/releases
     implementation("ch.qos.logback:logback-classic:1.5.32")
     // https://github.com/google/gson/releases
@@ -68,10 +66,6 @@ tasks.jar {
 
 tasks.shadowJar {
     archiveClassifier.set("")
-
-    minimize {
-        exclude(dependency("ch.qos.logback:logback-classic:.*"))
-    }
 
     manifest {
         attributes("Main-Class" to "dev.tonimatas.Main")
