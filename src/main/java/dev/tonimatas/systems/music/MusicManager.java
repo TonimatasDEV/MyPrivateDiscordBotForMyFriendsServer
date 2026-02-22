@@ -120,7 +120,8 @@ public class MusicManager {
             BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(
                     ActionRow.of(Button.success("music-play", "Play"),
                             Button.primary("music-skip", "Skip"),
-                            Button.secondary("music-repeat", "Repeat"),
+                            Button.secondary("music-repeat", "Repeat (Coming soon)"),
+                            Button.danger("music-pause", "Pause (Coming soon)"),
                             Button.danger("music-stop", "Stop")
                     )
             ).queue(message -> messageId = message.getId());

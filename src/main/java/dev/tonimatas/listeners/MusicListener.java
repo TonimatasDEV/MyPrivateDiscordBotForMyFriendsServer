@@ -7,15 +7,20 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.modals.ModalMapping;
 import net.dv8tion.jda.api.modals.Modal;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class MusicListener extends ListenerAdapter {
     private static final String PLAY_BUTTON = "music-play";
@@ -33,15 +38,17 @@ public class MusicListener extends ListenerAdapter {
         String buttonId = button.getCustomId();
         Member member = event.getMember();
         
-        if (buttonId == null || member == null || member.getVoiceState() == null) {
+        if (buttonId == null) {
             MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error! Please try again later.");
-            event.replyEmbeds(embed).setEphemeral(true).queue();
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
-        
-        if (!member.getVoiceState().inAudioChannel()) {
-            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Are you in a voice channel?");
-            event.replyEmbeds(embed).setEphemeral(true).queue();
+
+        String isInAnotherChannel = isInOtherVoiceChannel(member);
+
+        if (isInAnotherChannel != null) {
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), isInAnotherChannel);
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
         
@@ -57,28 +64,59 @@ public class MusicListener extends ListenerAdapter {
         Member member = event.getMember();
         
         if (event.getCustomId().equals(MODAL)) {
-            if (member == null || member.getVoiceState() == null) {
-                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error! Please try again later.");
-                event.replyEmbeds(embed).setEphemeral(true).queue();
-                return;
-            }
+            String isInAnotherChannel = isInOtherVoiceChannel(member);
 
-            if (!member.getVoiceState().inAudioChannel() || member.getVoiceState().getChannel() == null || member.getVoiceState().getChannel().getType() != ChannelType.VOICE) {
-                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Are you in a voice channel?");
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+            if (isInAnotherChannel != null) {
+                MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), isInAnotherChannel);
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
                 return;
             }
 
             ModalMapping urlMapping = event.getInteraction().getValue(URL_INPUT);
+
+            GuildVoiceState voiceState = isNotNull(member.getVoiceState());
+            AudioChannelUnion channel = isNotNull(voiceState.getChannel());
             
             if (urlMapping != null) {
                 String url = urlMapping.getAsString();
-                musicManager.loadAndPlay(BotFiles.CONFIG.getMusicChannel(event.getJDA()), member.getVoiceState().getChannel().asVoiceChannel(), url);
+                musicManager.loadAndPlay(BotFiles.CONFIG.getMusicChannel(event.getJDA()), channel.asVoiceChannel(), url);
                 event.deferEdit().queue();
             } else {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "Error playing your URL. Check your URL and try again later.");
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
         }
+    }
+    
+    @Nullable
+    private static String isInOtherVoiceChannel(Member member) {
+        if (member == null) return "Error, please try again later.";
+        if (!isMemberInVoiceChannel(member)) return "You are not in a voice channel.";
+        
+        GuildVoiceState botVoiceState = member.getGuild().getSelfMember().getVoiceState();
+        
+        if (botVoiceState == null || botVoiceState.getChannel() == null) return null;
+        
+        GuildVoiceState memberVoiceState = isNotNull(member.getVoiceState());
+        AudioChannelUnion channel = isNotNull(memberVoiceState.getChannel());
+        
+        if (!channel.getId().equals(botVoiceState.getChannel().getId())) {
+            return "The bot is currently playing music in another channel.";
+        }
+        
+        return null;
+    }
+    
+    public static boolean isMemberInVoiceChannel(@NotNull Member member) {
+        GuildVoiceState voiceState = member.getVoiceState();
+        
+        if (voiceState == null) return false;
+        
+        return voiceState.inAudioChannel() && isNotNull(voiceState.getChannel()).getType() == ChannelType.VOICE;
+    }
+    
+    @NotNull
+    public static <T> T isNotNull(T object) {
+        return Objects.requireNonNull(object);
     }
 }
