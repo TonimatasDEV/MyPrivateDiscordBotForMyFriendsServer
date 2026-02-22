@@ -17,4 +17,12 @@ public class GuildMusicManager {
     public AudioPlayerSendHandler getSendHandler() {
         return new AudioPlayerSendHandler(player);
     }
+    
+    public void pause() {
+        player.setPaused(true);
+    }
+    
+    public void resume() {
+        player.setPaused(false);
+    }
 }

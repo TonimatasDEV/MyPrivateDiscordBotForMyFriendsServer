@@ -74,6 +74,19 @@ public class MusicListener extends ListenerAdapter {
                 event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
             
+            case PAUSE_BUTTON -> {
+                MessageEmbed embed;
+                if (button.getLabel().equals("Pause")) {
+                    musicManager.pauseTrack(event.getGuild());
+                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song paused.");
+                } else {
+                    musicManager.resumeTrack(event.getGuild());
+                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song resumed.");
+                }
+
+                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
+            }
+            
             case STOP_BUTTON -> {
                 musicManager.stopTrack(event.getGuild());
                 MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Bot stopped.");

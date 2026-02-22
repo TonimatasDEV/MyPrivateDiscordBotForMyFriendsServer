@@ -89,6 +89,18 @@ public class MusicManager {
         musicManager.scheduler.stopQueue();
         guild.getAudioManager().closeAudioConnection();
     }
+    
+    public void pauseTrack(Guild guild) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(guild);
+        musicManager.pause();
+        BotFiles.CONFIG.getMusicChannel(guild.getJDA()).editMessageComponentsById(messageId, getButtons(true)).queue();
+    }
+
+    public void resumeTrack(Guild guild) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(guild);
+        musicManager.resume();
+        BotFiles.CONFIG.getMusicChannel(guild.getJDA()).editMessageComponentsById(messageId, getButtons(false)).queue();
+    }
 
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
@@ -121,14 +133,18 @@ public class MusicManager {
         
         if (messageId == null) {
             MessageEmbed embed = Messages.getDefaultEmbed(jda, "Music", "This is the primary message of the music system. Here you have the controls!\n\nQueue:");
-            BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(
-                    ActionRow.of(Button.success("music-play", "Play"),
-                            Button.primary("music-skip", "Skip"),
-                            Button.secondary("music-repeat", "Repeat (Coming soon)"),
-                            Button.danger("music-pause", "Pause (Coming soon)"),
-                            Button.danger("music-stop", "Stop")
-                    )
+
+            BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(getButtons(false)
             ).queue(message -> messageId = message.getId());
         }
+    }
+    
+    private static ActionRow getButtons(boolean paused) {
+        return ActionRow.of(Button.success("music-play", "Play"),
+                Button.primary("music-skip", "Skip"),
+                Button.secondary("music-repeat", "Repeat (Coming soon)"),
+                paused ? Button.success("music-pause", "Resume") : Button.danger("music-pause", "Pause"),
+                Button.danger("music-stop", "Stop")
+        );
     }
 }
