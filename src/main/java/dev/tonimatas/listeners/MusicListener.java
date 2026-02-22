@@ -24,6 +24,11 @@ import java.util.Objects;
 
 public class MusicListener extends ListenerAdapter {
     private static final String PLAY_BUTTON = "music-play";
+    private static final String SKIP_BUTTON = "music-skip";
+    private static final String REPEAT_BUTTON = "music-repeat";
+    private static final String PAUSE_BUTTON = "music-pause";
+    private static final String STOP_BUTTON = "music-stop";
+    
     private static final String URL_INPUT = "music-play-url";
     private static final String MODAL = "music-play-modal";
     private final MusicManager musicManager;
@@ -52,10 +57,19 @@ public class MusicListener extends ListenerAdapter {
             return;
         }
         
-        if (buttonId.equals(PLAY_BUTTON)) {
-            TextInput videoUrl = TextInput.create(URL_INPUT, TextInputStyle.SHORT).build();
-            Modal modal = Modal.create(MODAL, "Music Play").addComponents(Label.of("YouTube URL", videoUrl)).build();
-            event.replyModal(modal).queue();
+        
+        switch (buttonId) {
+            case PLAY_BUTTON -> {
+                TextInput videoUrl = TextInput.create(URL_INPUT, TextInputStyle.SHORT).build();
+                Modal modal = Modal.create(MODAL, "Music Play").addComponents(Label.of("YouTube URL", videoUrl)).build();
+                event.replyModal(modal).queue();
+            }
+            
+            case SKIP_BUTTON -> {
+                musicManager.skipTrack(event.getGuild());
+                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song skipped.");
+                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
+            }
         }
     }
 

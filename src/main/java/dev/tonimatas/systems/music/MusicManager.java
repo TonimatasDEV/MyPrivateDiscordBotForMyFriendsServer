@@ -79,11 +79,9 @@ public class MusicManager {
         musicManager.scheduler.queue(track);
     }
 
-    public void skipTrack(TextChannel channel) {
-        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+    public void skipTrack(Guild guild) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(guild);
         musicManager.scheduler.nextTrack();
-
-        channel.sendMessage("Skipped to next track.").queue();
     }
 
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
