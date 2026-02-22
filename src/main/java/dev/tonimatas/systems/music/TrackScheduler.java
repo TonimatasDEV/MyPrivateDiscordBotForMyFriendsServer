@@ -35,6 +35,12 @@ public class TrackScheduler extends AudioEventAdapter {
         player.startTrack(queue.poll(), false);
         updateMusicMessage();
     }
+    
+    public void stopQueue() {
+        player.stopTrack();
+        queue.clear();
+        updateMusicMessage();
+    }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
@@ -43,7 +49,7 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
     
-    private void updateMusicMessage() {
+    public void updateMusicMessage() {
         StringBuilder message = new StringBuilder();
         message.append("This is the primary message of the music system. Here you have the controls!\n\n**Listening:** ")
                 .append(player.getPlayingTrack() != null ? player.getPlayingTrack().getInfo().title : "None");

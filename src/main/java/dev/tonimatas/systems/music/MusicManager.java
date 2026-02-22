@@ -84,6 +84,11 @@ public class MusicManager {
         musicManager.scheduler.nextTrack();
     }
 
+    public void stopTrack(Guild guild) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(guild);
+        musicManager.scheduler.stopQueue();
+    }
+
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
         long guildId = Long.parseLong(guild.getId());
         GuildMusicManager musicManager = musicManagers.get(guildId);

@@ -70,6 +70,13 @@ public class MusicListener extends ListenerAdapter {
                 MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song skipped.");
                 event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
+            
+            case STOP_BUTTON -> {
+                musicManager.stopTrack(event.getGuild());
+                isNotNull(event.getGuild()).getAudioManager().closeAudioConnection();
+                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Bot stopped.");
+                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(10));
+            }
         }
     }
 
