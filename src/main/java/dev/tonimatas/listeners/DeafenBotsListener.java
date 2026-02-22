@@ -12,7 +12,7 @@ public class DeafenBotsListener extends ListenerAdapter {
         AudioChannelUnion join = event.getChannelJoined();
 
         if (join != null) {
-            if (member.getUser().isBot() || !event.getVoiceState().isGuildDeafened()) {
+            if (member.getUser().isBot() && !event.getVoiceState().isGuildDeafened()) {
                 member.deafen(true).queue();
             }
         }
