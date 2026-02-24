@@ -18,11 +18,8 @@ public class GuildMusicManager {
         return new AudioPlayerSendHandler(player);
     }
     
-    public void pause() {
-        player.setPaused(true);
-    }
-    
-    public void resume() {
-        player.setPaused(false);
+    public void alternatePause() {
+        player.setPaused(!player.isPaused());
+        scheduler.updateMusicButtons();
     }
 }
