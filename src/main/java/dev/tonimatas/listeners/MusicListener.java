@@ -74,6 +74,19 @@ public class MusicListener extends ListenerAdapter {
                 event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
             
+            case REPEAT_BUTTON -> {
+                MessageEmbed embed;
+                if (button.getLabel().equals("Repeat")) {
+                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song repeating to the infinity!");
+                } else {
+                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Stop repeating to the infinity.");
+                }
+
+                musicManager.alternateRepeat(event.getGuild());
+
+                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
+            }
+            
             case PAUSE_BUTTON -> {
                 MessageEmbed embed;
                 if (button.getLabel().equals("Pause")) {

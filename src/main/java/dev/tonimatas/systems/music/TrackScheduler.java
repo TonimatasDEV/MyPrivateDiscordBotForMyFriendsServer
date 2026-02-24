@@ -15,6 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer player;
     private final BlockingQueue<AudioTrack> queue;
+    private boolean repeat;
     private final JDA jda;
 
     public TrackScheduler(AudioPlayer player, JDA jda) {
@@ -42,8 +43,17 @@ public class TrackScheduler extends AudioEventAdapter {
         updateMusicMessage();
     }
 
+    public void alternateRepeat() {
+        this.repeat = !repeat;
+    }
+
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+        if (repeat) {
+            player.startTrack(track.makeClone(), false);
+            return;
+        }
+        
         if (endReason.mayStartNext) {
             nextTrack();
         }
@@ -66,5 +76,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Music", message.toString());
         BotFiles.CONFIG.getMusicChannel(jda).editMessageEmbedsById(MusicManager.messageId, embed).queue();
+        BotFiles.CONFIG.getMusicChannel(jda).editMessageComponentsById(MusicManager.messageId, MusicManager.getButtons(player.isPaused(), repeat)).queue();
     }
 }
