@@ -67,4 +67,12 @@ public class BotConfig extends JsonFile {
     public TextChannel getMusicChannel(JDA jda) {
         return Objects.requireNonNull(jda.getTextChannelById(ids.get("musicChannelId")));
     }
+
+    public String getNewsChannelId() {
+        return ids.get("newsChannelId");
+    }
+
+    public String getAnnouncementsChannelId() {
+        return ids.get("announcementsChannelId");
+    }
 }

@@ -64,6 +64,7 @@ public class Main {
                 new JoinLeaveMessageListener(),
                 new TemporalChannelListener(),
                 new MusicListener(),
+                new NewsThreadsListener(),
                 new PayListener(),
                 new StatsListener(),
                 new CoinFlipListener()
