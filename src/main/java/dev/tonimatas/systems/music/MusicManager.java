@@ -127,8 +127,10 @@ public class MusicManager {
         if (messageId == null) {
             MessageEmbed embed = Messages.getDefaultEmbed(jda, "Music", "This is the primary message of the music system. Here you have the controls!\n\nQueue:");
 
-            BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(getButtons(false, false)
-            ).queue(message -> messageId = message.getId());
+            BotFiles.CONFIG.getMusicChannel(jda).sendMessageEmbeds(embed).setComponents(getButtons(false, false))
+                    .queue(message -> messageId = message.getId());
+        } else {
+            BotFiles.CONFIG.getMusicChannel(jda).editMessageComponentsById(messageId, getButtons(false, false)).queue();
         }
     }
     

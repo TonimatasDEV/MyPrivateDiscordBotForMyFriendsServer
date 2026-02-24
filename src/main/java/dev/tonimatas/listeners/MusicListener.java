@@ -60,12 +60,14 @@ public class MusicListener extends ListenerAdapter {
             return;
         }
         
+        boolean finished = false;
         
         switch (buttonId) {
             case PLAY_BUTTON -> {
                 TextInput videoUrl = TextInput.create(URL_INPUT, TextInputStyle.SHORT).build();
                 Modal modal = Modal.create(MODAL, "Music Play").addComponents(Label.of("YouTube URL", videoUrl)).build();
                 event.replyModal(modal).queue();
+                finished = true;
             }
             
             case SKIP_BUTTON -> musicManager.skipTrack(event.getGuild());
@@ -73,6 +75,8 @@ public class MusicListener extends ListenerAdapter {
             case PAUSE_BUTTON -> musicManager.alternatePause(event.getGuild());
             case STOP_BUTTON -> musicManager.stopTrack(event.getGuild());
         }
+        
+        if (!finished) event.deferEdit().queue();
     }
 
     @Override
