@@ -45,6 +45,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void alternateRepeat() {
         this.repeat = !repeat;
+        updateMusicButtons();
     }
 
     @Override
@@ -76,6 +77,9 @@ public class TrackScheduler extends AudioEventAdapter {
 
         MessageEmbed embed = Messages.getDefaultEmbed(jda, "Music", message.toString());
         BotFiles.CONFIG.getMusicChannel(jda).editMessageEmbedsById(MusicManager.messageId, embed).queue();
+    }
+    
+    public void updateMusicButtons() {
         BotFiles.CONFIG.getMusicChannel(jda).editMessageComponentsById(MusicManager.messageId, MusicManager.getButtons(player.isPaused(), repeat)).queue();
     }
 }

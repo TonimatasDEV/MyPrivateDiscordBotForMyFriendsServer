@@ -41,8 +41,6 @@ public class MusicManager {
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                MessageEmbed embed = Messages.getDefaultEmbed(channel.getJDA(), "Music", "Adding to queue " + track.getInfo().title);
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
                 play(channel.getGuild(), toConnect, musicManager, track);
             }
 
@@ -53,9 +51,6 @@ public class MusicManager {
                 if (firstTrack == null) {
                     firstTrack = playlist.getTracks().getFirst();
                 }
-
-                MessageEmbed embed = Messages.getDefaultEmbed(channel.getJDA(), "Music", "Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
-                channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
 
                 play(channel.getGuild(), toConnect, musicManager, firstTrack);
             }
@@ -93,19 +88,11 @@ public class MusicManager {
     public void alternateRepeat(Guild guild) {
         GuildMusicManager musicManager = getGuildAudioPlayer(guild);
         musicManager.scheduler.alternateRepeat();
-        musicManager.scheduler.updateMusicMessage();
     }
     
-    public void pauseTrack(Guild guild) {
+    public void alternatePause(Guild guild) {
         GuildMusicManager musicManager = getGuildAudioPlayer(guild);
-        musicManager.pause();
-        musicManager.scheduler.updateMusicMessage();
-    }
-
-    public void resumeTrack(Guild guild) {
-        GuildMusicManager musicManager = getGuildAudioPlayer(guild);
-        musicManager.resume();
-        musicManager.scheduler.updateMusicMessage();
+        musicManager.alternatePause();
     }
 
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {

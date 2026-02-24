@@ -68,43 +68,10 @@ public class MusicListener extends ListenerAdapter {
                 event.replyModal(modal).queue();
             }
             
-            case SKIP_BUTTON -> {
-                musicManager.skipTrack(event.getGuild());
-                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song skipped.");
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
-            }
-            
-            case REPEAT_BUTTON -> {
-                MessageEmbed embed;
-                if (button.getLabel().equals("Repeat")) {
-                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song repeating to the infinity!");
-                } else {
-                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Stop repeating to the infinity.");
-                }
-
-                musicManager.alternateRepeat(event.getGuild());
-
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
-            }
-            
-            case PAUSE_BUTTON -> {
-                MessageEmbed embed;
-                if (button.getLabel().equals("Pause")) {
-                    musicManager.pauseTrack(event.getGuild());
-                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song paused.");
-                } else {
-                    musicManager.resumeTrack(event.getGuild());
-                    embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Song resumed.");
-                }
-
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
-            }
-            
-            case STOP_BUTTON -> {
-                musicManager.stopTrack(event.getGuild());
-                MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Music", "Bot stopped.");
-                event.replyEmbeds(embed).queue(Messages.deleteBeforeX(5));
-            }
+            case SKIP_BUTTON -> musicManager.skipTrack(event.getGuild());
+            case REPEAT_BUTTON -> musicManager.alternateRepeat(event.getGuild());
+            case PAUSE_BUTTON -> musicManager.alternatePause(event.getGuild());
+            case STOP_BUTTON -> musicManager.stopTrack(event.getGuild());
         }
     }
 
