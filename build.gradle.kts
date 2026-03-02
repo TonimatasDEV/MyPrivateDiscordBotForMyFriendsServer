@@ -31,8 +31,8 @@ dependencies {
     // https://github.com/google/gson/releases
     implementation("com.google.code.gson:gson:2.13.2")
     // https://github.com/Revxrsal/Lamp/releases
-    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.14")
-    implementation("io.github.revxrsal:lamp.jda:4.0.0-rc.14")
+    implementation("io.github.revxrsal:lamp.common:4.0.0-rc.16")
+    implementation("io.github.revxrsal:lamp.jda:4.0.0-rc.16")
     // https://github.com/lavalink-devs/lavaplayer/releases
     implementation("dev.arbjerg:lavaplayer:2.2.6")
     // https://github.com/lavalink-devs/youtube-source/releases
