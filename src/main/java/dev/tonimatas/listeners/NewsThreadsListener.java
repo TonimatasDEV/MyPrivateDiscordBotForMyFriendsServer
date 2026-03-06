@@ -27,7 +27,7 @@ public class NewsThreadsListener extends ListenerAdapter {
     }
     
     private static void addReactions(Message message) {
-        message.addReaction(Emoji.fromUnicode("✅")).queue();
-        message.addReaction(Emoji.fromUnicode("❌")).queue();
+        message.addReaction(Emoji.fromUnicode("✅")).complete();
+        message.addReaction(Emoji.fromUnicode("❌")).complete();
     }
 }
