@@ -60,6 +60,12 @@ public class MusicListener extends ListenerAdapter {
             return;
         }
         
+        if (!buttonId.equals(PLAY_BUTTON) && !isBotInVoiceChannel(member.getGuild().getSelfMember())) {
+            MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "This action requires the bot to be in a voice channel.");
+            event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
+            return;
+        }
+        
         boolean finished = false;
         
         switch (buttonId) {
@@ -149,6 +155,11 @@ public class MusicListener extends ListenerAdapter {
         if (voiceState == null) return false;
         
         return voiceState.inAudioChannel() && isNotNull(voiceState.getChannel()).getType() == ChannelType.VOICE;
+    }
+    
+    public static boolean isBotInVoiceChannel(@NotNull Member member) {
+        GuildVoiceState voiceState = member.getVoiceState();
+        return voiceState != null && voiceState.inAudioChannel();
     }
     
     @NotNull
