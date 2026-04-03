@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     // https://github.com/discord-jda/JDA/releases
-    implementation("net.dv8tion:JDA:6.4.0")
+    implementation("net.dv8tion:JDA:6.4.1")
     // https://github.com/qos-ch/logback/releases
     implementation("ch.qos.logback:logback-classic:1.5.32")
     // https://github.com/google/gson/releases
