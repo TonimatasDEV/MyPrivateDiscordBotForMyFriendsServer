@@ -31,7 +31,7 @@ public class TemporalChannelListener extends ListenerAdapter {
             if (voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) return;
 
             if (voice.getMembers().isEmpty()) {
-                left.delete().queue();
+                left.delete().complete();
             }
         }
     }
@@ -47,8 +47,8 @@ public class TemporalChannelListener extends ListenerAdapter {
     }
 
     private void createChannel(Category category, Member member) {
-        category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel ->
-                voiceChannel.getGuild().moveVoiceMember(member, voiceChannel).queue());
+        VoiceChannel voiceChannel = category.createVoiceChannel(member.getEffectiveName()).complete();
+        voiceChannel.getGuild().moveVoiceMember(member, voiceChannel).complete();
     }
 
     private void removeEmptyChannels(Category category) {
@@ -56,7 +56,7 @@ public class TemporalChannelListener extends ListenerAdapter {
             if (voiceChannel.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) continue;
 
             if (voiceChannel.getMembers().isEmpty()) {
-                voiceChannel.delete().queue();
+                voiceChannel.delete().complete();
             }
         }
     }
@@ -69,11 +69,11 @@ public class TemporalChannelListener extends ListenerAdapter {
         if (!voice.getMembers().isEmpty()) {
             Member member = voice.getMembers().getFirst();
 
-            category.createVoiceChannel(member.getEffectiveName()).queue(voiceChannel -> {
-                for (Member toMove : voice.getMembers()) {
-                    voiceChannel.getGuild().moveVoiceMember(toMove, voiceChannel).queue();
-                }
-            });
+            VoiceChannel voiceChannel = category.createVoiceChannel(member.getEffectiveName()).complete();
+
+            for (Member toMove : voice.getMembers()) {
+                voiceChannel.getGuild().moveVoiceMember(toMove, voiceChannel).complete();
+            }
         }
     }
 }
