@@ -29,7 +29,7 @@ dependencies {
     // https://github.com/qos-ch/logback/releases
     implementation("ch.qos.logback:logback-classic:1.5.32")
     // https://github.com/google/gson/releases
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
     // https://github.com/Revxrsal/Lamp/releases
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.16")
     implementation("io.github.revxrsal:lamp.jda:4.0.0-rc.16")
