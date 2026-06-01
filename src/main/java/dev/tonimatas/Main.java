@@ -62,6 +62,7 @@ public class Main {
                 new CountListener(),
                 new DeafenBotsListener(),
                 new JoinLeaveMessageListener(),
+                new VoiceChannelLoggerListener(),
                 new TemporalChannelListener(),
                 new MusicListener(),
                 new NewsThreadsListener(),
