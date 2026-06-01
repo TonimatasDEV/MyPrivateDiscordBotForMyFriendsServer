@@ -2,6 +2,7 @@ package dev.tonimatas.listeners;
 
 import dev.tonimatas.config.BotFiles;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
@@ -17,7 +18,7 @@ public class TemporalChannelListener extends ListenerAdapter {
         AudioChannelUnion left = event.getChannelLeft();
 
         if (category == null) return;
-        if (joined != null) {
+        if (joined != null && joined.getType() == ChannelType.VOICE) {
             VoiceChannel voice = joined.asVoiceChannel();
 
             if (voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) {
@@ -25,7 +26,7 @@ public class TemporalChannelListener extends ListenerAdapter {
             }
         }
 
-        if (left != null) {
+        if (left != null && left.getType() == ChannelType.VOICE) {
             VoiceChannel voice = left.asVoiceChannel();
 
             if (voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId())) return;
