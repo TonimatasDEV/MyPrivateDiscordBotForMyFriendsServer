@@ -7,7 +7,7 @@ plugins {
     id("com.gradleup.shadow") version "9.5.0"
 }
 
-val projectVersion = providers.gradleProperty("projectVersion")
+val projectVersion = providers.gradleProperty("projectVersion").get()
 
 group = "dev.tonimatas"
 version = projectVersion
