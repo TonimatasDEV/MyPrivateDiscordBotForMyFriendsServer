@@ -4,19 +4,13 @@ import kotlin.io.path.exists
 plugins {
     java
     application
-    id("com.gradleup.shadow") version "9.4.3"
+    id("com.gradleup.shadow") version "9.5.0"
 }
 
 val projectVersion: String by extra
 
 group = "dev.tonimatas"
 version = projectVersion
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
 
 repositories {
     mavenCentral()
