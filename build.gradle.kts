@@ -34,7 +34,7 @@ dependencies {
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.17")
     implementation("io.github.revxrsal:lamp.jda:4.0.0-rc.17")
     // https://github.com/lavalink-devs/lavaplayer/releases
-    implementation("dev.arbjerg:lavaplayer:2.2.6")
+    implementation("dev.arbjerg:lavaplayer:2.2.7")
     // https://github.com/lavalink-devs/youtube-source/releases
     implementation("dev.lavalink.youtube:youtube-plugin:1.18.1")
     // https://github.com/MinnDevelopment/jdave/releases
