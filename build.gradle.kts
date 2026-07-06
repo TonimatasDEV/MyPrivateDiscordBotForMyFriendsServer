@@ -12,12 +12,6 @@ val projectVersion: String by extra
 group = "dev.tonimatas"
 version = projectVersion
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
 repositories {
     mavenCentral()
     maven("https://maven.lavalink.dev/releases")
