@@ -7,10 +7,7 @@ import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
@@ -51,6 +48,12 @@ public class MusicListener extends ListenerAdapter {
             event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(5));
             return;
         }
+
+        if (!buttonId.equalsIgnoreCase(PLAY_BUTTON) &&
+                !buttonId.equalsIgnoreCase(SKIP_BUTTON) &&
+                !buttonId.equalsIgnoreCase(REPEAT_BUTTON) &&
+                !buttonId.equalsIgnoreCase(PAUSE_BUTTON) &&
+                !buttonId.equalsIgnoreCase(STOP_BUTTON)) return;
 
         String isInAnotherChannel = isInOtherVoiceChannel(member);
 
