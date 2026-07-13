@@ -38,7 +38,8 @@ public class StatsCommand {
                         "Money won: " + userInfo.getStats().getMoneyWon() + "€.\n" +
                         "Money spent: " + userInfo.getStats().getMoneySpent() + "€.\n" +
                         "Messages sent: " + userInfo.getStats().getMessagesSent() + ".\n" +
-                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + "."
+                        "Commands Executed: " + userInfo.getStats().getCommandsExecuted() + ".\n" +
+                        "Times reacted:" +userInfo.getStats().getTimesReacted() + "."
         );
 
         actor.replyToInteraction(embed).queue();
