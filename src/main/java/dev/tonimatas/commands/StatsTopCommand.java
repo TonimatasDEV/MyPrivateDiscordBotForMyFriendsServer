@@ -26,8 +26,10 @@ public class StatsTopCommand {
 
         result.append("### ").append(name).append(":\n");
 
-        for (int i = 0; i < 3; i++) {
-            if (entries.size() <= i) break;
+        int max = 5;
+        int top = 1;
+        for (int i = 0; i < entries.size(); i++) {
+            if (top > max) break;
 
             Map.Entry<String, UserStats> entry = entries.reversed().get(i);
             User user = jda.getUserById(entry.getKey());
@@ -35,7 +37,8 @@ public class StatsTopCommand {
             if (user != null && user.isBot()) continue;
    
             String userName = user == null ? "Unknown" : user.getEffectiveName();
-            result.append(" - ").append(i + 1).append(". ").append(userName).append(": ").append(value.applyAsLong(entry.getValue())).append("\n");
+            result.append(" - ").append(top).append(". ").append(userName).append(": ").append(value.applyAsLong(entry.getValue())).append("\n");
+            top++;
         }
 
         return result.toString();
