@@ -28,7 +28,7 @@ public class VoiceChannelLoggerListener extends ListenerAdapter {
             VoiceChannel voice = left.asVoiceChannel();
 
             if (!voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId()) && category.getId().equals(voice.getParentCategoryId())) {
-                voice.sendMessage("❌ **" + event.getEntity().getEffectiveName() + "** left.").queue();
+                voice.sendMessage("❌ **" + event.getEntity().getEffectiveName() + "** left.").queue(null, null);
             }
         }
     }
