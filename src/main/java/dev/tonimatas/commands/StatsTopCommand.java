@@ -54,7 +54,8 @@ public class StatsTopCommand {
                 getLongStatTop("Money won", jda, UserStats::getMoneyWon) +
                 getLongStatTop("Money spent", jda, UserStats::getMoneySpent) +
                 getLongStatTop("Messages sent", jda, UserStats::getMessagesSent) +
-                getLongStatTop("Commands Executed", jda, UserStats::getCommandsExecuted);
+                getLongStatTop("Commands Executed", jda, UserStats::getCommandsExecuted) +
+                getLongStatTop("Times reacted", jda, UserStats::getTimesReacted);
 
         MessageCreateData embed = Messages.getDefaultEmbed_Lamp(jda, "Statistics Top", result);
         actor.replyToInteraction(embed).queue();

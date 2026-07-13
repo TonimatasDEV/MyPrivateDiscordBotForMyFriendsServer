@@ -7,6 +7,7 @@ public class UserStats {
     private long moneySpent;
     private long messagesSent;
     private long commandsExecuted;
+    private long timesReacted;
 
     public long getCountCorrectly() {
         return countCorrectly;
@@ -32,6 +33,10 @@ public class UserStats {
         return commandsExecuted;
     }
 
+    public long getTimesReacted() {
+        return timesReacted;
+    }
+
     public void increaseCountCorrectly() {
         countCorrectly++;
     }
@@ -54,5 +59,9 @@ public class UserStats {
 
     public void increaseCommandsExecuted() {
         commandsExecuted++;
+    }
+
+    public void increaseTimesReacted() {
+        timesReacted++;
     }
 }
