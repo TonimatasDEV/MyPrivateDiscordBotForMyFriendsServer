@@ -35,7 +35,7 @@ public class CountListener extends ListenerAdapter {
         if (numberFromMessage == currentNumber + 1) {
             message.addReaction(Emoji.fromUnicode("✅")).queue();
             BotFiles.USER.get(user.getId()).getStats().increaseCountCorrectly();
-            BotFiles.USER.get(user.getId()).addMoney(1);
+            BotFiles.USER.get(user.getId()).addMoney(3);
             currentNumber++;
             BotFiles.EXTRA.setCount(currentNumber);
             lastCountUser = user;
@@ -46,7 +46,7 @@ public class CountListener extends ListenerAdapter {
         message.addReaction(Emoji.fromUnicode("❌")).queue();
         message.reply("Incorrect. The next number was: " + (currentNumber + 1) + ". We need to start again because YOU and now you have lost 50€.").queue();
         BotFiles.USER.get(user.getId()).getStats().increaseCountIncorrectly();
-        BotFiles.USER.get(user.getId()).removeMoney(50);
+        BotFiles.USER.get(user.getId()).removeMoney(150);
         BotFiles.EXTRA.setCount(0);
     }
 
@@ -70,7 +70,7 @@ public class CountListener extends ListenerAdapter {
         if (messageId.equals(lastCountMessageId)) {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();
-            BotFiles.USER.get(lastCountUser.getId()).removeMoney(100);
+            BotFiles.USER.get(lastCountUser.getId()).removeMoney(300);
             channel.sendMessage(author.getAsMention() + " has tried to trick you, now they have lost 100€. \nThe next number is: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
         }
