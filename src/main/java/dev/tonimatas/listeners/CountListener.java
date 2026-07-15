@@ -44,7 +44,7 @@ public class CountListener extends ListenerAdapter {
         }
 
         message.addReaction(Emoji.fromUnicode("❌")).queue();
-        message.reply("Incorrect. The next number was: " + (currentNumber + 1) + ". We need to start again because YOU and now you have lost 50€.").queue();
+        message.reply("Incorrect. The next number was: " + (currentNumber + 1) + ". We need to start again because YOU and now you have lost 150€.").queue();
         BotFiles.USER.get(user.getId()).getStats().increaseCountIncorrectly();
         BotFiles.USER.get(user.getId()).removeMoney(150);
         BotFiles.EXTRA.setCount(0);
@@ -71,7 +71,7 @@ public class CountListener extends ListenerAdapter {
             String currentNumber = String.valueOf(BotFiles.EXTRA.getCount() + 1);
             BotFiles.USER.get(lastCountUser.getId()).getStats().increaseCountIncorrectly();
             BotFiles.USER.get(lastCountUser.getId()).removeMoney(300);
-            channel.sendMessage(author.getAsMention() + " has tried to trick you, now they have lost 100€. \nThe next number is: " + currentNumber).queue(message ->
+            channel.sendMessage(author.getAsMention() + " has tried to trick you, now they have lost 300€. \nThe next number is: " + currentNumber).queue(message ->
                     message.addReaction(Emoji.fromUnicode("✅")).queue());
         }
     }
