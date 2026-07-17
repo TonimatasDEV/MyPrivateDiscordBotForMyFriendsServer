@@ -43,7 +43,9 @@ public class CoinFlipCommand {
                     ActionRow.of(
                             Button.of(ButtonStyle.PRIMARY, buttonId, "Flip", Emoji.fromUnicode("🪙"))
                     )
-            ).queue();
+            );
+
+            BotFiles.USER.get(user.getId()).removeMoney(money);
         } else {
             MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Invalid options. Please recheck your command options.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
