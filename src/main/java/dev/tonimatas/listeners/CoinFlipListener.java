@@ -21,6 +21,20 @@ public class CoinFlipListener extends ListenerAdapter {
             boolean ownerOption = Boolean.parseBoolean(idSplit[2]);
             long money = Long.parseLong(idSplit[3]);
 
+            if (id.endsWith("cancel")) {
+                if (ownerId.equalsIgnoreCase(clickerId)) {
+                    BotFiles.USER.get(ownerId).addMoney(money);
+                    MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip", "You have cancelled the coinflip.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                    event.getMessage().delete().queue();
+                } else {
+                    MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You can't cancel other coinflips.");
+                    event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
+                }
+
+                return;
+            }
+
             if (ownerId.equalsIgnoreCase(clickerId)) {
                 MessageEmbed embed = Messages.getErrorEmbed(event.getJDA(), "You can't flip your own coinflips.");
                 event.replyEmbeds(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
@@ -53,8 +67,7 @@ public class CoinFlipListener extends ListenerAdapter {
             }
 
             String landed = result ? "heads" : "tails";
-            
-            ;
+
             MessageEmbed embed = Messages.getDefaultEmbed(event.getJDA(), "Coinflip",
                     String.format("%s won %d€ and %s lost %d€ because it landed %s.", winnerName, money * 2, lostName, money, landed));
             event.editMessageEmbeds(embed).setComponents().queue();

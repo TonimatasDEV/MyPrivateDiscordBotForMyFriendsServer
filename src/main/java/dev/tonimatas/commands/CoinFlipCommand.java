@@ -41,11 +41,10 @@ public class CoinFlipCommand {
             String buttonId = "coinflip-" + user.getId() + "-" + typeBoolean + "-" + money;
             actor.replyToInteraction(embed).addComponents(
                     ActionRow.of(
-                            Button.of(ButtonStyle.PRIMARY, buttonId, "Flip", Emoji.fromUnicode("🪙"))
+                            Button.of(ButtonStyle.PRIMARY, buttonId, "Flip", Emoji.fromUnicode("🪙")),
+                            Button.of(ButtonStyle.DANGER, buttonId + "-cancel", "Cancel")
                     )
-            );
-
-            BotFiles.USER.get(user.getId()).removeMoney(money);
+            ).queue((_ -> BotFiles.USER.get(user.getId()).removeMoney(money)));
         } else {
             MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Invalid options. Please recheck your command options.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
