@@ -5,9 +5,9 @@ import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.buttons.ButtonStyle;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
@@ -29,13 +29,13 @@ public class CoinFlipCommand {
         boolean typeBoolean = type.equalsIgnoreCase("heads");
 
         if (money > BotFiles.USER.get(user.getId()).getMoney()) {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Insufficient funds.");
+            MessageEmbed embed = Messages.getErrorEmbed(actor.jda(), "Insufficient funds.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
         if (typeBoolean || type.equalsIgnoreCase("tails")) {
-            MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Coinflip", "**User:** " + user.getEffectiveName() + "." +
+            MessageEmbed embed = Messages.getDefaultEmbed(actor.jda(), "Coinflip", "**User:** " + user.getEffectiveName() + "." +
                     "\n**Option:** " + type + "." +
                     "\n**Money:** " + money + "€.");
             String buttonId = "coinflip-" + user.getId() + "-" + typeBoolean + "-" + money;
@@ -46,7 +46,7 @@ public class CoinFlipCommand {
                     )
             ).queue((_ -> BotFiles.USER.get(user.getId()).removeMoney(money)));
         } else {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Invalid options. Please recheck your command options.");
+            MessageEmbed embed = Messages.getErrorEmbed(actor.jda(), "Invalid options. Please recheck your command options.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
     }

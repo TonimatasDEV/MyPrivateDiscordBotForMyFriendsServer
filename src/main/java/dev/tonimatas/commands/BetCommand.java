@@ -5,7 +5,7 @@ import dev.tonimatas.systems.roulette.Roulette;
 import dev.tonimatas.systems.roulette.bets.Bet;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 import revxrsal.commands.jda.annotation.Choices;
@@ -49,7 +49,7 @@ public class BetCommand {
         String id = actor.user().getId();
 
         if (!actor.channel().getId().equals(BotFiles.CONFIG.getRouletteChannel(jda).getId())) {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "This command can only be run in the Roulette channel.");
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "This command can only be run in the Roulette channel.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
@@ -57,7 +57,7 @@ public class BetCommand {
         String type = actor.commandEvent().getSubcommandName();
 
         if (type == null) {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "Invalid bet type, option or money.");
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid bet type, option or money.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
@@ -65,7 +65,7 @@ public class BetCommand {
         Bet bet = Roulette.getBet(type, id, option, money);
 
         if (bet == null) {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "This bet type \"" + type + "\" doesn't exist.");
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "This bet type \"" + type + "\" doesn't exist.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
@@ -73,14 +73,14 @@ public class BetCommand {
         if (bet.isValid()) {
             if (bet.getMoney() <= BotFiles.USER.get(id).getMoney()) {
                 Roulette.getRoulette(jda).addBet(bet);
-                MessageCreateData embed = Messages.getDefaultEmbed_Lamp(jda, "Bet", "Your " + type + " bet has been added to the Roulette.");
+                MessageEmbed embed = Messages.getDefaultEmbed(jda, "Bet", "Your " + type + " bet has been added to the Roulette.");
                 actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             } else {
-                MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "You don't have enough money.");
+                MessageEmbed embed = Messages.getErrorEmbed(jda, "You don't have enough money.");
                 actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             }
         } else {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(jda, "Invalid bet option \"" + option + "\" for \"" + type + "\".");
+            MessageEmbed embed = Messages.getErrorEmbed(jda, "Invalid bet option \"" + option + "\" for \"" + type + "\".");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
         }
     }

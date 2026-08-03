@@ -5,8 +5,8 @@ import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.jda.actor.SlashCommandActor;
@@ -60,7 +60,7 @@ public class StatsTopCommand {
                 getLongStatTop("Commands Executed", jda, UserStats::getCommandsExecuted) +
                 getLongStatTop("Times reacted", jda, UserStats::getTimesReacted);
 
-        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(jda, "Statistics Top", result);
+        MessageEmbed embed = Messages.getDefaultEmbed(jda, "Statistics Top", result);
         actor.replyToInteraction(embed).queue();
     }
 }
