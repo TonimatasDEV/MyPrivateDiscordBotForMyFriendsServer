@@ -2,6 +2,7 @@ package dev.tonimatas.commands;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
+import dev.tonimatas.util.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -11,13 +12,10 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.jda.actor.SlashCommandActor;
 import revxrsal.commands.jda.annotation.GuildOnly;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PeakImpostorCommand {
-    private static final SecureRandom RANDOM = new SecureRandom();
-    
     @Command("peak")
     @Description("PEAK! You are a climber... or not.")
     @GuildOnly
@@ -68,7 +66,7 @@ public class PeakImpostorCommand {
         List<Integer> result = new ArrayList<>();
         
         while (impostors > 0) {
-            int impostor = RANDOM.nextInt(0, players);
+            int impostor = Utils.RANDOM.nextInt(0, players);
             
             if (!result.contains(impostor)) {
                 result.add(impostor);
