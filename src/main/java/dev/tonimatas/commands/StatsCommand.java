@@ -4,8 +4,8 @@ import dev.tonimatas.api.user.UserInfo;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
@@ -25,13 +25,13 @@ public class StatsCommand {
         }
 
         if (user.isBot()) {
-            MessageCreateData embed = Messages.getErrorEmbed_Lamp(actor.jda(), "Bots don't take part on any statistics.");
+            MessageEmbed embed = Messages.getErrorEmbed(actor.jda(), "Bots don't take part on any statistics.");
             actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
             return;
         }
 
         UserInfo userInfo = BotFiles.USER.get(user.getId());
-        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Stats",
+        MessageEmbed embed = Messages.getDefaultEmbed(actor.jda(), "Stats",
                 "**" + user.getEffectiveName() + ":**" + "\n" +
                         "Times counted correctly: " + userInfo.getStats().getCountCorrectly() + ".\n" +
                         "Times counted incorrectly: " + userInfo.getStats().getCountIncorrectly() + ".\n" +

@@ -6,7 +6,7 @@ import dev.tonimatas.util.CommandUtils;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.jda.actor.SlashCommandActor;
@@ -51,7 +51,7 @@ public class MoneyTopCommand {
 
         Guild guild = actor.guild();
 
-        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Money Top", getMoneyTopString(guild));
+        MessageEmbed embed = Messages.getDefaultEmbed(actor.jda(), "Money Top", getMoneyTopString(guild));
         actor.replyToInteraction(embed).queue();
     }
 }

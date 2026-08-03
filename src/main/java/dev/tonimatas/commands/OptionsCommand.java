@@ -2,7 +2,7 @@ package dev.tonimatas.commands;
 
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Named;
@@ -20,7 +20,7 @@ public class OptionsCommand {
         BotFiles.USER.get(userId).getDaily().setNotified(false);
 
         String description = "Daily notifier " + (enable ? "enabled." : "disabled.");
-        MessageCreateData embed = Messages.getDefaultEmbed_Lamp(actor.jda(), "Settings changed", description);
+        MessageEmbed embed = Messages.getDefaultEmbed(actor.jda(), "Settings changed", description);
         actor.replyToInteraction(embed).setEphemeral(true).queue(Messages.deleteBeforeX(10));
     }
 }
