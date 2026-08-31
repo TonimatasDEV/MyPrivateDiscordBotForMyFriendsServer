@@ -77,7 +77,7 @@ public class MusicListener extends ListenerAdapter {
         switch (buttonId) {
             case PLAY_BUTTON -> {
                 TextInput videoUrl = TextInput.create(URL_INPUT, TextInputStyle.SHORT).build();
-                Modal modal = Modal.create(MODAL, "Music Play").addComponents(Label.of("YouTube URL", videoUrl)).build();
+                Modal modal = Modal.create(MODAL, "Music Play").addComponents(Label.of("YouTube Link/Name/Playlist", videoUrl)).build();
                 event.replyModal(modal).queue();
                 finished = true;
             }

@@ -15,6 +15,7 @@ version = projectVersion
 repositories {
     mavenCentral()
     maven("https://maven.lavalink.dev/releases")
+    maven("https://maven.topi.wtf/releases")
 }
 
 dependencies {
@@ -30,7 +31,7 @@ dependencies {
     // https://github.com/lavalink-devs/lavaplayer/releases
     implementation("dev.arbjerg:lavaplayer:2.2.7")
     // https://github.com/lavalink-devs/youtube-source/releases
-    implementation("dev.lavalink.youtube:youtube-plugin:1.18.2")
+    implementation("com.github.topi314.lavasrc:lavasrc-plugin:4.8.3")
     // https://github.com/MinnDevelopment/jdave/releases
     implementation("club.minnced:jdave-api:0.1.8")
     implementation("club.minnced:jdave-native-linux-x86-64:0.1.8")
