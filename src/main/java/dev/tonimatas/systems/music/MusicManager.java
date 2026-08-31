@@ -1,12 +1,13 @@
 package dev.tonimatas.systems.music;
 
+import com.github.topi314.lavasrc.ytdlp.YtdlpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioReference;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import dev.tonimatas.config.BotFiles;
 import dev.tonimatas.util.Messages;
 import net.dv8tion.jda.api.JDA;
@@ -17,12 +18,17 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MusicManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MusicManager.class);
     public static String messageId = null;
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
@@ -30,15 +36,33 @@ public class MusicManager {
     public MusicManager() {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
-        YoutubeAudioSourceManager source = new YoutubeAudioSourceManager();
-        source.useOauth2(BotFiles.CONFIG.youtubeToken, false);
-        playerManager.registerSourceManager(source);
+
+        String executable;
+        if (Files.exists(Path.of("./yt-dlp_linux"))) {
+            executable = "./yt-dlp_linux";
+        } else if (Files.exists(Path.of("./yt-dlp_musllinux"))) {
+            executable = "./yt-dlp_musllinux";
+        } else {
+            LOGGER.error("YT-DLP executable not found.");
+            System.exit(-1);
+            return;
+        }
+
+        playerManager.registerSourceManager(new YtdlpAudioSourceManager(executable, 1, null, null));
     }
 
-    public void loadAndPlay(final TextChannel channel, final VoiceChannel toConnect, final String trackUrl) {
+    public void loadAndPlay(final TextChannel channel, final VoiceChannel toConnect, final String trackReference) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
-        playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+        AudioReference reference;
+
+        if (trackReference.contains("http") || trackReference.contains("youtube.com")) {
+            reference = new AudioReference(trackReference, null);
+        } else {
+            reference = new AudioReference("ytsearch:" + trackReference, null);
+        }
+
+        playerManager.loadItemOrdered(musicManager, reference, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 play(channel.getGuild(), toConnect, musicManager, track);
@@ -46,18 +70,14 @@ public class MusicManager {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
-
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().getFirst();
+                for (AudioTrack track : playlist.getTracks()) {
+                    play(channel.getGuild(), toConnect, musicManager, track);
                 }
-
-                play(channel.getGuild(), toConnect, musicManager, firstTrack);
             }
 
             @Override
             public void noMatches() {
-                MessageEmbed embed = Messages.getErrorEmbed(channel.getJDA(), "Nothing found by " + trackUrl);
+                MessageEmbed embed = Messages.getErrorEmbed(channel.getJDA(), "Nothing found by " + reference);
                 channel.sendMessageEmbeds(embed).queue(Messages.deleteBeforeX(5));
             }
 
