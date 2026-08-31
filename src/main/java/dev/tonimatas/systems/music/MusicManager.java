@@ -21,11 +21,12 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MusicManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MusicManager.class);
@@ -37,18 +38,21 @@ public class MusicManager {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
 
-        String executable;
-        if (Files.exists(Path.of("./yt-dlp_linux"))) {
-            executable = "./yt-dlp_linux";
-        } else if (Files.exists(Path.of("./yt-dlp_musllinux"))) {
-            executable = "./yt-dlp_musllinux";
-        } else {
+        File executable = null;
+        for (File file : Objects.requireNonNull(Path.of("./").toFile().listFiles())) {
+            if (file.getName().startsWith("yt-dlp")) {
+                executable = file;
+                break;
+            }
+        }
+
+        if (executable == null) {
             LOGGER.error("YT-DLP executable not found.");
             System.exit(-1);
             return;
         }
 
-        playerManager.registerSourceManager(new YtdlpAudioSourceManager(executable, 1, null, null));
+        playerManager.registerSourceManager(new YtdlpAudioSourceManager(executable.getAbsolutePath(), 1, null, null));
     }
 
     public void loadAndPlay(final TextChannel channel, final VoiceChannel toConnect, final String trackReference) {
