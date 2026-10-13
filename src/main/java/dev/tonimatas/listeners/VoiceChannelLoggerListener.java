@@ -20,7 +20,7 @@ public class VoiceChannelLoggerListener extends ListenerAdapter {
             VoiceChannel voice = joined.asVoiceChannel();
 
             if (!voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId()) && category.getId().equals(voice.getParentCategoryId())) {
-                voice.sendMessage("✅ **" +event.getEntity().getEffectiveName() + "** joined.").queue(null, null);
+                voice.sendMessage("✅ **" +event.getEntity().getEffectiveName() + "** joined.").complete();
             }
         }
 
@@ -28,7 +28,7 @@ public class VoiceChannelLoggerListener extends ListenerAdapter {
             VoiceChannel voice = left.asVoiceChannel();
 
             if (!voice.getId().equals(BotFiles.CONFIG.getTemporaryChannelId()) && category.getId().equals(voice.getParentCategoryId())) {
-                voice.sendMessage("❌ **" + event.getEntity().getEffectiveName() + "** left.").queue(null, null);
+                voice.sendMessage("❌ **" + event.getEntity().getEffectiveName() + "** left.").complete();
             }
         }
     }
